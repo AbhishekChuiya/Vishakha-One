@@ -1,0 +1,20 @@
+/* Step 16.15 – Application grid/list view */
+.app-view-switch{display:inline-flex;align-items:center;gap:3px;padding:3px;border:1px solid var(--line);border-radius:10px;background:var(--white)}
+.app-view-button{display:inline-flex;align-items:center;justify-content:center;width:32px;height:30px;border:0;border-radius:7px;background:transparent;color:var(--muted);cursor:pointer}
+.app-view-button[aria-pressed="true"]{background:#e6f0ff;color:#1b5da9}
+.app-view-button:hover{color:var(--blue-dark)}
+.app-view-button .portal-icon{width:17px;height:17px}
+/* Keep existing filters and hidden state behavior unchanged */
+#app-grid.app-list-view{display:flex!important;flex-direction:column!important;gap:9px!important}
+#app-grid.app-list-view .app-card{display:flex!important;flex-direction:row!important;align-items:center!important;min-height:70px!important;width:100%!important;padding:11px 15px!important;gap:13px!important;text-align:left!important}
+#app-grid.app-list-view .app-card[hidden],#app-grid.app-list-view .app-card.category-filtered-out{display:none!important}
+#app-grid.app-list-view .app-icon-wrap{flex:0 0 45px!important;width:45px!important;height:45px!important;min-width:45px!important;margin:0!important}
+#app-grid.app-list-view .app-icon-wrap img{max-height:42px!important;max-width:42px!important;object-fit:contain!important}
+#app-grid.app-list-view .app-meta{display:flex!important;flex:1!important;min-width:0!important;flex-direction:column!important;align-items:flex-start!important;gap:3px!important;margin:0!important}
+#app-grid.app-list-view .app-meta strong,#app-grid.app-list-view .app-meta small{text-align:left!important;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#app-grid.app-list-view .favorite-toggle{position:static!important;flex:0 0 auto!important;margin:0!important}
+#app-grid.app-list-view .app-arrow{position:static!important;flex:0 0 auto!important;margin:0!important}
+html[data-theme="dark"] .app-view-switch{background:#1d2d43!important;border-color:#35465e!important}
+html[data-theme="dark"] .app-view-button{color:#a8b9ce!important}
+html[data-theme="dark"] .app-view-button[aria-pressed="true"]{background:#2a4870!important;color:#d5e7ff!important}
+@media(max-width:760px){.app-view-switch{margin-right:auto}#app-grid.app-list-view .app-card{min-height:64px!important;padding:9px 11px!important;gap:9px!important}#app-grid.app-list-view .app-icon-wrap{flex-basis:40px!important;width:40px!important;height:40px!important;min-width:40px!important}}

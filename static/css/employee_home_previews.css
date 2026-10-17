@@ -1,0 +1,94 @@
+
+/* Step 16.35: visual previews for published resources and new joiners */
+.vone-preview-feature{display:grid;grid-template-columns:minmax(220px,1.15fr) minmax(230px,1fr);gap:22px;padding:17px;background:var(--white,#fff);border:1px solid var(--line,#dce3ed);border-radius:17px;align-items:center}
+.vone-preview-cover{min-width:0;overflow:hidden;aspect-ratio:16/9;background:linear-gradient(135deg,#f5f7fa,#dce8f3);border-radius:12px}
+.vone-preview-cover img{width:100%;height:100%;display:block;object-fit:cover}
+.vone-preview-copy h3,.vone-preview-card-copy h3{margin:8px 0;font-size:19px;line-height:1.3}
+.vone-preview-copy p,.vone-preview-card-copy p{font-size:13px;line-height:1.6;color:var(--muted,#69778a);margin:0 0 16px}
+.vone-preview-copy a,.vone-preview-card-copy a{display:inline-block;margin:8px 0 0 12px;font-size:12px;font-weight:700}
+.vone-preview-button{border:0;background:#b32830;color:#fff;padding:10px 14px;border-radius:9px;font-size:12px;font-weight:700;cursor:pointer}
+.vone-preview-button:hover{background:#92232b}
+.vone-preview-button:focus-visible,.vone-photo:focus-visible{outline:3px solid #377ac7;outline-offset:3px}
+.vone-preview-fallback{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:12px;padding:25px;color:#24364c;background:linear-gradient(135deg,#f6f8fb 0%,#e8edf4 64%,#f8e3e5 100%)}
+.vone-preview-fallback span{color:#b32830;font-size:11px;font-weight:800;letter-spacing:.13em}
+.vone-preview-fallback strong{font-size:clamp(17px,2vw,27px);line-height:1.2}
+.vone-preview-fallback small{font-size:12px}
+.vone-preview-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:16px}
+.vone-preview-card{overflow:hidden;border:1px solid var(--line,#dce3ed);border-radius:15px;background:var(--white,#fff)}
+.vone-preview-card .vone-preview-cover{border-radius:0}
+.vone-preview-card-copy{padding:16px}
+.vone-preview-card-copy h3{font-size:16px}
+.vone-canteen-preview .vone-preview-cover{aspect-ratio:4/3}
+.vone-joiner-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:14px}
+.vone-joiner-card{border:1px solid var(--line,#dce3ed);border-radius:14px;overflow:hidden;background:var(--white,#fff)}
+.vone-joiner-portrait{height:155px;background:var(--soft,#eef2f6);display:flex;justify-content:center;align-items:center;color:#b32830;font-size:42px;font-weight:800}
+.vone-joiner-portrait img{width:100%;height:100%;object-fit:cover;object-position:center 25%}
+.vone-joiner-details{display:flex;flex-direction:column;gap:5px;padding:12px}
+.vone-joiner-details strong{font-size:13px}
+.vone-joiner-details small{font-size:11px;color:var(--muted,#69778a)}
+.vone-photo{border:0;padding:0;cursor:pointer;text-align:left}
+.vone-preview-dialog{position:fixed;inset:0;z-index:10050;display:grid;place-items:center;padding:22px;background:rgba(7,16,29,.84)}
+.vone-preview-dialog[hidden]{display:none!important}
+.vone-preview-shell{position:relative;width:min(1050px,100%);max-height:94dvh;display:flex;flex-direction:column;background:#fff;border-radius:14px;overflow:hidden}
+.vone-preview-toolbar{display:flex;align-items:center;gap:12px;justify-content:space-between;padding:12px 16px;background:#f2f5f9;color:#1d2c3e}
+.vone-preview-toolbar strong{font-size:14px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.vone-preview-toolbar button{border:1px solid #bdc9d5;border-radius:7px;background:#fff;padding:7px 12px;cursor:pointer}
+.vone-preview-stage{min-height:0;overflow:auto;display:grid;place-items:center;background:#17202e;height:min(76dvh,760px)}
+.vone-preview-stage img{max-width:100%;max-height:76dvh;object-fit:contain}
+.vone-preview-stage iframe{border:0;width:100%;height:100%;background:white}
+.vone-preview-nav{display:flex;gap:8px}
+.vone-preview-dialog a{font-size:12px;color:#214d80}
+body.vone-preview-open{overflow:hidden}
+html[data-theme="dark"] .vone-preview-feature,html[data-theme="dark"] .vone-preview-card,html[data-theme="dark"] .vone-joiner-card{background:#18263a!important;border-color:#35465e!important;color:#edf3ff!important}
+html[data-theme="dark"] .vone-preview-copy p,html[data-theme="dark"] .vone-preview-card-copy p,html[data-theme="dark"] .vone-joiner-details small{color:#b7c7dc!important}
+@media(max-width:700px){.vone-preview-feature{grid-template-columns:1fr;gap:14px}.vone-preview-grid{grid-template-columns:1fr 1fr}.vone-joiner-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.vone-preview-dialog{padding:8px}.vone-preview-stage{height:72dvh}.vone-preview-cover{aspect-ratio:16/10}}
+@media(max-width:480px){.vone-preview-grid{grid-template-columns:1fr}.vone-joiner-portrait{height:135px}.vone-preview-copy a{margin-left:0;display:block}}
+
+/* Step 16.36: compact horizontal rails and fit-to-screen previews */
+.vone-preview-rail{display:flex;gap:13px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:3px 3px 14px;overscroll-behavior-inline:contain;scrollbar-width:thin}
+.vone-preview-rail .vone-preview-card{flex:0 0 250px;max-width:calc(100vw - 70px);scroll-snap-align:start}
+.vone-bank-rail .vone-preview-card{flex-basis:196px}
+.vone-bank-rail .vone-preview-cover{aspect-ratio:4/3}
+.vone-bank-rail .vone-preview-card-copy{padding:10px 12px}
+.vone-bank-rail .vone-preview-card-copy h3{font-size:13px;margin:2px 0 5px}
+.vone-bank-rail .vone-preview-card-copy p{font-size:11px;margin:0 0 9px}
+.vone-bank-rail .vone-preview-button{padding:7px 10px;font-size:11px}
+.vone-bank-rail .vone-preview-card-copy a{font-size:11px;margin-left:7px}
+.vone-cover-action{border:0;padding:0;width:100%;display:block;cursor:zoom-in;text-align:center}
+.vone-cover-action:focus-visible{outline:3px solid #397dd2;outline-offset:-3px}
+.vone-rail-controls{display:flex;align-items:center;gap:8px}
+.vone-rail-controls button{border:1px solid var(--line,#dce3ed);background:var(--white,#fff);color:var(--navy,#1d3048);border-radius:50%;height:34px;width:34px;font-size:23px;cursor:pointer}
+.vone-rail-controls button:hover{background:var(--soft,#edf2f8)}
+.vone-canteen-preview .vone-preview-cover{aspect-ratio:auto;min-height:200px;max-height:360px;display:flex;justify-content:center;align-items:center;background:#edf1f5}
+.vone-canteen-preview .vone-preview-cover img{width:100%;height:100%;max-height:360px;object-fit:contain}
+.vone-preview-stage{height:min(80dvh,820px);overflow:auto;padding:8px}
+.vone-preview-stage img{max-width:100%;max-height:calc(80dvh - 16px);height:auto;width:auto;object-fit:contain}
+.vone-preview-error{max-width:480px;color:white;padding:20px;text-align:center;line-height:1.6}
+html[data-theme="dark"] .vone-rail-controls button{background:#24344a;color:#edf3ff;border-color:#40536b}
+@media(max-width:700px){.vone-preview-rail .vone-preview-card{flex-basis:225px}.vone-bank-rail .vone-preview-card{flex-basis:175px}.vone-preview-stage{height:78dvh}.vone-preview-stage img{max-height:calc(78dvh - 16px)}}
+
+/* Step 16.37: no misleading document preview; company videos */
+.vone-video-rail .vone-preview-card{flex-basis:310px}
+.vone-video-rail video{display:block;width:100%;aspect-ratio:16/9;object-fit:contain;background:#101820}
+.vone-video-rail .vone-preview-card-copy{padding:13px}
+.vone-video-rail .vone-preview-card-copy a{margin:0}
+.vone-home-insider .vone-preview-cover,.vone-home-benefits .vone-preview-cover,.vone-home-canteen .vone-preview-cover{cursor:default}
+@media(max-width:700px){.vone-video-rail .vone-preview-card{flex-basis:260px}}
+
+/* Step 16.38 — Clickable document, image and video surfaces */
+.vone-resource-launch{display:block;text-decoration:none!important;position:relative;cursor:pointer!important}
+.vone-resource-launch::after{content:"↗";position:absolute;right:10px;bottom:10px;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:rgba(13,34,57,.78);color:white;font-size:17px;box-shadow:0 2px 7px #0002}
+.vone-resource-launch:hover img{transform:scale(1.025)}
+.vone-resource-launch img{transition:transform .2s ease}
+.vone-resource-launch:focus-visible,.vone-resource-title-link:focus-visible{outline:3px solid #3478c5;outline-offset:3px}
+.vone-resource-title-link{color:inherit!important;text-decoration:none!important}
+.vone-resource-title-link:hover{text-decoration:underline!important;text-underline-offset:3px}
+.vone-preview-rail .vone-preview-card{display:flex;flex-direction:column}
+.vone-preview-rail .vone-preview-card-copy{display:flex;flex-direction:column;flex:1}
+.vone-preview-rail .vone-preview-card-copy>a{margin-top:auto!important;padding-top:10px}
+.vone-bank-rail .vone-preview-cover img,.vone-insider-rail .vone-preview-cover img{object-fit:contain!important;background:#f3f5f8}
+.vone-bank-rail .vone-preview-cover{aspect-ratio:4/3}
+.vone-video-rail .vone-resource-launch{aspect-ratio:16/9}
+.vone-video-play-indicator{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:grid;place-items:center;width:52px;height:52px;background:#b32830;color:white;border-radius:50%;font-size:22px}
+.vone-preview-cover:not(a){cursor:default}
+@media(prefers-reduced-motion:reduce){.vone-resource-launch img{transition:none}}

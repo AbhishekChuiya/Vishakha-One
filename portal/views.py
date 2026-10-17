@@ -9,7 +9,7 @@ NAV = [
     ('home', 'Home', '⌂'), ('apps', 'My Apps', '▦'),
     ('news', 'News & Events', '▤'), ('policies', 'Policies', '▧'),
     ('documents', 'Documents', '▣'), ('careers', 'Careers', '▥'),
-    ('joiners', 'New Joiners', '👥'), ('services', 'Employee Services', '⚙'),
+    ('joiners', 'New Joiners', '♧'), ('services', 'Employee Services', '⚙'),
     ('help', 'Help', '?'),
 ]
 
@@ -25,9 +25,19 @@ def home(request):
     data = context()
     data.update(
         section='home', heading='Home',
-        announcements=Announcement.objects.visible()[:4],
+        announcements=Announcement.objects.visible().exclude(category='gallery')[:4],
+        recognitions=Announcement.objects.visible().filter(category='recognition')[:6],
         featured_policies=Resource.objects.visible().filter(kind='policy')[:3],
-        new_joiners=NewJoiner.objects.visible()[:4],
+        gallery_photos=(list(Announcement.objects.visible().filter(category='gallery').exclude(image='').order_by('-published_at')[:8]) or
+                        (list(Event.objects.visible().exclude(image='').order_by('-published_at')[:8]) +
+                         list(Announcement.objects.visible().exclude(image='').order_by('-published_at')[:8]))[:8]),
+        homepage_brochures=Resource.objects.visible().filter(kind='brochure')[:6],
+        homepage_insiders=Resource.objects.visible().filter(kind='insider')[:20],
+        homepage_bank_benefits=Resource.objects.visible().filter(kind='bank_benefit')[:20],
+        homepage_canteen=Resource.objects.visible().filter(kind='canteen_menu').first(),
+        homepage_videos=Resource.objects.visible().filter(kind='video')[:12],
+        csr_cover=Resource.objects.visible().filter(kind='csr_cover').exclude(cover_image='').first(),
+        new_joiners=NewJoiner.objects.visible()[:12],
         upcoming_events=Event.objects.visible().filter(starts_at__gte=timezone.now()).order_by('starts_at')[:3],
         jobs=JobOpening.objects.visible().filter(Q(deadline__isnull=True) | Q(deadline__gte=timezone.localdate()))[:3],
     )
@@ -43,6 +53,8 @@ def section(request, slug):
     data = context()
     data.update(section=slug, heading=labels[slug], subtitle='Your Vishakha One workspace')
     q = request.GET.get('q', '').strip()[:120]
+    category = request.GET.get('category', 'all').strip()[:40]
+    data['selected_category'] = category
     data['query'] = q
     if slug == 'apps':
         if q:
@@ -50,12 +62,16 @@ def section(request, slug):
     elif slug == 'news':
         data['items'] = Announcement.objects.visible()
         data['events'] = Event.objects.visible().filter(starts_at__gte=timezone.now()).order_by('starts_at')
+        if category in ('news', 'announcement', 'recognition', 'gallery'):
+            data['items'] = data['items'].filter(category=category)
         if q:
             data['items'] = data['items'].filter(Q(title__icontains=q) | Q(summary__icontains=q))
     elif slug in ('policies', 'documents'):
         data['items'] = Resource.objects.visible().filter(kind='policy' if slug == 'policies' else 'document')
         if slug == 'documents':
-            data['items'] = Resource.objects.visible().filter(kind__in=['document', 'brochure'])
+            data['items'] = Resource.objects.visible().filter(kind__in=['document', 'brochure', 'insider', 'bank_benefit', 'canteen_menu', 'video'])
+        if category in ('policy', 'document', 'brochure', 'insider', 'bank_benefit', 'canteen_menu', 'video'):
+            data['items'] = data['items'].filter(kind=category)
         if q:
             data['items'] = data['items'].filter(Q(title__icontains=q) | Q(summary__icontains=q) | Q(department__icontains=q))
     elif slug == 'careers':
@@ -67,3 +83,58 @@ def section(request, slug):
         if q:
             data['items'] = data['items'].filter(Q(employee_name__icontains=q) | Q(department__icontains=q))
     return render(request, 'portal/section.html', data)
+
+
+def profile(request):
+    """Read-only profile: display authenticated Django user fields only."""
+    data = context()
+    data.update(section='profile', heading='My Profile', subtitle='Your employee workspace')
+    user = request.user
+    data['profile_signed_in'] = bool(user.is_authenticated)
+    if user.is_authenticated:
+        name = user.get_full_name().strip() if callable(getattr(user, 'get_full_name', None)) else ''
+        data['profile_name'] = name or user.get_username()
+        data['profile_email'] = getattr(user, 'email', '') or ''
+        data['profile_username'] = user.get_username()
+        data['profile_joined'] = getattr(user, 'date_joined', None)
+    return render(request, 'portal/profile.html', data)
+
+
+def search(request):
+    """Employee-visible unified search; no drafts or unpublished content."""
+    query = request.GET.get('q', '').strip()[:120]
+    scope = request.GET.get('type', 'all')
+    allowed = {'all', 'apps', 'policies', 'documents', 'news', 'joiners'}
+    if scope not in allowed:
+        scope = 'all'
+    data = context()
+    data.update(section='search', heading='Search Vishakha One', query=query,
+                selected_type=scope, search_groups=[])
+    if len(query) < 2:
+        return render(request, 'portal/search.html', data)
+    groups = []
+    if scope in ('all', 'apps'):
+        qs = CompanyApplication.objects.filter(is_active=True).filter(
+            Q(name__icontains=query) | Q(description__icontains=query) | Q(category__icontains=query))[:25]
+        groups.append(('Applications', 'apps', [(o.name, o.description, o.url or '/apps/') for o in qs]))
+    if scope in ('all', 'policies', 'documents'):
+        qs = Resource.objects.visible().filter(
+            Q(title__icontains=query) | Q(summary__icontains=query) | Q(department__icontains=query))
+        if scope == 'policies':
+            qs = qs.filter(kind='policy')
+        elif scope == 'documents':
+            qs = qs.exclude(kind='policy')
+        for label, kind in [('Policies', 'policies'), ('Documents & Resources', 'documents')]:
+            if scope != 'all' and scope != kind:
+                continue
+            subset = qs.filter(kind='policy') if kind == 'policies' else qs.exclude(kind='policy')
+            groups.append((label, kind, [(o.title, o.summary, o.access_url or ('/'+kind+'/'),) for o in subset[:25]]))
+    if scope in ('all', 'news'):
+        qs = Announcement.objects.visible().filter(Q(title__icontains=query) | Q(summary__icontains=query))[:25]
+        groups.append(('News & Announcements', 'news', [(o.title, o.summary, '/news/') for o in qs]))
+    if scope in ('all', 'joiners'):
+        qs = NewJoiner.objects.visible().filter(Q(employee_name__icontains=query) | Q(department__icontains=query) | Q(designation__icontains=query))[:25]
+        groups.append(('New Joiners', 'joiners', [(o.employee_name, (o.designation or '') + ' · ' + (o.department or ''), '/joiners/') for o in qs]))
+    data['search_groups'] = groups
+    data['result_count'] = sum(len(items) for _, _, items in groups)
+    return render(request, 'portal/search.html', data)

@@ -1,0 +1,12 @@
+/* Step 16.13: Application category chips */
+.app-category-bar{display:flex;align-items:center;gap:12px;margin:12px 0 18px;min-width:0}
+.app-category-bar[hidden]{display:none!important}
+.app-category-label{flex:none;color:var(--muted);font-size:12px;font-weight:700}
+.app-category-options{display:flex;gap:8px;min-width:0;overflow-x:auto;padding:3px 1px 8px;scrollbar-width:thin;scroll-snap-type:x proximity}
+.app-category-chip{flex:0 0 auto;scroll-snap-align:start;border:1px solid var(--line);border-radius:999px;padding:9px 13px;background:var(--white);color:var(--navy);font-size:12px;font-weight:650;cursor:pointer}
+.app-category-chip:hover{border-color:var(--blue)}
+.app-category-chip[aria-pressed="true"]{background:#e8f1ff;border-color:#8bb9f2;color:#174c8d}
+.app-grid .app-card.category-filtered-out{display:none!important}
+html[data-theme="dark"] .app-category-chip{background:#1d2d43;color:#e8f1ff;border-color:#35465e}
+html[data-theme="dark"] .app-category-chip[aria-pressed="true"]{background:#294e7c;color:#fff;border-color:#79a9e9}
+@media(max-width:760px){.app-category-bar{display:block;margin:12px 0 16px}.app-category-label{display:block;margin-bottom:6px}.app-category-options{margin-right:-12px;padding-right:12px}.app-category-chip{padding:9px 12px}}

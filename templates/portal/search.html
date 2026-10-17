@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="vone-search-page" style="max-width:1020px;margin:0 auto;padding:24px 16px 60px">
+<h1>Search Vishakha One</h1><p>Find applications, published policies, documents, news and new joiners.</p>
+<form method="get" action="{% url 'portal:search' %}" style="display:flex;gap:10px;flex-wrap:wrap;margin:22px 0">
+<input type="search" name="q" value="{{ query }}" placeholder="What are you looking for?" aria-label="Search Vishakha One" minlength="2" maxlength="120" required style="flex:1;min-width:180px;padding:12px;border:1px solid #c5ced9;border-radius:10px">
+<select name="type" aria-label="Content type" style="padding:12px;border-radius:10px"><option value="all" {% if selected_type == 'all' %}selected{% endif %}>All</option><option value="apps" {% if selected_type == 'apps' %}selected{% endif %}>Applications</option><option value="policies" {% if selected_type == 'policies' %}selected{% endif %}>Policies</option><option value="documents" {% if selected_type == 'documents' %}selected{% endif %}>Documents</option><option value="news" {% if selected_type == 'news' %}selected{% endif %}>News</option><option value="joiners" {% if selected_type == 'joiners' %}selected{% endif %}>New Joiners</option></select>
+<button type="submit" style="background:#b32630;color:white;border:0;border-radius:10px;padding:12px 20px">Search</button></form>
+{% if query|length < 2 %}<p>Enter at least two characters to search.</p>{% else %}
+<p aria-live="polite">{{ result_count }} result{{ result_count|pluralize }} for <strong>{{ query }}</strong></p>
+{% for title, kind, items in search_groups %}{% if items %}
+<section style="margin-top:28px"><h2 style="font-size:18px;margin-bottom:12px">{{ title }}</h2><div style="display:grid;gap:10px">
+{% for name, description, url in items %}<a href="{{ url }}" style="display:block;padding:15px 18px;border:1px solid #9ca3af66;border-radius:12px;color:inherit;text-decoration:none"><strong>{{ name }}</strong>{% if description %}<div style="font-size:13px;opacity:.75;margin-top:5px">{{ description|truncatechars:190 }}</div>{% endif %}</a>{% endfor %}
+</div></section>{% endif %}{% empty %}{% endfor %}
+{% if not result_count %}<p>No matching published content found. Try a different keyword or category.</p>{% endif %}
+{% endif %}
+</section>
+{% endblock %}

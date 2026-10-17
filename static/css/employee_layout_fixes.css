@@ -1,0 +1,34 @@
+/* Step 16.26 — Floating controls and dashboard date alignment */
+/* Place jump-to-top above AI: fixed separate vertical slots on desktops/tablets. */
+@media (min-width: 761px){
+  body .ai-fab{position:fixed!important;right:24px!important;bottom:24px!important;top:auto!important;left:auto!important;z-index:65!important}
+  body .back-to-top{position:fixed!important;right:28px!important;bottom:92px!important;top:auto!important;left:auto!important;z-index:64!important}
+}
+/* Small tablet widths keep adequate clearance and don't intrude on content. */
+@media (min-width: 761px) and (max-width: 1024px){
+  body .ai-fab{right:18px!important;bottom:20px!important}
+  body .back-to-top{right:22px!important;bottom:88px!important}
+}
+/* Phones: reserve bottom navigation space and stack both floating actions. */
+@media (max-width: 760px){
+  body .ai-fab{position:fixed!important;right:15px!important;bottom:calc(88px + env(safe-area-inset-bottom))!important;top:auto!important;left:auto!important;z-index:65!important}
+  body .back-to-top{position:fixed!important;right:18px!important;bottom:calc(156px + env(safe-area-inset-bottom))!important;top:auto!important;left:auto!important;z-index:64!important}
+}
+/* Hidden means hidden, even with older floating-action display styles. */
+body .back-to-top[hidden]{display:none!important}
+/* Date belongs to dashboard heading, not in the card stack or below customizer. */
+.dashboard-intro{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;column-gap:18px!important;row-gap:12px!important;align-items:start!important}
+.dashboard-intro>div:first-child{grid-column:1;grid-row:1;min-width:0}
+.dashboard-intro>.date-pill{display:inline-flex!important;align-items:center;justify-content:center;grid-column:2;grid-row:1;justify-self:end;align-self:start;margin:0!important;padding:10px 13px!important;max-width:100%;font-size:12px!important;font-weight:650;line-height:1.4;text-align:center;white-space:normal!important;border-radius:11px!important}
+.dashboard-intro>.dashboard-customizer{grid-column:1/-1;grid-row:2;justify-self:end;align-self:start;margin:0!important;width:auto!important;min-width:0}
+html[data-theme="dark"] .dashboard-intro>.date-pill{background:#1d2d43!important;color:#e2ecf7!important;border-color:#35465e!important}
+@media (max-width:760px){
+ .dashboard-intro{grid-template-columns:minmax(0,1fr) auto!important;gap:10px!important}
+ .dashboard-intro>.date-pill{font-size:10px!important;padding:8px 9px!important;max-width:145px!important}
+ .dashboard-intro>.dashboard-customizer{grid-column:1/-1;grid-row:2;justify-self:end!important;margin:0!important}
+}
+@media (max-width:400px){
+ .dashboard-intro{grid-template-columns:1fr!important}
+ .dashboard-intro>.date-pill{grid-column:1;grid-row:2;justify-self:start!important;max-width:100%!important}
+ .dashboard-intro>.dashboard-customizer{grid-column:1;grid-row:3;justify-self:end!important}
+}

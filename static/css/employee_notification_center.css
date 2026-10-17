@@ -1,0 +1,31 @@
+/* Step 16.28 — Notification Center */
+.notification-btn{position:relative}
+.nc-badge{position:absolute;top:0;right:0;min-width:17px;height:17px;padding:0 3px;border-radius:9px;background:#c43d4d;color:#fff;font-size:10px;font-weight:800;display:grid;place-items:center;border:2px solid var(--white,#fff)}
+.nc-badge[hidden]{display:none!important}
+.notification-menu.notification-center{box-sizing:border-box;width:min(390px,calc(100vw - 24px));max-height:min(70vh,570px);overflow:hidden;display:flex;flex-direction:column;padding:0!important;border-radius:16px!important;box-shadow:0 18px 46px rgba(12,32,54,.2)!important;z-index:200}
+.notification-menu.notification-center[hidden]{display:none!important}
+.nc-header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:17px 18px 13px}
+.nc-header>div{display:flex;flex-direction:column;gap:3px}
+.nc-header strong{font-size:17px}.nc-header small{font-size:11px;color:var(--muted,#64748b)}
+.nc-close{border:0;background:transparent;font-size:25px;line-height:1;cursor:pointer;color:inherit;min-width:32px;min-height:32px}
+.nc-tabs{display:flex;gap:7px;padding:0 18px 12px;border-bottom:1px solid var(--line,#ddd)}
+.nc-tabs button{border:1px solid var(--line,#ddd);border-radius:20px;background:transparent;color:inherit;padding:7px 15px;font-size:12px;font-weight:700;cursor:pointer}
+.nc-tabs button[aria-pressed=true]{background:#2764a7;color:white;border-color:#2764a7}
+.nc-items{min-height:160px;overflow-y:auto;overscroll-behavior:contain;flex:1}
+.nc-empty{padding:30px 22px;text-align:center;display:flex;align-items:center;flex-direction:column;gap:9px}
+.nc-empty-icon{font-size:28px;color:#4080c2}.nc-empty strong{font-size:14px}.nc-empty p{font-size:12px;color:var(--muted,#64748b);margin:0;line-height:1.5}
+.nc-item{padding:14px 16px;display:flex;align-items:start;gap:10px;border-bottom:1px solid var(--line,#ddd);background:rgba(42,125,216,.055)}
+.nc-item.is-read{background:transparent;opacity:.84}.nc-item-body{flex:1;min-width:0}
+.nc-item-meta{display:flex;justify-content:space-between;gap:8px;color:var(--muted,#64748b);font-size:10px;margin-bottom:6px}
+.nc-type{font-weight:800}.nc-item-title{display:block;font-size:13px;line-height:1.4;overflow-wrap:anywhere}
+.nc-item-body p{margin:5px 0!important;font-size:12px;line-height:1.5;color:var(--muted,#64748b)}
+.nc-item-link{font-size:12px;font-weight:700}.nc-mark{border:0;background:transparent;color:#3478c5;cursor:pointer;font-size:11px;font-weight:700;min-width:66px;text-align:right}
+.nc-footer{padding:11px 18px;border-top:1px solid var(--line,#ddd);text-align:right}
+.nc-footer button{border:0;background:transparent;color:#3478c5;font-size:12px;font-weight:700;cursor:pointer}.nc-footer button:disabled{opacity:.4;cursor:default}
+.notification-center button:focus-visible,.notification-center a:focus-visible{outline:2px solid #3478c5;outline-offset:2px}
+html[data-theme=dark] .notification-center{background:#18263a!important;color:#edf3ff!important;border:1px solid #35465e!important}
+html[data-theme=dark] .nc-item{border-color:#35465e!important;background:#213652!important}
+html[data-theme=dark] .nc-item.is-read{background:#18263a!important}
+html[data-theme=dark] .nc-tabs button{border-color:#35465e!important}
+html[data-theme=dark] .nc-badge{border-color:#18263a}
+@media(max-width:760px){.notification-menu.notification-center{position:fixed!important;top:66px!important;left:12px!important;right:12px!important;width:auto!important;max-height:min(72dvh,610px)!important;z-index:9999!important}}

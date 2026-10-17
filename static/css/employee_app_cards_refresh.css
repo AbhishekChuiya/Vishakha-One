@@ -1,0 +1,72 @@
+/* Vishakha One Step 16.25 — visual refresh of application directory cards.
+   Styles only: no change to search, favorites, sort, grid/list, URLs or permissions. */
+.app-grid{gap:16px!important;align-items:stretch}
+.app-grid .app-card{
+ position:relative;isolation:isolate;min-width:0;
+ border-radius:17px!important;
+ border:1px solid rgba(115,139,168,.20)!important;
+ background:var(--white,#fff)!important;
+ box-shadow:0 3px 14px rgba(15,39,68,.045)!important;
+ transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease!important;
+}
+.app-grid .app-card:hover{
+ transform:translateY(-3px);
+ border-color:rgba(52,120,197,.38)!important;
+ box-shadow:0 12px 28px rgba(20,49,80,.12)!important;
+}
+.app-grid .app-card:focus-visible{
+ outline:3px solid #397dd2!important;outline-offset:3px!important;
+}
+.app-grid .app-icon-wrap{
+ border-radius:13px!important;
+ background:linear-gradient(145deg,rgba(69,138,215,.11),rgba(81,165,187,.045))!important;
+ border:1px solid rgba(89,141,194,.12);
+}
+.app-grid .app-icon-wrap img{object-fit:contain!important}
+.app-grid .app-meta{min-width:0}
+.app-grid .app-meta strong{line-height:1.35;letter-spacing:-.01em;overflow-wrap:anywhere}
+.app-grid .app-meta small{line-height:1.4;opacity:.82}
+.app-grid .favorite-toggle{
+ border-radius:10px!important;
+ transition:background-color .15s ease,transform .15s ease;
+}
+.app-grid .favorite-toggle:hover{transform:scale(1.08);background:rgba(52,120,197,.10)!important}
+.app-grid .favorite-toggle:focus-visible{outline:2px solid #397dd2;outline-offset:2px}
+.app-grid .app-card[data-unconfigured="true"]{opacity:.83}
+.app-grid .app-card[data-unconfigured="true"]:after{
+ content:"Not configured";position:absolute;right:12px;bottom:9px;
+ font-size:9px;line-height:1.2;font-weight:700;letter-spacing:.02em;
+ padding:4px 7px;border-radius:999px;background:rgba(121,137,154,.14);color:var(--muted,#637589);
+ pointer-events:none;
+}
+.app-grid .app-card[data-unconfigured="true"] .app-meta{padding-bottom:16px}
+.app-grid .app-card[data-unconfigured="true"]:hover{transform:none;box-shadow:0 3px 14px rgba(15,39,68,.045)!important}
+.app-grid.app-list-view{gap:10px!important}
+.app-grid.app-list-view .app-card{border-radius:13px!important}
+.app-grid.app-list-view .app-card[data-unconfigured="true"] .app-meta{padding-bottom:0}
+.app-grid.app-list-view .app-card[data-unconfigured="true"]:after{
+ position:static;align-self:center;white-space:nowrap;margin-left:auto;margin-right:8px;
+}
+html[data-theme="dark"] .app-grid .app-card{
+ background:#18263a!important;border-color:#35465e!important;
+ box-shadow:0 3px 15px rgba(0,0,0,.15)!important;
+}
+html[data-theme="dark"] .app-grid .app-card:hover{
+ border-color:#5689bf!important;box-shadow:0 12px 26px rgba(0,0,0,.28)!important;
+}
+html[data-theme="dark"] .app-grid .app-icon-wrap{
+ background:linear-gradient(145deg,#2a4161,#213550)!important;
+ border-color:#3a5573!important;
+}
+html[data-theme="dark"] .app-grid .app-card[data-unconfigured="true"]:after{
+ color:#c3d0df!important;background:#2b3d53!important;
+}
+@media(max-width:760px){
+ .app-grid{gap:11px!important}
+ .app-grid .app-card{border-radius:14px!important}
+ .app-grid .app-card:hover{transform:none}
+ .app-grid.app-list-view .app-card[data-unconfigured="true"]:after{font-size:8px;padding:3px 5px}
+}
+@media(prefers-reduced-motion:reduce){
+ .app-grid .app-card,.app-grid .favorite-toggle{transition:none!important}
+}

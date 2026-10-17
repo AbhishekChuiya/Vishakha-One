@@ -40,7 +40,7 @@ class Announcement(ContentBase):
     class Meta(ContentBase.Meta):
         permissions = [('approve_announcement', 'Can approve Announcement content')]
 
-    CATEGORY_CHOICES = [('news', 'Company News'), ('announcement', 'Announcement'), ('recognition', 'Recognition')]
+    CATEGORY_CHOICES = [('news', 'Company News'), ('announcement', 'Announcement'), ('recognition', 'Recognition'), ('gallery', 'Life at Vishakha Gallery')]
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='news')
     image = models.ImageField(upload_to='content/announcements/', blank=True)
     body = models.TextField(blank=True)
@@ -50,11 +50,12 @@ class Resource(ContentBase):
     class Meta(ContentBase.Meta):
         permissions = [('approve_resource', 'Can approve Resource content'), ('manage_policy_only', 'Can manage policy resources only')]
 
-    KIND_CHOICES = [('policy', 'Policy'), ('document', 'Document'), ('brochure', 'Brochure')]
+    KIND_CHOICES = [('policy', 'Policy'), ('document', 'Document'), ('brochure', 'Brochure'), ('insider', 'Vishakha Insider'), ('bank_benefit', 'Bank Benefits'), ('canteen_menu', 'Canteen Menu'), ('video', 'Company Videos'), ('csr_cover', 'CSR Homepage Banner')]
     kind = models.CharField(max_length=20, choices=KIND_CHOICES, default='policy')
     department = models.CharField(max_length=100, blank=True)
     file = models.FileField(upload_to='content/resources/', blank=True)
     external_url = models.URLField(blank=True)
+    cover_image = models.ImageField(upload_to='content/resource_covers/', blank=True)
 
     @property
     def access_url(self):
@@ -81,6 +82,7 @@ class NewJoiner(ContentBase):
     department = models.CharField(max_length=100)
     location = models.CharField(max_length=100, blank=True)
     photo = models.ImageField(upload_to='content/joiners/', blank=True)
+    introduction_document = models.FileField(upload_to='content/joiner_profiles/', blank=True, help_text='Optional detailed new joiner introduction (PDF or image).')
     joining_date = models.DateField(default=timezone.localdate)
 
 

@@ -1,0 +1,8 @@
+.vone-pwa-install-area{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:10px 0}
+.vone-pwa-install{background:#b32830;color:#fff;border:0;border-radius:9px;padding:10px 15px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.vone-pwa-install[hidden],.vone-pwa-ios-help[hidden]{display:none!important}
+.vone-pwa-ios-help{font-size:12px;line-height:1.5;color:inherit;max-width:440px}
+/* Small, dismissible-by-install prompt; shown only when installation is supported. */
+.vone-pwa-install-area{position:fixed!important;left:12px;bottom:84px;z-index:999!important;padding:0!important;max-width:min(90vw,380px);filter:drop-shadow(0 5px 12px rgba(0,0,0,.15))}
+.vone-pwa-ios-help{padding:12px;border-radius:10px;background:#fff;color:#24344a;border:1px solid #cbd5e1}
+@media(min-width:900px){.vone-pwa-install-area{bottom:24px}}

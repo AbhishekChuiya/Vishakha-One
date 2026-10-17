@@ -1,0 +1,94 @@
+/* Vishakha One 16.29 — modern homepage content cards; no new data or actions. */
+/* Scope to the homepage, leaving section detail pages and the content manager alone. */
+body:has(.hero) .dashboard-reorder-layout>.section,
+body:has(.hero) .dashboard-reorder-layout>.home-highlights,
+body:has(.hero) .dashboard-reorder-layout>.content-grid,
+body:has(.hero) .step9-policies,
+body:has(.hero) .news-section,
+body:has(.hero) .step7-grid>.section {
+  min-width:0;
+}
+body:has(.hero) .section-header {align-items:center;gap:16px;margin-bottom:18px}
+body:has(.hero) .section-header h2 {letter-spacing:-.025em;line-height:1.22}
+body:has(.hero) .section-header p {line-height:1.55;margin-top:6px}
+body:has(.hero) .section-header .text-link {white-space:nowrap;display:inline-flex;align-items:center;min-height:34px;padding:5px 10px;border-radius:9px;transition:background .16s ease}
+body:has(.hero) .section-header .text-link:hover {background:rgba(57,125,210,.10)}
+body:has(.hero) .home-highlights {gap:14px}
+body:has(.hero) .highlight-tile {
+  min-width:0;border-radius:17px!important;
+  border:1px solid rgba(113,138,166,.18)!important;
+  box-shadow:0 5px 17px rgba(18,48,82,.055)!important;
+  transition:box-shadow .18s ease,transform .18s ease,border-color .18s ease;
+}
+body:has(.hero) .highlight-tile:hover {transform:translateY(-2px);box-shadow:0 11px 26px rgba(18,48,82,.11)!important;border-color:rgba(52,120,197,.35)!important}
+body:has(.hero) .highlight-tile strong {font-size:14px;line-height:1.35;overflow-wrap:anywhere}
+body:has(.hero) .highlight-tile small {font-size:12px;line-height:1.5}
+body:has(.hero) .highlight-tile a {min-width:36px;min-height:36px;display:inline-flex;align-items:center;justify-content:center;border-radius:10px}
+body:has(.hero) .highlight-tile a:focus-visible,
+body:has(.hero) .section-header a:focus-visible,
+body:has(.hero) .step9-policy-card a:focus-visible {outline:3px solid #397dd2;outline-offset:3px}
+body:has(.hero) .news-section,
+body:has(.hero) .resources-section,
+body:has(.hero) .step9-policies,
+body:has(.hero) .step7-grid>.section {
+  border-radius:19px!important;
+  border:1px solid rgba(113,138,166,.19)!important;
+  box-shadow:0 5px 20px rgba(18,48,82,.055)!important;
+}
+body:has(.hero) .news-row {
+  display:flex;align-items:flex-start;gap:14px;
+  padding:15px 12px!important;
+  border-radius:12px;
+  transition:background .15s ease;
+}
+body:has(.hero) .news-row + .news-row {border-top:1px solid rgba(113,138,166,.12)}
+body:has(.hero) .news-row:hover {background:rgba(75,132,193,.045)}
+body:has(.hero) .news-row .news-icon {flex-shrink:0;border-radius:11px!important}
+body:has(.hero) .news-row>div {min-width:0;flex:1}
+body:has(.hero) .news-row strong {display:block;line-height:1.42;overflow-wrap:anywhere}
+body:has(.hero) .news-row p {line-height:1.6;margin-top:5px;overflow-wrap:anywhere}
+body:has(.hero) .news-row small {display:block;margin-top:8px;line-height:1.45}
+body:has(.hero) .step9-policy-grid {gap:14px}
+body:has(.hero) .step9-policy-card {
+  min-width:0;border-radius:15px!important;
+  border:1px solid rgba(113,138,166,.18)!important;
+  box-shadow:0 3px 13px rgba(18,48,82,.04)!important;
+  transition:border-color .16s ease,box-shadow .16s ease;
+}
+body:has(.hero) .step9-policy-card:hover {border-color:rgba(52,120,197,.38)!important;box-shadow:0 8px 22px rgba(18,48,82,.10)!important}
+body:has(.hero) .step9-policy-card>div {min-width:0}
+body:has(.hero) .step9-policy-card strong {line-height:1.4;overflow-wrap:anywhere}
+body:has(.hero) .step9-policy-card p {line-height:1.55;overflow-wrap:anywhere}
+body:has(.hero) .step9-policy-card small {line-height:1.5}
+body:has(.hero) .content-empty {padding:22px 16px!important;border:1px dashed rgba(113,138,166,.25);border-radius:13px;text-align:center;line-height:1.6}
+body:has(.hero) .step7-avatar {object-fit:cover;flex-shrink:0}
+html[data-theme="dark"] body:has(.hero) .highlight-tile,
+html[data-theme="dark"] body:has(.hero) .news-section,
+html[data-theme="dark"] body:has(.hero) .resources-section,
+html[data-theme="dark"] body:has(.hero) .step9-policies,
+html[data-theme="dark"] body:has(.hero) .step7-grid>.section,
+html[data-theme="dark"] body:has(.hero) .step9-policy-card {
+  border-color:#35465e!important;box-shadow:0 5px 18px rgba(0,0,0,.13)!important;
+}
+html[data-theme="dark"] body:has(.hero) .news-row:hover {background:rgba(102,156,217,.09)}
+html[data-theme="dark"] body:has(.hero) .news-row + .news-row {border-top-color:#35465e}
+html[data-theme="dark"] body:has(.hero) .content-empty {border-color:#35465e}
+@media(max-width:900px){
+ body:has(.hero) .home-highlights {gap:10px}
+ body:has(.hero) .highlight-tile {border-radius:14px!important}
+}
+@media(max-width:600px){
+ body:has(.hero) .section-header {gap:10px;align-items:flex-start}
+ body:has(.hero) .section-header .text-link {font-size:12px;padding:4px 7px}
+ body:has(.hero) .news-row {gap:10px;padding:13px 8px!important}
+ body:has(.hero) .news-section,
+ body:has(.hero) .resources-section,
+ body:has(.hero) .step9-policies,
+ body:has(.hero) .step7-grid>.section {border-radius:15px!important}
+ body:has(.hero) .step9-policy-grid {gap:10px}
+}
+@media(prefers-reduced-motion:reduce){
+ body:has(.hero) .highlight-tile,
+ body:has(.hero) .step9-policy-card,
+ body:has(.hero) .section-header .text-link {transition:none!important}
+}

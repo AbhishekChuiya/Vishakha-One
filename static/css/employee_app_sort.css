@@ -1,0 +1,12 @@
+/* Step 16.14 – Sorting and results summary */
+.app-directory-tools{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:4px 0 12px}
+.app-directory-status{font-size:12px;font-weight:700;color:var(--muted)}
+.app-directory-controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.app-sort-label{font-size:12px;color:var(--muted);font-weight:650}
+.app-sort-select,.app-reset-filters{min-height:36px;border:1px solid var(--line);border-radius:9px;background:var(--white);color:var(--navy);font:inherit;font-size:12px;padding:7px 11px}
+.app-sort-select{min-width:145px;cursor:pointer}
+.app-reset-filters{cursor:pointer;font-weight:650}
+.app-reset-filters:hover{border-color:var(--blue);color:var(--blue-dark)}
+html[data-theme="dark"] .app-sort-select,html[data-theme="dark"] .app-reset-filters{background:#1d2d43!important;border-color:#35465e!important;color:#edf3ff!important}
+html[data-theme="dark"] .app-sort-select option{background:#1d2d43;color:#edf3ff}
+@media(max-width:760px){.app-directory-tools{align-items:flex-start;gap:8px}.app-directory-status{width:100%}.app-directory-controls{width:100%;gap:8px}.app-sort-select{flex:1;min-width:0}.app-reset-filters{flex:none}}

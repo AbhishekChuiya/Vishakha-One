@@ -1,0 +1,24 @@
+/* Step 16.23 – visual dashboard section navigation */
+.dashboard-jump{margin:20px 0 26px;min-width:0}
+.dashboard-jump[hidden]{display:none!important}
+.dashboard-jump-heading{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:12px}
+.dashboard-jump-heading strong{font-size:15px;color:var(--navy);font-weight:800}
+.dashboard-jump-heading span{font-size:11px;color:var(--muted);font-weight:600}
+.dashboard-jump-track{display:flex;gap:10px;overflow-x:auto;overscroll-behavior-x:contain;padding:2px 1px 10px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+.dashboard-jump-link{display:inline-flex;align-items:center;gap:8px;flex:0 0 auto;min-height:42px;padding:9px 15px;border-radius:13px;border:1px solid var(--line);background:var(--white);color:var(--navy);font-size:12px;font-weight:700;text-decoration:none;box-shadow:0 2px 7px #10263f0b;transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease}
+.dashboard-jump-link:hover{transform:translateY(-2px);border-color:#74a9df;box-shadow:0 5px 14px #10263f16}
+.dashboard-jump-link:focus-visible{outline:2px solid #3478c5;outline-offset:3px}
+.dashboard-jump-icon{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:7px;background:#e9f2ff;color:#2468ae;font-size:16px;line-height:1}
+.dashboard-jump-target{scroll-margin-top:95px}
+html[data-theme="dark"] .dashboard-jump-heading strong{color:#edf3ff!important}
+html[data-theme="dark"] .dashboard-jump-heading span{color:#a8b9ce!important}
+html[data-theme="dark"] .dashboard-jump-link{background:#18263a!important;color:#edf3ff!important;border-color:#35465e!important}
+html[data-theme="dark"] .dashboard-jump-icon{background:#233e61!important;color:#a9d3ff!important}
+@media(max-width:760px){
+ .dashboard-jump{margin:16px 0 20px}
+ .dashboard-jump-heading strong{font-size:14px}
+ .dashboard-jump-link{padding:8px 12px;min-height:39px;border-radius:11px}
+ .dashboard-jump-track{gap:8px}
+ .dashboard-jump-target{scroll-margin-top:125px}
+}
+@media(prefers-reduced-motion:reduce){.dashboard-jump-link{transition:none}}

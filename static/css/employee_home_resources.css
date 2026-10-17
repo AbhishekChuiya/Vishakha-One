@@ -1,0 +1,23 @@
+/* Step 16.33: Home company resources, gallery and compact cards */
+.vone-photo-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.vone-photo{position:relative;aspect-ratio:4/3;overflow:hidden;border-radius:13px;background:var(--soft,#edf3fa);display:block;text-decoration:none}
+.vone-photo img{width:100%;height:100%;object-fit:cover;transition:transform .2s ease}
+.vone-photo:hover img{transform:scale(1.045)}
+.vone-photo span{position:absolute;bottom:0;left:0;right:0;color:white;font-size:12px;font-weight:700;padding:22px 10px 9px;background:linear-gradient(transparent,rgba(0,0,0,.75))}
+.vone-resource-feature{display:flex;align-items:center;gap:16px;padding:18px;border-radius:14px;border:1px solid var(--line,#dce3ed);background:var(--white,#fff)}
+.vone-resource-feature-symbol{display:grid;place-items:center;flex:none;width:58px;height:58px;border-radius:15px;background:rgba(58,127,204,.10);font-size:29px;color:#397bc1}
+.vone-resource-feature>div:nth-child(2){flex:1;min-width:0}
+.vone-resource-feature strong,.vone-brochure strong{display:block;font-size:15px}
+.vone-resource-feature p{margin:6px 0 0;font-size:13px;color:var(--muted,#69778a)}
+.vone-resource-feature>a{display:inline-flex;padding:10px 14px;border-radius:9px;background:#b32830;color:white;font-size:12px;font-weight:700;text-decoration:none;white-space:nowrap}
+.vone-soon{font-size:11px;color:var(--muted,#69778a);background:var(--soft,#eef2f6);padding:7px 10px;border-radius:999px;white-space:nowrap}
+.vone-brochure-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.vone-brochure{display:flex;align-items:center;gap:12px;padding:16px;border:1px solid var(--line,#dce3ed);border-radius:13px;background:var(--white,#fff);min-width:0}
+.vone-brochure-icon{font-size:25px;color:#397bc1}.vone-brochure>div{min-width:0;flex:1}.vone-brochure small{display:block;font-size:11px;color:var(--muted,#69778a);margin-top:5px}.vone-brochure a{white-space:nowrap;font-size:12px;font-weight:700}
+.vone-empty{grid-column:1/-1;padding:20px;border-radius:12px;background:var(--soft,#f0f4f8);font-size:13px;color:var(--muted,#69778a)}
+html[data-theme="dark"] .vone-resource-feature,html[data-theme="dark"] .vone-brochure{background:#18263a!important;border-color:#35465e!important;color:#edf3ff!important}
+html[data-theme="dark"] .vone-resource-feature-symbol{background:#243c59!important;color:#9ac7ff!important}
+html[data-theme="dark"] .vone-soon,html[data-theme="dark"] .vone-empty{background:#233754!important;color:#c2d0e2!important}
+@media(max-width:900px){.vone-photo-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:600px){.vone-photo-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.vone-resource-feature{gap:10px;padding:13px;flex-wrap:wrap}.vone-resource-feature-symbol{width:43px;height:43px;font-size:22px}.vone-resource-feature>a,.vone-soon{margin-left:53px}.vone-brochure-grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.vone-photo img{transition:none}}

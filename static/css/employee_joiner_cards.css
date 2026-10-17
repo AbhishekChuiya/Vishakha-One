@@ -1,0 +1,17 @@
+/* Step 16.42: compact new-joiner cards */
+.vone-joiner-grid{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(160px,1fr))!important;gap:12px!important;align-items:stretch}
+.vone-joiner-card{min-width:0;max-width:none;overflow:hidden;border-radius:13px!important;transition:transform .18s ease,box-shadow .18s ease}
+.vone-joiner-card:hover{transform:translateY(-2px);box-shadow:0 8px 25px #0002}
+.vone-joiner-open{display:flex;flex-direction:column;height:100%;color:inherit!important;text-decoration:none!important;cursor:pointer}
+.vone-joiner-open:not(a){cursor:default}
+.vone-joiner-portrait{height:145px!important;min-height:0!important;max-height:145px!important;overflow:hidden!important;flex-shrink:0}
+.vone-joiner-portrait img{width:100%!important;height:100%!important;object-fit:contain!important;object-position:center center!important;background:#f5f7fa}
+.vone-joiner-details{padding:10px 11px!important;gap:4px!important;min-width:0}
+.vone-joiner-details strong{font-size:13px!important;line-height:1.35;overflow-wrap:anywhere}
+.vone-joiner-details small{font-size:11px!important;line-height:1.35;overflow-wrap:anywhere}
+.vone-joiner-read{display:flex;justify-content:space-between;align-items:center;padding:9px 11px;margin-top:auto;border-top:1px solid var(--line,#dce3ed);font-size:11px;font-weight:700;color:#b32830}
+.vone-joiner-open:focus-visible{outline:3px solid #4386df;outline-offset:-3px}
+html[data-theme="dark"] .vone-joiner-portrait img{background:#233147}
+html[data-theme="dark"] .vone-joiner-read{color:#ffb0b5;border-color:#394b61}
+@media(max-width:640px){.vone-joiner-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}.vone-joiner-portrait{height:128px!important;max-height:128px!important}}
+@media(prefers-reduced-motion:reduce){.vone-joiner-card{transition:none}}

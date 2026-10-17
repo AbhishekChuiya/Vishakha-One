@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'pwa/readiness.css' %}?v=16.44">
+<section class="section vone-pwa-check" aria-labelledby="pwa-check-title">
+ <div class="section-header"><div><span class="eyebrow">VISHAKHA ONE · MOBILE APP</span><h1 id="pwa-check-title">Install Vishakha One</h1><p>Check whether this device and website are ready for app installation.</p></div></div>
+ <div class="vone-pwa-check-grid">
+  <div class="vone-pwa-check-card"><h2>Installation readiness</h2>
+   <div id="pwa-check-results" role="status" aria-live="polite">Checking your browser…</div>
+   <button type="button" id="pwa-check-refresh">Check again</button>
+  </div>
+  <div class="vone-pwa-check-card"><h2>Install on your device</h2>
+   <div id="pwa-device-help"><p><strong>Android:</strong> Open the secure HTTPS portal in Chrome. Tap the browser menu, then Install app or Add to Home screen.</p>
+   <p><strong>iPhone/iPad:</strong> Open the secure HTTPS portal in Safari. Tap Share → Add to Home Screen → Add.</p>
+   <p><strong>Windows:</strong> In Edge or Chrome, use the Install app option in the address bar or browser menu.</p></div>
+  </div>
+ </div>
+ <div class="vone-pwa-check-card"><h2>For the IT team</h2>
+ <p>Mobile PWA installation requires a valid, trusted HTTPS origin. An internal HTTP IP such as <code>http://192.168.x.x:8000</code> will not qualify.</p>
+ <p>Ensure <code>/manifest.webmanifest</code>, <code>/service-worker.js</code>, the icon URLs and all required static files load over HTTPS. A trusted internal certificate must also be trusted by employee devices.</p>
+ <p>Authentication and media access should be tested in standalone mode. This app does not cache confidential employee data for offline access.</p>
+ </div>
+</section>
+<script src="{% static 'pwa/readiness.js' %}?v=16.44" defer></script>
+{% endblock %}

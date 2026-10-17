@@ -4,7 +4,9 @@ from django.core.exceptions import ValidationError
 from .models import Announcement, Resource, JobOpening, NewJoiner, Event
 
 MAX_UPLOAD = 10 * 1024 * 1024
-ALLOWED_EXTENSIONS = {'.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx'}
+VIDEO_EXTENSIONS = {'.mp4', '.webm'}
+MAX_VIDEO_UPLOAD = 100 * 1024 * 1024
+ALLOWED_EXTENSIONS = {'.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx', '.png', '.jpg', '.jpeg', '.webp'}
 
 
 class FriendlyForm(forms.ModelForm):
@@ -41,24 +43,24 @@ class FriendlyForm(forms.ModelForm):
             self.fields['published_at'].label = 'Scheduled publishing date and time'
             self.fields['published_at'].required = False
             self.fields['published_at'].help_text = 'Only needed if you click Schedule. Publish now uses the current time.'
-        for key in ('image', 'photo', 'file'):
+        for key in ('image', 'photo', 'file', 'cover_image'):
             if key in self.fields:
                 self.fields[key].widget.attrs['data-upload-preview'] = '1'
                 self.fields[key].help_text = 'Maximum 10 MB. Images: JPG/PNG/WebP. Documents: PDF, Word, Excel or PowerPoint.'
 
     def clean(self):
         data = super().clean()
-        for field_name in ('image', 'photo', 'file'):
+        for field_name in ('image', 'photo', 'file', 'cover_image'):
             uploaded = data.get(field_name)
             if uploaded and hasattr(uploaded, 'size'):
-                if uploaded.size > MAX_UPLOAD:
-                    self.add_error(field_name, 'File must be 10 MB or smaller.')
+                if uploaded.size > (MAX_VIDEO_UPLOAD if field_name == 'file' and data.get('kind') == 'video' else MAX_UPLOAD):
+                    self.add_error(field_name, 'Video files must be 100 MB or smaller; other files must be 10 MB or smaller.')
                 if field_name == 'file':
                     import os
                     ext = os.path.splitext(uploaded.name)[1].lower()
-                    if ext not in ALLOWED_EXTENSIONS:
-                        self.add_error(field_name, 'Use PDF, Word, Excel or PowerPoint files only.')
-                elif field_name in ('image', 'photo'):
+                    if ext not in (VIDEO_EXTENSIONS if data.get('kind') == 'video' else ALLOWED_EXTENSIONS):
+                        self.add_error(field_name, 'For Company Videos, upload MP4 or WebM. Other resources accept PDF, Office, PNG, JPG, JPEG or WebP.')
+                elif field_name in ('image', 'photo', 'cover_image'):
                     from django.core.files.images import get_image_dimensions
                     try:
                         get_image_dimensions(uploaded)
@@ -68,6 +70,12 @@ class FriendlyForm(forms.ModelForm):
 
 
 class AnnouncementForm(FriendlyForm):
+    def clean(self):
+        data = super().clean()
+        if data.get('category') == 'gallery' and not (data.get('image') or getattr(self.instance, 'image', None)):
+            self.add_error('image', 'Please upload a photograph for a gallery entry.')
+        return data
+
     class Meta:
         model = Announcement
         fields = ('title', 'category', 'summary', 'body', 'image', 'is_published', 'published_at', 'display_order')
@@ -76,7 +84,16 @@ class AnnouncementForm(FriendlyForm):
 class ResourceForm(FriendlyForm):
     class Meta:
         model = Resource
-        fields = ('title', 'kind', 'department', 'summary', 'file', 'external_url', 'is_published', 'published_at', 'display_order')
+        fields = ('title', 'kind', 'department', 'summary', 'cover_image', 'file', 'external_url', 'is_published', 'published_at', 'display_order')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'file' in self.fields:
+            self.fields['file'].widget.attrs['accept'] = '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg,.webp,.mp4,.webm'
+            self.fields['file'].help_text = 'Upload PDF, Office document or image (max 10 MB); Company Videos: MP4/WebM (max 100 MB).'
+        if 'cover_image' in self.fields:
+            self.fields['cover_image'].widget.attrs['accept'] = '.png,.jpg,.jpeg,.webp'
+            self.fields['cover_image'].help_text = 'Optional cover/preview image: PNG, JPG, JPEG or WebP (max 10 MB).'
 
     def clean(self):
         data = super().clean()
@@ -92,9 +109,21 @@ class JobOpeningForm(FriendlyForm):
 
 
 class NewJoinerForm(FriendlyForm):
+    def clean_introduction_document(self):
+        uploaded = self.cleaned_data.get('introduction_document')
+        if not uploaded:
+            return uploaded
+        from pathlib import Path
+        suffix = Path(uploaded.name).suffix.lower()
+        if suffix not in {'.pdf', '.png', '.jpg', '.jpeg', '.webp'}:
+            raise forms.ValidationError('Upload a PDF or image (PNG, JPG, JPEG, WebP).')
+        if uploaded.size > 15 * 1024 * 1024:
+            raise forms.ValidationError('Introduction document must be 15 MB or smaller.')
+        return uploaded
+
     class Meta:
         model = NewJoiner
-        fields = ('employee_name', 'designation', 'department', 'location', 'joining_date', 'photo', 'title', 'summary', 'is_published', 'published_at', 'display_order')
+        fields = ('employee_name', 'designation', 'department', 'location', 'joining_date', 'photo', 'introduction_document', 'title', 'summary', 'is_published', 'published_at', 'display_order')
 
 
 class EventForm(FriendlyForm):

@@ -1,0 +1,57 @@
+/* Vishakha One Step 16.27: responsive employee header visual redesign.
+   Keeps existing element IDs, navigation, menu toggles, and search form. */
+.topbar{display:flex;align-items:center;gap:clamp(10px,1.3vw,22px);min-width:0;isolation:isolate}
+.topbar .topbar-title{min-width:0;flex:0 1 auto}
+.topbar .topbar-title strong{display:block;line-height:1.25;letter-spacing:-.02em}
+.topbar .top-search{min-width:150px;flex:1 1 250px;max-width:550px;border-radius:13px;transition:border-color .15s,box-shadow .15s}
+.topbar .top-search:focus-within{border-color:#4b89c9!important;box-shadow:0 0 0 3px rgba(52,120,197,.12)!important}
+.topbar .top-actions{display:flex;align-items:center;gap:9px;flex:0 0 auto;margin-left:auto;min-width:0;position:relative}
+.topbar .top-actions>.icon-button,.topbar .top-actions>.profile,.topbar .top-actions>.btn{flex-shrink:0}
+.topbar .notification-btn{width:42px;height:42px;display:inline-flex;align-items:center;justify-content:center;border-radius:12px!important;transition:background-color .15s,transform .15s}
+.topbar .notification-btn:hover{background:rgba(52,120,197,.09);transform:translateY(-1px)}
+.topbar .profile{display:inline-flex;align-items:center;gap:9px;min-height:44px;padding:5px 10px 5px 5px;border-radius:14px!important;max-width:225px;transition:background-color .15s}
+.topbar .profile:hover{background:rgba(52,120,197,.08)}
+.topbar .profile-label{min-width:0;text-align:left}
+.topbar .profile-label strong,.topbar .profile-label small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.topbar .profile .avatar{width:36px;height:36px;flex:0 0 36px;border-radius:11px!important;object-fit:cover}
+.topbar .notification-menu,.topbar .profile-menu{z-index:100;max-width:min(350px,calc(100vw - 24px));border-radius:15px!important;box-shadow:0 15px 38px rgba(14,34,55,.15)!important}
+.topbar .notification-btn:focus-visible,.topbar .profile:focus-visible,.topbar .quick-nav-launch:focus-visible,.topbar .mobile-menu:focus-visible,.topbar .mobile-ai-shortcut:focus-visible{outline:3px solid #4788d4;outline-offset:2px}
+html[data-theme="dark"] .topbar .notification-btn:hover,html[data-theme="dark"] .topbar .profile:hover{background:#263d58!important}
+html[data-theme="dark"] .topbar .top-search:focus-within{box-shadow:0 0 0 3px rgba(96,159,227,.24)!important}
+@media(min-width:761px) and (max-width:1200px){
+ .topbar{gap:10px}
+ .topbar .topbar-eyebrow{font-size:9px}
+ .topbar .top-actions{gap:6px}
+ .topbar .top-actions .ai-top{padding:8px 10px}
+ .topbar .profile{max-width:155px}
+ .topbar .profile-label small{display:none}
+ .topbar .top-search{flex-basis:160px;min-width:110px}
+}
+@media(min-width:761px) and (max-width:950px){
+ .topbar .top-actions .ai-top span{display:none}
+ .topbar .top-actions .ai-top{min-width:42px;justify-content:center}
+ .topbar .top-actions .quick-nav-launch span{display:none}
+ .topbar .profile-label{display:none}
+ .topbar .profile{padding:4px 7px 4px 4px}
+}
+@media(max-width:760px){
+ .topbar{display:grid!important;grid-template-columns:auto auto minmax(0,1fr) auto!important;column-gap:9px!important;row-gap:10px!important;align-items:center!important;padding-top:10px!important;padding-bottom:10px!important}
+ .topbar .mobile-menu{grid-column:1;grid-row:1;margin:0!important}
+ .topbar .mobile-header-brand{grid-column:2 / 4;grid-row:1;min-width:0;display:flex;align-items:center;gap:7px;white-space:nowrap}
+ .topbar .mobile-header-brand img{width:30px;height:30px;object-fit:contain}
+ .topbar .top-actions{grid-column:4;grid-row:1;margin-left:0!important;gap:5px!important}
+ .topbar .top-actions .notification-btn{width:38px;height:38px}
+ .topbar .top-actions .profile{padding:2px!important;min-height:38px;border-radius:12px!important}
+ .topbar .top-actions .profile .avatar{width:33px;height:33px;flex-basis:33px}
+ .topbar .top-search{grid-column:1 / -1;grid-row:2;max-width:none!important;width:100%!important;min-width:0;min-height:42px;margin:0!important}
+ .topbar .topbar-title{display:none!important}
+ .topbar .notification-menu,.topbar .profile-menu{position:absolute;right:0;top:calc(100% + 10px);width:min(340px,calc(100vw - 20px))}
+}
+@media(max-width:390px){
+ .topbar{column-gap:5px!important}
+ .topbar .mobile-header-brand{font-size:13px}
+ .topbar .top-actions{gap:2px!important}
+ .topbar .top-actions .notification-btn{width:34px;height:36px}
+ .topbar .top-actions .profile .avatar{width:30px;height:30px;flex-basis:30px}
+}
+@media(prefers-reduced-motion:reduce){.topbar .top-search,.topbar .notification-btn,.topbar .profile{transition:none!important}}
