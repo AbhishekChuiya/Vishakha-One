@@ -1,10 +1,14 @@
 from django.db import models
 from django.utils import timezone
+from django.db.models import Q
 
 
 class PublishedQuerySet(models.QuerySet):
     def visible(self):
-        return self.filter(is_published=True, approval_status='approved', published_at__lte=timezone.now())
+        qs = self.filter(is_published=True, approval_status='approved', published_at__lte=timezone.now())
+        if self.model.__name__ == 'Announcement':
+            qs = qs.filter(Q(expires_at__isnull=True) | Q(expires_at__gt=timezone.now()))
+        return qs
 
 
 class ContentBase(models.Model):
@@ -44,6 +48,11 @@ class Announcement(ContentBase):
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='news')
     image = models.ImageField(upload_to='content/announcements/', blank=True)
     body = models.TextField(blank=True)
+    event_at = models.DateTimeField(null=True, blank=True, help_text='Optional event date and time (local timezone).')
+    event_location = models.CharField(max_length=180, blank=True, help_text='Optional venue or location.')
+    PRIORITY_CHOICES = [('normal', 'Normal'), ('important', 'Important'), ('urgent', 'Urgent')]
+    priority = models.CharField(max_length=12, choices=PRIORITY_CHOICES, default='normal', db_index=True)
+    expires_at = models.DateTimeField(null=True, blank=True, help_text='Optional. Announcement disappears automatically after this time.')
 
 
 class Resource(ContentBase):
@@ -144,3 +153,14 @@ class ApprovalReminderDelivery(models.Model):
             fields=['recipient', 'section', 'object_id', 'submitted_at', 'threshold_hours'],
             name='unique_approval_reminder_delivery',
         )]
+
+
+class AnnouncementReceipt(models.Model):
+    """Per-employee read state for published company announcements."""
+    recipient = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='announcement_receipts')
+    announcement = models.ForeignKey('contenthub.Announcement', on_delete=models.CASCADE, related_name='employee_receipts')
+    seen_revision = models.DateTimeField(null=True, blank=True)
+    read_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['recipient', 'announcement'], name='unique_employee_announcement_receipt')]

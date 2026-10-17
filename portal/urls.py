@@ -1,4 +1,4 @@
 from django.urls import path
 from . import views
 app_name = 'portal'
-urlpatterns = [path('', views.home, name='home'), path('search/', views.search, name='search'), path('profile/', views.profile, name='profile'), path('<slug:slug>/', views.section, name='section')]
+urlpatterns = [path('', views.home, name='home'), path('search/', views.search, name='search'), path('profile/', views.profile, name='profile'), path('notifications/', views.notifications, name='notifications'), path('notifications/feed/', views.announcement_notification_feed, name='notification_feed'), path('notifications/read-all/', views.mark_all_announcements_read, name='notifications_read_all'), path('notifications/<int:pk>/read/', views.mark_announcement_read, name='notification_read'), path('<slug:slug>/', views.section, name='section')]

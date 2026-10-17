@@ -23,6 +23,20 @@ class FriendlyForm(forms.ModelForm):
                 field.input_formats = ['%Y-%m-%dT%H:%M', '%Y-%m-%d %H:%M:%S']
                 if self.instance and self.instance.pk and self.instance.published_at:
                     field.initial = timezone.localtime(self.instance.published_at).strftime('%Y-%m-%dT%H:%M')
+            if name == 'expires_at':
+                field.widget = forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'cm-input', 'step': '60'}, format='%Y-%m-%dT%H:%M')
+                field.input_formats = ['%Y-%m-%dT%H:%M', '%Y-%m-%d %H:%M:%S']
+                if self.instance and self.instance.pk and self.instance.expires_at:
+                    field.initial = timezone.localtime(self.instance.expires_at).strftime('%Y-%m-%dT%H:%M')
+                field.label = 'Announcement expiry date and time'
+                field.help_text = 'Optional. After this date/time, the announcement is hidden from all employees.'
+            if name == 'event_at':
+                field.widget = forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'cm-input', 'step': '60'}, format='%Y-%m-%dT%H:%M')
+                field.input_formats = ['%Y-%m-%dT%H:%M', '%Y-%m-%d %H:%M:%S']
+                if self.instance and self.instance.pk and self.instance.event_at:
+                    field.initial = timezone.localtime(self.instance.event_at).strftime('%Y-%m-%dT%H:%M')
+                field.label = 'Event date and time'
+                field.help_text = 'Select the event date and time using the calendar and clock controls (IST). Optional.'
             if name == 'starts_at':
                 field.widget = forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'cm-input'}, format='%Y-%m-%dT%H:%M')
                 field.input_formats = ['%Y-%m-%dT%H:%M', '%Y-%m-%d %H:%M:%S']
@@ -74,11 +88,15 @@ class AnnouncementForm(FriendlyForm):
         data = super().clean()
         if data.get('category') == 'gallery' and not (data.get('image') or getattr(self.instance, 'image', None)):
             self.add_error('image', 'Please upload a photograph for a gallery entry.')
+        expiry = data.get('expires_at')
+        published = data.get('published_at')
+        if expiry and published and expiry <= published:
+            self.add_error('expires_at', 'Expiry must be later than the scheduled publication time.')
         return data
 
     class Meta:
         model = Announcement
-        fields = ('title', 'category', 'summary', 'body', 'image', 'is_published', 'published_at', 'display_order')
+        fields = ('title', 'category', 'summary', 'body', 'image', 'event_at', 'event_location', 'priority', 'expires_at', 'is_published', 'published_at', 'display_order')
 
 
 class ResourceForm(FriendlyForm):

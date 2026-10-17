@@ -1,6 +1,7 @@
 from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .models import CompanyApplication
 from contenthub.models import Announcement, Resource, JobOpening, NewJoiner, Event
@@ -27,6 +28,7 @@ def home(request):
         section='home', heading='Home',
         announcements=Announcement.objects.visible().exclude(category='gallery')[:4],
         recognitions=Announcement.objects.visible().filter(category='recognition')[:6],
+        portal_notices=Announcement.objects.visible().filter(category='announcement').order_by('-published_at', '-pk')[:30],
         featured_policies=Resource.objects.visible().filter(kind='policy')[:3],
         gallery_photos=(list(Announcement.objects.visible().filter(category='gallery').exclude(image='').order_by('-published_at')[:8]) or
                         (list(Event.objects.visible().exclude(image='').order_by('-published_at')[:8]) +
@@ -157,3 +159,65 @@ def search(request):
     data['search_groups'] = groups
     data['result_count'] = sum(len(items) for _, _, items in groups)
     return render(request, 'portal/search.html', data)
+
+
+@login_required
+def notifications(request):
+    """Employee-facing published announcements with optional unread filter."""
+    data = context()
+    notices = list(Announcement.objects.visible().filter(category='announcement')
+                   .order_by('-published_at', '-pk')[:100])
+    receipts = AnnouncementReceipt.objects.filter(
+        recipient=request.user, announcement__in=notices
+    ).values_list('announcement_id', 'seen_revision')
+    seen = dict(receipts)
+    for item in notices:
+        item.employee_read = seen.get(item.pk) == item.updated_at
+    unread_count = sum(not item.employee_read for item in notices)
+    selected_filter = request.GET.get('filter', 'all')
+    if selected_filter not in ('all', 'unread'):
+        selected_filter = 'all'
+    data.update(section='notifications', heading='Company Notifications',
+                portal_notices=[n for n in notices if not n.employee_read]
+                if selected_filter == 'unread' else notices,
+                selected_notification_filter=selected_filter,
+                notification_unread_count=unread_count,
+                notification_total_count=len(notices))
+    return render(request, 'portal/notifications.html', data)
+
+
+from django.views.decorators.http import require_GET, require_POST
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect
+from contenthub.models import AnnouncementReceipt
+
+@login_required
+@require_GET
+def announcement_notification_feed(request):
+    """Unread published announcements, scoped to the logged-in employee."""
+    notices = list(Announcement.objects.visible().filter(category='announcement').order_by('-published_at')[:30])
+    read = dict(AnnouncementReceipt.objects.filter(recipient=request.user, announcement__in=notices).values_list('announcement_id', 'seen_revision'))
+    unread = [n for n in notices if read.get(n.pk) != n.updated_at]
+    return JsonResponse({'unread_count':len(unread), 'items':[{'id':n.pk, 'title':n.title, 'summary':n.summary or '', 'event_at':timezone.localtime(n.event_at).strftime('%d %b %Y, %I:%M %p') if n.event_at else '', 'location':n.event_location or '', 'published_at':timezone.localtime(n.published_at).strftime('%d %b %Y') if n.published_at else ''} for n in unread[:8]]})
+
+@login_required
+@require_POST
+def mark_announcement_read(request, pk):
+    notice = get_object_or_404(Announcement.objects.visible().filter(category='announcement'), pk=pk)
+    AnnouncementReceipt.objects.update_or_create(recipient=request.user, announcement=notice, defaults={'seen_revision':notice.updated_at})
+    return redirect('portal:notifications')
+
+
+@login_required
+@require_POST
+def mark_all_announcements_read(request):
+    """Mark the latest 100 visible announcements as read for this employee."""
+    notices = list(Announcement.objects.visible().filter(category='announcement')
+                   .order_by('-published_at', '-pk')[:100])
+    from django.db import transaction
+    with transaction.atomic():
+        for notice in notices:
+            AnnouncementReceipt.objects.update_or_create(
+                recipient=request.user, announcement=notice,
+                defaults={'seen_revision': notice.updated_at})
+    return redirect('portal:notifications')

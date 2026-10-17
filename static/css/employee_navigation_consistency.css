@@ -1,0 +1,8 @@
+/* Step 16.53 — search/navigation consistency, scoped and theme aware */
+.top-search:focus-within{outline:2px solid var(--accent,#c52a35);outline-offset:2px;border-radius:12px}
+.top-search input{min-width:0;max-width:100%}
+.desktop-bookmarks a:focus-visible,.profile-menu a:focus-visible,.mobile-bottom-nav a:focus-visible{outline:2px solid var(--accent,#c52a35);outline-offset:3px;border-radius:7px}
+.desktop-bookmarks{overflow-x:auto;scrollbar-width:thin;overscroll-behavior-x:contain}
+.desktop-bookmarks a{white-space:nowrap}
+html[data-theme='dark'] .top-search:focus-within{outline-color:#ff9aa2}
+@media(max-width:720px){.top-search{min-width:0}.desktop-bookmarks{display:none}}

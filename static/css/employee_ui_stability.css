@@ -1,0 +1,53 @@
+/* Step 16.52: accessibility, dark-mode and mobile layout hardening. */
+:root { color-scheme:light; }
+html[data-theme="dark"] { color-scheme:dark; }
+*, *::before, *::after { box-sizing:border-box; }
+img, video, iframe { max-width:100%; }
+:where(a,button,input,select,textarea,[tabindex]):focus-visible {
+ outline:3px solid #2475d1!important; outline-offset:3px!important;
+}
+html[data-theme="dark"] :where(a,button,input,select,textarea,[tabindex]):focus-visible {
+ outline-color:#8fc4ff!important;
+}
+html[data-theme="dark"] :where(input,textarea,select) {
+ color-scheme:dark;
+}
+html[data-theme="dark"] :where(input,textarea,select):disabled {
+ opacity:.7;
+}
+html[data-theme="dark"] :where(input,textarea)::placeholder {
+ color:#b6c7da;
+ opacity:1;
+}
+html[data-theme="dark"] :where(.cm-badge,.badge,.status-badge) {
+ border-color:rgba(198,214,234,.35);
+}
+html[data-theme="dark"] :where(.vone-person,.vone-directory-filter,.vone-directory-empty) a:not(.btn) {
+ text-decoration-thickness:1px;
+ text-underline-offset:3px;
+}
+html[data-theme="dark"] :where(.vone-person,.vone-directory-filter) input:focus-visible,
+html[data-theme="dark"] :where(.vone-person,.vone-directory-filter) select:focus-visible {
+ border-color:#91c5ff!important;
+}
+:where(.vone-directory,.vone-joiner-grid,.vone-library,.cm-table-wrap) { min-width:0; }
+:where(.vone-person,.vone-directory-filter,.vone-joiner-grid > *) { min-width:0; }
+:where(.vone-person h2,.vone-person p,.vone-directory-lead) { overflow-wrap:anywhere; }
+:where(.cm-table-wrap) { overflow-x:auto; -webkit-overflow-scrolling:touch; }
+:where(.chat-panel,.quick-nav-dialog) { max-width:calc(100vw - 24px); }
+.ai-fab { z-index:48; }
+@media (max-width:760px) {
+ .ai-fab { display:none!important; }
+ .mobile-bottom-nav { padding-bottom:max(4px,env(safe-area-inset-bottom,0px)); }
+ .chat-panel { bottom:calc(76px + env(safe-area-inset-bottom,0px)); }
+ .back-to-top { bottom:calc(90px + env(safe-area-inset-bottom,0px)); }
+ :where(input,textarea,select) { font-size:16px; }
+}
+@media (max-width:400px) {
+ .mobile-bottom-nav a,.mobile-bottom-nav button { min-width:0; }
+ .mobile-bottom-nav { max-width:100vw; }
+}
+@media (prefers-reduced-motion:reduce) {
+ html:focus-within { scroll-behavior:auto!important; }
+ *,*::before,*::after { animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important; }
+}

@@ -1,0 +1,40 @@
+/* Step 16.58: slim, top-of-page announcement ticker. */
+.vone-alert-ticker{display:flex;align-items:center;gap:0;width:100%;min-width:0;overflow:hidden;border:1px solid #e4b65b;border-radius:12px;background:#fff6df;color:#583b09;margin:0 0 18px;box-shadow:0 3px 12px rgba(94,66,19,.07)}
+.vone-alert-label{display:flex;align-items:center;gap:7px;flex:none;align-self:stretch;padding:11px 15px;background:#a6510d;color:#fff;font-size:11px;letter-spacing:.1em;z-index:1}
+.vone-alert-window{flex:1;min-width:0;overflow:hidden}
+.vone-alert-track{display:flex;align-items:center;gap:48px;width:max-content;min-width:100%;animation:vone-ticker-scroll 34s linear infinite;padding:7px 16px}
+.vone-alert-track:hover,.vone-alert-track:focus-within{animation-play-state:paused}
+.vone-alert-track.vone-alert-single{width:100%;animation:none}
+.vone-alert-item{display:flex;align-items:center;gap:10px;flex:none;min-width:0;font-size:13px;line-height:1.5}
+.vone-alert-item[hidden],.vone-alert-ticker[hidden]{display:none!important}
+.vone-alert-dot{color:#bf6a1a;font-size:9px}
+.vone-alert-text{white-space:nowrap}
+.vone-alert-text strong{font-weight:800}
+.vone-notice-dismiss{flex:none;display:grid;place-items:center;min-width:29px;min-height:29px;padding:0;border:1px solid #dcb974;border-radius:8px;background:rgba(255,255,255,.65);color:#6e460e;font-size:19px;cursor:pointer}
+.vone-notice-dismiss:hover{background:#ffe4a7}
+.vone-notice-dismiss:focus-visible,.vone-alert-all:focus-visible{outline:3px solid #416cff;outline-offset:2px}
+.vone-alert-all{flex:none;align-self:stretch;display:flex;align-items:center;padding:9px 14px;background:#fff0c9;border-left:1px solid #e6c68c;color:#75400b;text-decoration:none;font-size:12px;font-weight:700;white-space:nowrap;z-index:1}
+@keyframes vone-ticker-scroll{0%{transform:translateX(100%)}100%{transform:translateX(-100%)}}
+@media(max-width:650px){.vone-alert-label{padding:9px 10px;font-size:10px}.vone-alert-all{padding:9px;font-size:11px}.vone-alert-track{animation-duration:28s}}
+@media(prefers-reduced-motion:reduce){.vone-alert-track{animation:none!important;width:100%;max-width:100%;overflow-x:auto;scrollbar-width:thin}.vone-alert-item{white-space:normal}.vone-alert-text{white-space:normal}}
+html[data-theme="dark"] .vone-alert-ticker,body.dark-mode .vone-alert-ticker{background:#352b1d;border-color:#9a6a30;color:#ffe8bf}
+html[data-theme="dark"] .vone-alert-label,body.dark-mode .vone-alert-label{background:#9e5518}
+html[data-theme="dark"] .vone-alert-all,body.dark-mode .vone-alert-all{background:#49351c;color:#ffdc9c;border-color:#76542d}
+html[data-theme="dark"] .vone-notice-dismiss,body.dark-mode .vone-notice-dismiss{background:#594126;border-color:#946d3c;color:#ffe6b9}
+.vone-policy-click-card{color:inherit;text-decoration:none;cursor:pointer;transition:box-shadow .2s,border-color .2s,transform .2s}.vone-policy-click-card:hover{border-color:#537aff;box-shadow:0 8px 22px rgba(20,48,99,.11);transform:translateY(-2px)}.vone-policy-click-card:focus-visible{outline:3px solid #5279ff;outline-offset:3px}.vone-policy-open{color:#225df5;font-weight:700;white-space:nowrap}.vone-notice-section{border:1px solid #dbe5f0;background:linear-gradient(115deg,#fffaf1,#fff);border-radius:20px;padding:24px 30px;margin:24px 0}.vone-notice-header{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:16px}.vone-notice-header h2{font-size:21px;margin:5px 0}.vone-notice-header p{color:#596b83;margin:0}.vone-notice-list{display:grid;gap:10px}.vone-notice{display:flex;gap:14px;align-items:flex-start;border:1px solid #f0e0b8;border-radius:13px;background:#fff;padding:16px}.vone-notice-symbol{display:grid;place-items:center;flex:none;width:36px;height:36px;border-radius:10px;background:#fff0cc;color:#9d5c0d;font-size:22px}.vone-notice-copy{flex:1;min-width:0}.vone-notice-copy strong{display:block;color:#182942;font-size:15px}.vone-notice-copy p{margin:6px 0;color:#42516a;line-height:1.55;white-space:pre-line;overflow-wrap:anywhere}.vone-notice-copy small{color:#66768b}.vone-notice-dismiss{border:0;background:transparent;color:#607086;font-size:23px;cursor:pointer;min-width:34px;min-height:34px;border-radius:8px}.vone-notice-dismiss:hover{background:#f4f5f8}.vone-notice-dismiss:focus-visible{outline:2px solid #5279ff}.vone-notice[hidden],.vone-notice-section[hidden]{display:none!important}@media(max-width:650px){.vone-notice-section{padding:17px;margin:16px 0}.vone-notice-header{align-items:flex-start;flex-direction:column}.vone-notice{padding:12px}.vone-policy-click-card{gap:10px}.vone-policy-open{font-size:12px}}html[data-theme="dark"] .vone-notice-section,body.dark-mode .vone-notice-section{background:#1b2638;border-color:#394a60}html[data-theme="dark"] .vone-notice,body.dark-mode .vone-notice{background:#243348;border-color:#4a4d45}html[data-theme="dark"] .vone-notice-copy strong,body.dark-mode .vone-notice-copy strong{color:#f5f8ff}html[data-theme="dark"] .vone-notice-copy p,html[data-theme="dark"] .vone-notice-header p,body.dark-mode .vone-notice-copy p,body.dark-mode .vone-notice-header p{color:#cbd5e4}html[data-theme="dark"] .vone-notice-copy small,body.dark-mode .vone-notice-copy small{color:#b4c1d3}html[data-theme="dark"] .vone-notice-symbol,body.dark-mode .vone-notice-symbol{background:#554423;color:#ffe0a1}html[data-theme="dark"] .vone-policy-open,body.dark-mode .vone-policy-open{color:#8faeff}html[data-theme="dark"] .vone-notice-dismiss,body.dark-mode .vone-notice-dismiss{color:#d6e1ef}
+.vone-highlight-link{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit;cursor:pointer;transition:transform .18s,box-shadow .18s,border-color .18s}
+.vone-highlight-link:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(24,52,94,.12);border-color:#688bcb}
+.vone-highlight-link:focus-visible{outline:3px solid #416cff;outline-offset:3px}
+.vone-highlight-link .vone-highlight-arrow{margin-left:auto;font-size:20px;color:#3262b6;font-weight:700}
+html[data-theme="dark"] .vone-highlight-link,body.dark-mode .vone-highlight-link{color:#f3f7ff}
+html[data-theme="dark"] .vone-highlight-link .vone-highlight-arrow,body.dark-mode .vone-highlight-link .vone-highlight-arrow{color:#a5c2ff}
+.vone-alert-detail{display:inline-block;margin-left:12px;padding:2px 7px;border-radius:6px;background:rgba(124,83,20,.12);font-weight:600;font-size:12px}.vone-notifications-page{max-width:1100px;margin:0 auto;padding:16px 0 42px}.vone-notification-list{display:grid;gap:12px}.vone-notification-card{border:1px solid #e5cfaa;background:#fffaf0;color:#403321;border-radius:14px;padding:18px}.vone-notification-card h2{font-size:17px;margin:0 0 8px}.vone-notification-card p{margin:8px 0;line-height:1.5;white-space:pre-line}.vone-notification-meta{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;font-weight:600}.vone-notification-muted{opacity:.7;font-size:12px}.vone-notification-card[hidden]{display:none!important}html[data-theme="dark"] .vone-notification-card,body.dark-mode .vone-notification-card{background:#302b24;border-color:#7d633c;color:#f7e9d3}
+
+/* Step 16.62: priority badges in ticker and notification centre */
+.vone-notice-priority{display:inline-flex;align-items:center;border-radius:6px;padding:3px 7px;font-size:10px;letter-spacing:.045em;font-weight:800;background:#fef3c7;color:#92400e;white-space:nowrap}
+.vone-priority-urgent .vone-notice-priority{background:#b91c1c;color:#fff}
+.vone-priority-important .vone-notice-priority{background:#f59e0b;color:#1f2937}
+.vone-notification-card.vone-priority-urgent{border-left:4px solid #dc2626}
+.vone-notification-card.vone-priority-important{border-left:4px solid #d97706}
+.vone-alert-item.vone-priority-urgent .vone-alert-dot{color:#dc2626}
+@media(prefers-color-scheme:dark){.vone-priority-important .vone-notice-priority{color:#111827}}

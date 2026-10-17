@@ -3,6 +3,7 @@ from django.contrib.auth.views import LoginView, LogoutView
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.cache import never_cache
 from . import manager_views as views
+from . import announcement_overview
 
 app_name = 'content_manager'
 urlpatterns = [
@@ -15,6 +16,7 @@ urlpatterns = [
         name="login",
     ),
     path('logout/', never_cache(LogoutView.as_view(next_page='content_manager:login')), name='logout'),
+    path('announcement-overview/', announcement_overview.announcement_overview, name='announcement_overview'),
     path('notifications/', views.notification_center, name='notification_center'),
     path('notifications/read-all/', views.mark_all_notifications_read, name='notifications_read_all'),
     path('approval-queue/', views.approval_queue, name='approval_queue'),

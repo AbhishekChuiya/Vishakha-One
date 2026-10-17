@@ -1,0 +1,33 @@
+{% extends "content_manager/base.html" %}
+{% block content %}
+<style>
+.aov-head{display:flex;justify-content:space-between;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+.aov-head h1{margin:0;font-size:1.6rem}.aov-muted{opacity:.7;font-size:.88rem}
+.aov-tabs{display:grid;grid-template-columns:repeat(4,minmax(120px,1fr));gap:10px;margin-bottom:18px}
+.aov-tab{padding:16px;border:1px solid #d5dce5;border-radius:14px;text-decoration:none;color:inherit;background:var(--cm-card-bg,#fff)}
+.aov-tab strong{display:block;font-size:1.65rem}.aov-tab span{font-size:.84rem}
+.aov-tab[aria-current=page]{border-color:#ad3342;box-shadow:inset 0 0 0 1px #ad3342}
+.aov-table-wrap{overflow:auto;border:1px solid #d5dce5;border-radius:14px}
+.aov-table{border-collapse:collapse;width:100%;min-width:650px}.aov-table th,.aov-table td{padding:13px;text-align:left;border-bottom:1px solid #e4e8ee;font-size:.9rem}
+.aov-table th{font-weight:700}.aov-pill{display:inline-block;border-radius:99px;padding:3px 9px;background:#f1f3f7;color:#263244;font-size:.77rem}
+.aov-pill.urgent{background:#ffe2e5;color:#8a1625}.aov-pill.important{background:#fff1d1;color:#775300}
+@media(max-width:650px){.aov-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.aov-head h1{font-size:1.3rem}}
+</style>
+<div class="aov-head"><div><h1>Announcement Status</h1><p class="aov-muted">Monitor employee announcements. Only approved, published, unexpired announcements are visible to employees.</p></div>
+<a class="cm-btn" href="{% url 'content_manager:list' 'announcements' %}">Manage News &amp; Announcements →</a></div>
+<div class="aov-tabs" role="navigation" aria-label="Announcement status">
+<a class="aov-tab" href="?status=active" {% if status == 'active' %}aria-current="page"{% endif %}><strong>{{ counts.active }}</strong><span>Active</span></a>
+<a class="aov-tab" href="?status=scheduled" {% if status == 'scheduled' %}aria-current="page"{% endif %}><strong>{{ counts.scheduled }}</strong><span>Scheduled</span></a>
+<a class="aov-tab" href="?status=expired" {% if status == 'expired' %}aria-current="page"{% endif %}><strong>{{ counts.expired }}</strong><span>Expired</span></a>
+<a class="aov-tab" href="?status=unpublished" {% if status == 'unpublished' %}aria-current="page"{% endif %}><strong>{{ counts.unpublished }}</strong><span>Unpublished / awaiting approval</span></a>
+</div>
+<div class="aov-table-wrap"><table class="aov-table"><thead><tr><th>Announcement</th><th>Priority</th><th>Published / scheduled</th><th>Expires</th><th>Action</th></tr></thead><tbody>
+{% for item in items %}
+<tr><td><strong>{{ item.title }}</strong><div class="aov-muted">{{ item.summary|truncatechars:100 }}</div></td>
+<td><span class="aov-pill {{ item.priority }}">{{ item.get_priority_display }}</span></td>
+<td>{{ item.published_at|date:"d M Y, h:i A" }}</td><td>{% if item.expires_at %}{{ item.expires_at|date:"d M Y, h:i A" }}{% else %}No expiry{% endif %}</td>
+<td><a href="{% url 'content_manager:edit' 'announcements' item.pk %}">Edit →</a></td></tr>
+{% empty %}<tr><td colspan="5">No {{ status }} announcements.</td></tr>{% endfor %}
+</tbody></table></div>
+{% if items|length >= 200 %}<p class="aov-muted">Showing the most recently updated 200 records.</p>{% endif %}
+{% endblock %}
