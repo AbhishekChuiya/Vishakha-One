@@ -1,0 +1,18 @@
+/* Step 16.10 navigation controls. Loaded after theme CSS. */
+.search-clear{border:0;background:transparent;color:var(--muted,#66758b);font-size:22px;line-height:1;width:28px;height:28px;cursor:pointer;display:grid;place-items:center;border-radius:7px;flex:0 0 auto}
+.search-clear[hidden],.back-to-top[hidden]{display:none!important}
+.search-clear:hover{background:rgba(100,130,170,.13);color:var(--navy,#1a2b40)}
+.search-clear:focus-visible,.back-to-top:focus-visible{outline:2px solid #6ca6ef;outline-offset:2px}
+.back-to-top{position:fixed;right:22px;bottom:24px;z-index:40;display:grid;place-items:center;width:43px;height:43px;border-radius:50%;border:1px solid var(--line,#d9e0e8);background:var(--white,#fff);color:var(--navy,#152c45);box-shadow:0 7px 22px rgba(0,0,0,.17);cursor:pointer;transition:transform .16s ease}
+.back-to-top:hover{transform:translateY(-2px)}
+.back-to-top .portal-icon{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+html[data-theme="dark"] .search-clear{color:#b6c8de}
+html[data-theme="dark"] .search-clear:hover{background:#314b6b;color:#fff}
+html[data-theme="dark"] .back-to-top{background:#253b58;color:#f1f6ff;border-color:#4c678a}
+@media(max-width:760px){
+ .back-to-top{right:15px;bottom:calc(84px + env(safe-area-inset-bottom, 0px));width:40px;height:40px}
+ .mobile-bottom-nav a[aria-current="page"]{position:relative;font-weight:800!important}
+ .mobile-bottom-nav a[aria-current="page"]:before{content:"";position:absolute;top:0;left:24%;right:24%;height:3px;border-radius:0 0 5px 5px;background:#3d80d3}
+ html[data-theme="dark"] .mobile-bottom-nav a[aria-current="page"]:before{background:#9ac8ff}
+}
+@media(prefers-reduced-motion:reduce){.back-to-top{transition:none}}

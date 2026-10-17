@@ -1,0 +1,24 @@
+{% extends 'content_manager/base.html' %}
+{% block content %}
+<div class="cm-intro"><div><span class="cm-eyebrow">DEPARTMENT PERFORMANCE</span><h1>Approval Analytics</h1><p>Live approval counts and review turnaround across modules you are authorized to approve.</p></div><a class="cm-btn cm-btn-secondary" href="{% url 'content_manager:approval_queue' %}">← Approval Queue</a></div>
+<form method="get" class="cm-card" style="display:flex;gap:12px;align-items:end;flex-wrap:wrap;margin-bottom:18px">
+<label>Module <select name="section"><option value="all">All authorized modules</option>{% for slug, config in analytics_sections %}<option value="{{ slug }}" {% if selected_section == slug %}selected{% endif %}>{{ config.title }}</option>{% endfor %}</select></label>
+<label>Overdue after <select name="hours"><option value="24" {% if overdue_hours == 24 %}selected{% endif %}>24 hours</option><option value="48" {% if overdue_hours == 48 %}selected{% endif %}>48 hours</option><option value="72" {% if overdue_hours == 72 %}selected{% endif %}>72 hours</option></select></label>
+<button class="cm-btn cm-btn-primary" type="submit">Apply</button>
+<a class="cm-btn cm-btn-secondary" href="{% url 'content_manager:approval_analytics_export' %}?section={{ selected_section|urlencode }}&hours={{ overdue_hours }}">Export Excel CSV</a>
+</form>
+<div class="cm-grid" style="margin-bottom:18px">
+<article class="cm-card"><h2>{{ analytics_totals.pending }}</h2><p>Pending approval</p></article>
+<article class="cm-card"><h2>{{ analytics_totals.overdue }}</h2><p>Overdue ({{ overdue_hours }}h)</p></article>
+<article class="cm-card"><h2>{{ analytics_totals.approved }}</h2><p>Currently approved</p></article>
+<article class="cm-card"><h2>{{ analytics_totals.rejected }}</h2><p>Changes requested</p></article>
+<article class="cm-card"><h2>{% if analytics_totals.average_hours is not None %}{{ analytics_totals.average_hours }}h{% else %}—{% endif %}</h2><p>Average review turnaround ({{ analytics_totals.measured }} measurable)</p></article>
+</div>
+<div class="cm-card" style="overflow-x:auto;margin-bottom:18px"><h2>Module-wise performance</h2><table style="width:100%;text-align:left;border-collapse:collapse"><thead><tr><th>Module</th><th>Pending</th><th>Overdue</th><th>Approved</th><th>Changes requested</th><th>Drafts</th><th>Avg review time</th></tr></thead><tbody>
+{% for row in analytics_modules %}<tr><td style="padding:12px 8px"><strong>{{ row.name }}</strong></td><td>{{ row.pending }}</td><td>{{ row.overdue }}</td><td>{{ row.approved }}</td><td>{{ row.rejected }}</td><td>{{ row.draft }}</td><td>{% if row.average_hours is not None %}{{ row.average_hours }}h{% else %}—{% endif %}</td></tr>{% empty %}<tr><td colspan="7">No authorized modules.</td></tr>{% endfor %}
+</tbody></table></div>
+<div class="cm-card" style="overflow-x:auto"><h2>Overdue submissions</h2><p>Oldest pending items first. Only submissions with a recorded submission time are included.</p><table style="width:100%;text-align:left;border-collapse:collapse"><thead><tr><th>Title</th><th>Module</th><th>Submitted by</th><th>Submitted (IST)</th><th>Waiting</th><th>Action</th></tr></thead><tbody>
+{% for row in overdue_rows %}<tr><td style="padding:12px 8px">{{ row.record.title }}</td><td>{{ row.module }}</td><td>{{ row.record.submitted_by|default:'—' }}</td><td>{{ row.record.submitted_at|date:'d M Y, h:i A' }}</td><td>{{ row.hours_waiting }}h</td><td><a href="{% url 'content_manager:approval_history' row.slug row.record.pk %}">View history →</a></td></tr>{% empty %}<tr><td colspan="6" style="padding:18px">No overdue submissions for this filter.</td></tr>{% endfor %}
+</tbody></table></div>
+<p style="margin-top:14px;color:var(--cm-muted,#64748b);font-size:13px">Review turnaround is calculated from the latest submission timestamp to review timestamp for currently approved records where both are available. It is not a historical all-time SLA report. The overdue threshold is configurable here and does not send automatic reminders.</p>
+{% endblock %}

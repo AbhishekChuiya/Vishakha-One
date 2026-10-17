@@ -1,0 +1,19 @@
+{% extends 'content_manager/base.html' %}{% block content %}
+<div class="cm-intro"><div><a class="cm-back" href="{% url 'content_manager:list' slug %}">← Back to {{ config.title }}</a><h1>{% if editing %}Edit{% else %}Create{% endif %} {{ config.title }}</h1><p>Complete the details, then save a draft or submit for approval. Choose a clear action below. Times are shown in IST.</p></div></div>
+{% if record and record.approval_status == 'rejected' %}<section class="cm-feedback" role="status"><strong>✏️ Changes requested by {{ record.reviewed_by.get_full_name|default:record.reviewed_by.username }}</strong><p>{{ record.review_note|linebreaksbr }}</p><small>{{ record.reviewed_at|date:'d M Y, h:i A' }} IST</small><p>Update the content below, then select “Submit for approval” to send it back for review.</p></section>{% endif %}
+{% if record %}<p><a class="cm-back" href="{% url 'content_manager:approval_history' slug record.pk %}">🕘 View full approval history</a></p>{% endif %}
+<div class="cm-guide"><strong>How it works</strong><span>1. Enter details</span><span>2. Add an image or document (optional)</span><span>3. Save draft or submit for approval</span></div>
+<form method="post" enctype="multipart/form-data" class="cm-editor" novalidate>{% csrf_token %}<div class="cm-editor-note">Your content will appear on the employee portal only after an authorized approver approves it.</div>
+{% if form.non_field_errors %}<div class="cm-error-box">{{ form.non_field_errors }}</div>{% endif %}
+<div class="cm-form-grid">
+{% for field in form %}{% if field.name != 'is_published' %}
+<div class="cm-field {% if field.name == 'summary' or field.name == 'body' %}cm-wide{% endif %}{% if field.name == 'published_at' or field.name == 'display_order' %} cm-advanced-field{% endif %}">
+<label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %} <span class="cm-required">*</span>{% endif %}</label>
+{{ field }}{% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+{% if field.name == 'image' or field.name == 'photo' %}<img class="cm-upload-image" data-preview-for="{{ field.auto_id }}" alt="Selected image preview" hidden>{% endif %}
+{% if field.name == 'file' %}<p class="cm-upload-name" data-preview-for="{{ field.auto_id }}" aria-live="polite"></p>{% endif %}
+{% for error in field.errors %}<div class="cm-error">{{ error }}</div>{% endfor %}
+</div>{% endif %}{% endfor %}</div>
+<details class="cm-advanced"><summary>Advanced options (schedule and display order)</summary><p>Use these only when you need to schedule content or change its order.</p><div id="cm-advanced-fields"></div></details>
+<div class="cm-form-footer"><a class="cm-btn cm-btn-secondary" href="{% url 'content_manager:list' slug %}">Cancel</a><button class="cm-btn cm-btn-secondary" type="submit" name="save_action" value="draft">💾 Save draft</button>{% if can_submit %}<button class="cm-btn cm-btn-primary" type="submit" name="save_action" value="submit">📨 Submit for approval</button>{% endif %}{% if can_publish %}<button class="cm-btn cm-btn-secondary" type="submit" name="save_action" value="schedule">🗓 Schedule (IST)</button><button class="cm-btn cm-btn-primary" type="submit" name="save_action" value="publish" data-confirm-publish="true">🚀 Publish now</button>{% endif %}</div>
+</form>{% endblock %}

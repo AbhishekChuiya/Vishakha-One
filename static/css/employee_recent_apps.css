@@ -1,0 +1,20 @@
+/* Step 16.11: recent apps; uses theme variables for both appearances */
+.recent-apps[hidden]{display:none!important}
+.recent-apps{margin:0 0 24px;padding:16px 18px;border:1px solid var(--line,#dde5ef);border-radius:16px;background:var(--white,#fff)}
+.recent-apps-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}
+.recent-apps-heading h3{margin:0;color:var(--navy,#172b45);font-size:15px}
+.recent-apps-heading p{margin:4px 0 0;color:var(--muted,#64748b);font-size:12px}
+.recent-clear{border:1px solid var(--line,#d5deeb);border-radius:9px;background:transparent;color:var(--blue,#245aa3);padding:7px 10px;cursor:pointer;font-weight:650;font-size:12px;white-space:nowrap}
+.recent-apps-list{display:flex;gap:10px;overflow-x:auto;scrollbar-width:thin;padding-bottom:4px}
+.recent-app-link{display:flex;align-items:center;gap:9px;flex:0 0 auto;min-width:145px;max-width:230px;padding:10px 12px;border:1px solid var(--line,#d5deeb);border-radius:11px;text-decoration:none;color:var(--navy,#172b45);background:var(--soft,#f4f7fb);font-size:12px;font-weight:650}
+.recent-app-link:hover{border-color:var(--blue,#5585c7)}
+.recent-app-link:focus-visible,.recent-clear:focus-visible{outline:2px solid var(--blue,#5585c7);outline-offset:2px}
+.recent-app-icon,.recent-app-icon .app-icon-wrap{display:grid;place-items:center;flex:0 0 34px;width:34px;height:34px;border-radius:8px;overflow:hidden;background:transparent!important}
+.recent-app-icon img{width:30px;height:30px;object-fit:contain}
+.recent-app-link>span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html[data-theme="dark"] .recent-apps{background:#18263a!important;border-color:#35465e!important}
+html[data-theme="dark"] .recent-app-link{background:#233754!important;border-color:#35465e!important;color:#edf3ff!important}
+html[data-theme="dark"] .recent-apps-heading h3{color:#edf3ff!important}
+html[data-theme="dark"] .recent-apps-heading p{color:#a8b9ce!important}
+html[data-theme="dark"] .recent-clear{color:#95c2ff!important;border-color:#35465e!important}
+@media(max-width:760px){.recent-apps{padding:13px;margin-bottom:18px}.recent-apps-heading p{font-size:11px}.recent-app-link{min-width:135px}}

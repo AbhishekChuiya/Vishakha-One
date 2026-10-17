@@ -1,0 +1,16 @@
+{% extends 'content_manager/base.html' %}
+{% block content %}
+<div class="cm-intro"><div><a class="cm-back" href="{% url 'content_manager:list' slug %}">← Back to {{ config.title }}</a><h1>Approval history</h1><p>{{ record.title }}</p></div></div>
+<div class="cm-guide"><strong>Current status: {{ record.get_approval_status_display }}</strong><span>All timestamps are shown in IST.</span></div>
+<section class="cm-history" style="display:grid;gap:14px;margin-top:24px">
+{% for event in audit_events %}
+<article class="cm-card" style="padding:18px;border:1px solid #e2e8f0;border-radius:14px">
+<strong>{{ event.action|cut:'_'|title }}</strong>
+<p style="margin:6px 0">By {{ event.actor_label|default:'Former user' }} · {{ event.created_at|date:'d M Y, h:i A' }} IST</p>
+{% if event.note %}<div style="white-space:pre-wrap;background:#f8fafc;padding:12px;border-radius:8px">{{ event.note }}</div>{% endif %}
+</article>
+{% empty %}
+<p>No audit events have been recorded for this item yet. History begins with actions taken after Step 12 is installed.</p>
+{% endfor %}
+</section>
+{% endblock %}

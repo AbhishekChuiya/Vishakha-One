@@ -1,0 +1,21 @@
+{% extends 'content_manager/base.html' %}
+{% block content %}
+<div class="cm-intro"><div><span class="cm-eyebrow">DEPARTMENT REVIEW</span><h1>Approval Queue</h1><p>Review submitted content across your authorized departments.</p></div><a class="cm-btn cm-btn-secondary" href="{% url 'content_manager:dashboard' %}">← Dashboard</a></div>
+<div class="cm-grid" style="margin-bottom:18px">
+ <article class="cm-card"><h2>{{ queue_counts.pending }}</h2><p>Pending approval</p></article>
+ <article class="cm-card"><h2>{{ queue_counts.approved }}</h2><p>Approved</p></article>
+ <article class="cm-card"><h2>{{ queue_counts.rejected }}</h2><p>Changes requested</p></article>
+</div>
+<form method="get" class="cm-card" style="display:flex;flex-wrap:wrap;align-items:end;gap:12px;margin-bottom:16px">
+ <label>Module <select name="section"><option value="all">All authorized modules</option>{% for slug, config in queue_sections %}<option value="{{ slug }}" {% if selected_section == slug %}selected{% endif %}>{{ config.title }}</option>{% endfor %}</select></label>
+ <label>Status <select name="status"><option value="pending" {% if selected_status == 'pending' %}selected{% endif %}>Pending</option><option value="approved" {% if selected_status == 'approved' %}selected{% endif %}>Approved</option><option value="rejected" {% if selected_status == 'rejected' %}selected{% endif %}>Changes requested</option><option value="all" {% if selected_status == 'all' %}selected{% endif %}>All</option></select></label>
+ <label>Search <input name="q" value="{{ query }}" maxlength="100" placeholder="Title or summary"></label>
+ <button type="submit" class="cm-btn cm-btn-primary">Filter</button>
+ <a class="cm-btn cm-btn-secondary" href="{% url 'content_manager:approval_queue_export' %}?section={{ selected_section|urlencode }}&status={{ selected_status|urlencode }}&q={{ query|urlencode }}">Export CSV</a>
+</form>
+<div class="cm-card" style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;text-align:left"><thead><tr><th>Content</th><th>Module</th><th>Submitted by</th><th>Status</th><th>Updated (IST)</th><th>Actions</th></tr></thead><tbody>
+{% for row in queue_rows %}<tr><td style="padding:12px 8px"><strong>{{ row.record.title }}</strong></td><td>{{ row.section_title }}</td><td>{{ row.submitted_by|default:'—' }}</td><td>{{ row.record.get_approval_status_display }}</td><td>{{ row.updated_at|date:'d M Y, h:i A' }}</td><td><a href="{% url 'content_manager:list' row.slug %}?status={{ selected_status|urlencode }}">Open module →</a> · <a href="{% url 'content_manager:approval_history' row.slug row.record.pk %}">History</a></td></tr>
+{% empty %}<tr><td colspan="6" style="padding:20px">No matching content found.</td></tr>{% endfor %}
+</tbody></table></div>
+{% if queue_rows.has_other_pages %}<nav style="display:flex;gap:12px;margin-top:16px">{% if queue_rows.has_previous %}<a href="?page={{ queue_rows.previous_page_number }}&section={{ selected_section|urlencode }}&status={{ selected_status|urlencode }}&q={{ query|urlencode }}">← Previous</a>{% endif %}<span>Page {{ queue_rows.number }} of {{ queue_rows.paginator.num_pages }}</span>{% if queue_rows.has_next %}<a href="?page={{ queue_rows.next_page_number }}&section={{ selected_section|urlencode }}&status={{ selected_status|urlencode }}&q={{ query|urlencode }}">Next →</a>{% endif %}</nav>{% endif %}
+{% endblock %}

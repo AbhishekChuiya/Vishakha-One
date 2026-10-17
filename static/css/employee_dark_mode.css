@@ -1,0 +1,246 @@
+
+/* Vishakha One 16.8 — complete dark palette. Loaded after all existing CSS.
+   Applied only when employee portal html[data-theme=dark]. */
+html[data-theme="dark"]{
+ color-scheme:dark;
+ --navy:#edf3ff; --blue:#8dbaff; --blue-dark:#b3d0ff;
+ --muted:#a8b9ce; --line:#35465e; --bg:#0b1422;
+ --white:#18263a; --soft:#233754;
+ --shadow:0 12px 36px rgba(0,0,0,.26);
+ --dark-elevated:#1d2d43;
+ --dark-input:#132136;
+ --dark-text:#edf3ff;
+ --dark-subtle:#a8b9ce;
+ --dark-border:#35465e;
+ --dark-accent:#95c2ff;
+ --dark-hover:#263e5c;
+}
+html[data-theme="dark"] body,
+html[data-theme="dark"] .shell,
+html[data-theme="dark"] .workspace,
+html[data-theme="dark"] .page,
+html[data-theme="dark"] .page-footer{background:var(--bg)!important;color:var(--dark-text)}
+html[data-theme="dark"] .sidebar,
+html[data-theme="dark"] .topbar,
+html[data-theme="dark"] .mobile-bottom-nav,
+html[data-theme="dark"] .desktop-bookmarks{
+ background:#121f31!important;color:var(--dark-text);
+ border-color:var(--dark-border)!important;
+}
+html[data-theme="dark"] .section,
+html[data-theme="dark"] .step7-card,
+html[data-theme="dark"] .step9-policy-card,
+html[data-theme="dark"] .app-card,
+html[data-theme="dark"] .highlight-tile,
+html[data-theme="dark"] .resource-link,
+html[data-theme="dark"] .news-row,
+html[data-theme="dark"] .date-pill,
+html[data-theme="dark"] .section-placeholder,
+html[data-theme="dark"] .notification-menu,
+html[data-theme="dark"] .profile-menu,
+html[data-theme="dark"] .chat-panel,
+html[data-theme="dark"] .icon-button,
+html[data-theme="dark"] .theme-toggle,
+html[data-theme="dark"] .favorites-filter,
+html[data-theme="dark"] .step7-search input,
+html[data-theme="dark"] .prompt-chips button,
+html[data-theme="dark"] .bubble,
+html[data-theme="dark"] .content-empty{
+ background:var(--white)!important;
+ border-color:var(--dark-border)!important;
+ color:var(--dark-text)!important;
+}
+html[data-theme="dark"] .section,
+html[data-theme="dark"] .step7-card,
+html[data-theme="dark"] .app-card,
+html[data-theme="dark"] .step9-policy-card{
+ box-shadow:0 10px 26px rgba(0,0,0,.11);
+}
+html[data-theme="dark"] .hero,
+html[data-theme="dark"] .sidebar-footer,
+html[data-theme="dark"] .placeholder-art{
+ background:linear-gradient(120deg,#223a59,#192c45)!important;
+ border-color:#3c5574!important;
+ color:var(--dark-text)!important;
+}
+html[data-theme="dark"] .hero-tag,
+html[data-theme="dark"] .nav-link.active,
+html[data-theme="dark"] .favorites-filter[aria-pressed=true],
+html[data-theme="dark"] .favorite-toggle[aria-pressed=true]{
+ background:#2a4870!important;color:#c7e0ff!important;
+ border-color:#5476a4!important;
+}
+html[data-theme="dark"] .nav-link:hover,
+html[data-theme="dark"] .profile-menu a:hover,
+html[data-theme="dark"] .theme-toggle:hover,
+html[data-theme="dark"] .app-card:hover{
+ background:var(--dark-hover)!important;
+ color:#e8f2ff!important;
+}
+html[data-theme="dark"] .top-search,
+html[data-theme="dark"] .filter-search,
+html[data-theme="dark"] .step7-search,
+html[data-theme="dark"] .chat-form,
+html[data-theme="dark"] .chat-form input,
+html[data-theme="dark"] .top-search kbd{
+ background:var(--dark-input)!important;
+ border-color:var(--dark-border)!important;
+ color:var(--dark-text)!important;
+}
+html[data-theme="dark"] input,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] select,
+html[data-theme="dark"] .filter-search input,
+html[data-theme="dark"] .top-search input,
+html[data-theme="dark"] .step7-search input{
+ background:var(--dark-input)!important;
+ color:var(--dark-text)!important;
+ border-color:var(--dark-border)!important;
+}
+html[data-theme="dark"] input::placeholder,
+html[data-theme="dark"] textarea::placeholder{color:#98acc5!important;opacity:1}
+html[data-theme="dark"] .full-image-link,
+html[data-theme="dark"] .home-news-media,
+html[data-theme="dark"] .app-icon-wrap,
+html[data-theme="dark"] .news-icon,
+html[data-theme="dark"] .resource-icon,
+html[data-theme="dark"] .step9-policy-icon,
+html[data-theme="dark"] .highlight-icon,
+html[data-theme="dark"] .chat-body,
+html[data-theme="dark"] .chat-head,
+html[data-theme="dark"] .chat-note{
+ background:var(--dark-elevated)!important;
+ border-color:var(--dark-border)!important;
+ color:var(--dark-text)!important;
+}
+html[data-theme="dark"] .chat-body .bubble,
+html[data-theme="dark"] .bubble{background:#253a56!important;color:#f0f6ff!important}
+html[data-theme="dark"] .chat-body .bubble.user,
+html[data-theme="dark"] .bubble.user{background:#245da3!important;color:white!important}
+html[data-theme="dark"] .chat-form button,
+html[data-theme="dark"] .btn:not(.btn-ghost){background:#2868bb!important;color:#fff!important;border-color:#3877c6!important}
+html[data-theme="dark"] .btn-ghost{background:#263b56!important;color:#f1f6ff!important;border-color:#466283!important}
+html[data-theme="dark"] .nav-link,
+html[data-theme="dark"] .brand,
+html[data-theme="dark"] .brand small,
+html[data-theme="dark"] .mobile-header-brand,
+html[data-theme="dark"] .mobile-header-brand b,
+html[data-theme="dark"] .topbar-title strong,
+html[data-theme="dark"] .dashboard-intro h1,
+html[data-theme="dark"] .hero h2,
+html[data-theme="dark"] .hero h2 span,
+html[data-theme="dark"] .section-header h2,
+html[data-theme="dark"] .section-placeholder h2,
+html[data-theme="dark"] .step7-card h3,
+html[data-theme="dark"] .step7-subheading,
+html[data-theme="dark"] .step9-policy-card strong,
+html[data-theme="dark"] .highlight-tile strong,
+html[data-theme="dark"] .app-meta strong,
+html[data-theme="dark"] .news-row strong,
+html[data-theme="dark"] .resource-link strong,
+html[data-theme="dark"] .chat-welcome h3,
+html[data-theme="dark"] .chat-identity strong,
+html[data-theme="dark"] .profile-label strong,
+html[data-theme="dark"] .profile-menu strong,
+html[data-theme="dark"] .notification-menu strong{
+ color:var(--dark-text)!important;
+}
+html[data-theme="dark"] .dashboard-intro p,
+html[data-theme="dark"] .hero p,
+html[data-theme="dark"] .section-header p,
+html[data-theme="dark"] .section-placeholder>p,
+html[data-theme="dark"] .step7-card p,
+html[data-theme="dark"] .step7-card small,
+html[data-theme="dark"] .step9-policy-card p,
+html[data-theme="dark"] .step9-policy-card small,
+html[data-theme="dark"] .highlight-tile small,
+html[data-theme="dark"] .app-meta small,
+html[data-theme="dark"] .news-row p,
+html[data-theme="dark"] .resource-link small,
+html[data-theme="dark"] .sidebar-footer p,
+html[data-theme="dark"] .chat-welcome p,
+html[data-theme="dark"] .chat-identity small,
+html[data-theme="dark"] .profile-label small,
+html[data-theme="dark"] .profile-menu span,
+html[data-theme="dark"] .notification-menu p,
+html[data-theme="dark"] .chat-note,
+html[data-theme="dark"] .topbar-eyebrow,
+html[data-theme="dark"] .nav-caption,
+html[data-theme="dark"] .sidebar-version,
+html[data-theme="dark"] .page-footer,
+html[data-theme="dark"] .content-empty{
+ color:var(--dark-subtle)!important;
+}
+html[data-theme="dark"] .desktop-bookmarks a,
+html[data-theme="dark"] .mobile-bottom-nav a,
+html[data-theme="dark"] .mobile-bottom-nav button,
+html[data-theme="dark"] .profile-menu a,
+html[data-theme="dark"] .favorite-toggle,
+html[data-theme="dark"] .app-arrow,
+html[data-theme="dark"] .resource-link b,
+html[data-theme="dark"] .text-link,
+html[data-theme="dark"] .support-link,
+html[data-theme="dark"] .step7-card a,
+html[data-theme="dark"] .step9-policy-card a{
+ color:var(--dark-accent)!important;
+}
+html[data-theme="dark"] .mobile-bottom-nav [aria-current="page"]{color:#d3e6ff!important}
+html[data-theme="dark"] .mobile-bottom-nav [aria-current="page"] .portal-icon{stroke:#a4cbff}
+html[data-theme="dark"] .notification-btn,
+html[data-theme="dark"] .mobile-menu,
+html[data-theme="dark"] .mobile-ai-shortcut{background:var(--dark-elevated)!important;border-color:var(--dark-border)!important;color:var(--dark-text)!important}
+html[data-theme="dark"] .profile,
+html[data-theme="dark"] .avatar,
+html[data-theme="dark"] .section,
+html[data-theme="dark"] .topbar,
+html[data-theme="dark"] .sidebar,
+html[data-theme="dark"] .mobile-bottom-nav{border-color:var(--dark-border)!important}
+html[data-theme="dark"] .favorite-toggle:hover,
+html[data-theme="dark"] .favorites-filter:hover{background:#2c4465!important}
+html[data-theme="dark"] .step7-card .full-image-link{display:flex}
+html[data-theme="dark"] .brand-logo,
+html[data-theme="dark"] .brand-logo img,
+html[data-theme="dark"] .mobile-header-brand img,
+html[data-theme="dark"] .app-icon-wrap img{
+ background:transparent!important;
+ border:none!important;
+ box-shadow:none!important;
+}
+html[data-theme="dark"] .sidebar::-webkit-scrollbar-thumb{background:#536d90}
+html[data-theme="dark"] .sidebar{scrollbar-color:#536d90 transparent}
+html[data-theme="dark"] .theme-toggle:focus-visible,
+html[data-theme="dark"] a:focus-visible,
+html[data-theme="dark"] button:focus-visible{outline:2px solid #a8cfff;outline-offset:2px}
+@media(max-width:760px){
+ html[data-theme="dark"] .mobile-bottom-nav{box-shadow:0 -8px 28px #0005}
+ html[data-theme="dark"] .sidebar-scrim.show{background:rgba(0,0,0,.68)}
+}
+
+/* Step 16.9: borderless mobile AI mascot, in both themes */
+@media (max-width: 760px) {
+  html[data-theme="dark"] .topbar .mobile-ai-shortcut,
+  html[data-theme="light"] .topbar .mobile-ai-shortcut,
+  .topbar .mobile-ai-shortcut {
+    border: 0 !important;
+    outline: 0;
+    box-shadow: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    overflow: visible;
+  }
+  .topbar .mobile-ai-shortcut img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+  .topbar .mobile-ai-shortcut:focus-visible {
+    outline: 2px solid #95c2ff;
+    outline-offset: 3px;
+    border-radius: 6px !important;
+  }
+}
