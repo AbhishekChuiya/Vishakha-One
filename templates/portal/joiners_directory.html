@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<style>
+.vone-directory{max-width:1250px;margin:0 auto;padding:12px 0 40px}.vone-directory h1{font-size:clamp(24px,3vw,34px);margin:6px 0}.vone-directory-lead{opacity:.75;margin-bottom:20px}.vone-directory-filter{display:flex;flex-wrap:wrap;align-items:end;gap:12px;padding:16px;border:1px solid var(--line,#dbe1e8);border-radius:14px;margin-bottom:20px}.vone-directory-filter label{display:grid;gap:6px;font-size:13px;font-weight:600;flex:1;min-width:160px}.vone-directory-filter input,.vone-directory-filter select{width:100%;padding:10px;border:1px solid #b9c5d2;border-radius:9px;background:var(--surface,#fff);color:inherit}.vone-directory-filter button,.vone-directory-filter a{padding:10px 15px;border-radius:9px;text-decoration:none;border:1px solid #bdc7d2;font-size:14px}.vone-directory-filter button{background:#af2631;color:#fff;border-color:#af2631;cursor:pointer}.vone-directory-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}.vone-person{border:1px solid var(--line,#dbe1e8);border-radius:15px;padding:16px;text-align:center;min-width:0;background:var(--surface,#fff)}.vone-person-image{width:100px;height:110px;display:grid;place-items:center;margin:0 auto 12px;border-radius:12px;background:rgba(130,145,165,.09);overflow:hidden}.vone-person-image img{width:100%;height:100%;object-fit:contain}.vone-person-placeholder{font-size:35px;opacity:.6}.vone-person h2{font-size:16px;margin:4px 0;overflow-wrap:anywhere}.vone-person p{font-size:13px;margin:6px 0;opacity:.8}.vone-person .vone-person-dept{font-size:12px;font-weight:700;opacity:.95}.vone-person a{display:inline-block;margin-top:8px;color:#b32830;font-weight:700;font-size:13px}.vone-directory-count{font-size:13px;opacity:.8;margin:0 0 15px}.vone-directory-empty{padding:30px;text-align:center;border:1px dashed #aab7c5;border-radius:14px}@media(max-width:550px){.vone-directory-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.vone-person{padding:11px}.vone-person-image{width:80px;height:90px}.vone-directory-filter label{min-width:100%}}
+</style>
+<main class="vone-directory">
+ <div class="eyebrow">VISHAKHA ONE / PEOPLE</div>
+ <h1>New Joiners Directory</h1>
+ <p class="vone-directory-lead">Meet colleagues who recently joined Vishakha.</p>
+ <form class="vone-directory-filter" method="get" action="{% url 'portal:section' 'joiners' %}">
+  <label>Search name or role<input type="search" name="q" value="{{ query|default:'' }}" placeholder="Name, designation, department…"></label>
+  <label>Department<select name="department"><option value="">All departments</option>{% for value in departments %}<option value="{{ value }}" {% if selected_department == value %}selected{% endif %}>{{ value }}</option>{% endfor %}</select></label>
+  <label>Location<select name="location"><option value="">All locations</option>{% for value in locations %}<option value="{{ value }}" {% if selected_location == value %}selected{% endif %}>{{ value }}</option>{% endfor %}</select></label>
+  <button type="submit">Search</button><a href="{% url 'portal:section' 'joiners' %}">Reset</a>
+ </form>
+ <p class="vone-directory-count" role="status">Showing {{ items|length }} new joiner{{ items|length|pluralize }}{% if items|length == 150 %} (first 150 results){% endif %}</p>
+ <div class="vone-directory-grid">
+ {% for person in items %}
+ <article class="vone-person">
+  <div class="vone-person-image">{% if person.photo %}<img src="{{ person.photo.url }}" alt="Portrait of {{ person.employee_name }}" loading="lazy">{% else %}<span class="vone-person-placeholder" aria-hidden="true">♙</span>{% endif %}</div>
+  <h2>{{ person.employee_name }}</h2><p>{{ person.designation|default:'New colleague' }}</p>
+  <p class="vone-person-dept">{{ person.department }}</p>
+  {% if person.location %}<p>{{ person.location }}</p>{% endif %}
+  {% if person.joining_date %}<p>Joined {{ person.joining_date|date:'d M Y' }}</p>{% endif %}
+  {% if person.introduction_document %}<a href="{{ person.introduction_document.url }}" class="vone-joiner-document-link">View introduction ↗</a>{% endif %}
+ </article>
+ {% empty %}<div class="vone-directory-empty">No published new joiners match these filters. <a href="{% url 'portal:section' 'joiners' %}">Clear filters</a>.</div>{% endfor %}
+ </div>
+</main>
+{% endblock %}

@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-%^pu8o%b@9%%^&fd%^d*c$lm*@m79s7)1$c#2vvsoltoah6d%6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.21.155', '127.0.0.1']
+ALLOWED_HOSTS = ['192.168.21.155', '127.0.0.1', 'localhost', '192.168.1.3']
 
 
 # Application definition
@@ -146,3 +146,7 @@ LOGOUT_REDIRECT_URL = "/content-manager/login/"
 
 TIME_ZONE = "Asia/Kolkata"
 USE_TZ = True
+
+CONTENT_APPROVAL_REMINDER_HOURS = "24,48,72"
+CONTENT_APPROVAL_ESCALATE_AFTER_HOURS = 72
+CONTENT_APPROVAL_ESCALATE_TO = "hod_username"

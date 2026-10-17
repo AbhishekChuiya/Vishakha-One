@@ -79,9 +79,28 @@ def section(request, slug):
         if q:
             data['items'] = data['items'].filter(Q(title__icontains=q) | Q(department__icontains=q) | Q(location__icontains=q))
     elif slug == 'joiners':
-        data['items'] = NewJoiner.objects.visible()
+        all_joiners = NewJoiner.objects.visible()
+        department = request.GET.get('department', '').strip()[:120]
+        location = request.GET.get('location', '').strip()[:120]
+        departments = list(all_joiners.exclude(department='').order_by('department').values_list('department', flat=True).distinct())
+        locations = list(all_joiners.exclude(location='').order_by('location').values_list('location', flat=True).distinct())
+        if department and department in departments:
+            all_joiners = all_joiners.filter(department=department)
+        else:
+            department = ''
+        if location and location in locations:
+            all_joiners = all_joiners.filter(location=location)
+        else:
+            location = ''
         if q:
-            data['items'] = data['items'].filter(Q(employee_name__icontains=q) | Q(department__icontains=q))
+            all_joiners = all_joiners.filter(
+                Q(employee_name__icontains=q) | Q(department__icontains=q)
+                | Q(designation__icontains=q) | Q(location__icontains=q)
+            )
+        data.update(items=all_joiners.order_by('-joining_date', 'employee_name')[:150],
+                    departments=departments, locations=locations,
+                    selected_department=department, selected_location=location)
+        return render(request, 'portal/joiners_directory.html', data)
     return render(request, 'portal/section.html', data)
 
 

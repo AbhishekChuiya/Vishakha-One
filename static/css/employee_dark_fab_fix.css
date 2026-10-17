@@ -1,0 +1,18 @@
+/* Step 16.49: single floating AI entry, no overlapping search button. */
+.vone-global-search-shortcut{display:none!important}
+.ai-fab{right:22px;bottom:24px;z-index:48;display:grid;place-items:center}
+.ai-fab img{max-width:100%;max-height:100%;object-fit:contain}
+@media(max-width:760px){.ai-fab{display:none!important} .chat-panel{bottom:calc(70px + env(safe-area-inset-bottom,0px));right:12px;max-height:calc(100dvh - 100px)}}
+/* Ensure dark-mode input, card and text contrast in joiners directory */
+html[data-theme="dark"] .vone-directory{color:#eaf1fa}
+html[data-theme="dark"] .vone-directory-lead,html[data-theme="dark"] .vone-directory-count{color:#b9c8dc;opacity:1}
+html[data-theme="dark"] .vone-directory-filter,html[data-theme="dark"] .vone-person,html[data-theme="dark"] .vone-directory-empty{background:#17283d!important;border-color:#3a5069!important;color:#eaf1fa!important}
+html[data-theme="dark"] .vone-directory-filter input,html[data-theme="dark"] .vone-directory-filter select{background:#102035!important;color:#f0f5fd!important;border-color:#53677f!important}
+html[data-theme="dark"] .vone-directory-filter input::placeholder{color:#a9bbd1}
+html[data-theme="dark"] .vone-directory-filter select option{background:#102035;color:#f0f5fd}
+html[data-theme="dark"] .vone-directory-filter a{color:#eaf1fa!important;border-color:#53677f!important}
+html[data-theme="dark"] .vone-person-image{background:#253b54!important}
+html[data-theme="dark"] .vone-person h2{color:#fff!important}
+html[data-theme="dark"] .vone-person p{color:#c9d6e6!important;opacity:1}
+html[data-theme="dark"] .vone-person a,html[data-theme="dark"] .vone-directory-empty a{color:#ffb3b7!important}
+html[data-theme="dark"] .vone-directory-filter button{background:#c63b48;border-color:#c63b48;color:#fff}
