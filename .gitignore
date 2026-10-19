@@ -1,39 +1,59 @@
 Python cache files
 
-pycache/ *.py[cod] *$py.class
+__pycache__/
+*.py[cod]
+*$py.class
 
 Virtual environments
 
-venv/ .venv/ env/ ENV/
+venv/
+.venv/
+env/
+ENV/
 vishakha_one_venv
 
 Django files
 
-*.log local_settings.py db.sqlite3 db.sqlite3-journal media/ staticfiles/
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
 
 Environment variables and secrets
 
-.env .env.* !.env.example
+.env
+.env.*
+!.env.example
 
 Test and coverage files
 
-.coverage htmlcov/ .pytest_cache/ .tox/
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
 
 Type checking and linting
 
-.mypy_cache/ .ruff_cache/
+.mypy_cache/
+.ruff_cache/
 
 IDE and editor files
 
-.vscode/ .idea/
+.vscode/
+.idea/
 
 OS-generated files
 
-.DS_Store Thumbs.db
+.DS_Store
+Thumbs.db
 
 Build and distribution files
 
-build/ dist/ *.egg-info/
+build/
+dist/
+*.egg-info/
 
 Jupyter Notebook checkpoints
 
