@@ -2,14 +2,14 @@
 <div class="dashboard-intro"><div><span class="eyebrow">VISHAKHA ONE / EMPLOYEE</span><h1>My Profile</h1><p>Your account and employee workspace in one place.</p></div></div>
 <div class="employee-profile-layout">
 <section class="employee-profile-card" aria-labelledby="profile-heading">
- <div class="employee-profile-banner" aria-hidden="true"><span>VISHAKHA ONE</span><span>EMPLOYEE WORKSPACE</span></div>
+ <div class="employee-profile-banner" aria-hidden="true"><span>VISHAKHA ONE</span><span>EMPLOYEE PROFILE</span></div>
  <div class="employee-profile-body">
-  <div class="employee-profile-context" aria-label="Profile data source">Account details · Read only</div>
+  
   <div class="employee-profile-avatar" aria-hidden="true">{% if profile_signed_in %}{{ profile_name|first|upper }}{% else %}?{% endif %}</div>
   {% if profile_signed_in %}
-   <span class="employee-profile-status"><span aria-hidden="true">●</span> Signed in</span>
+   <span class="employee-profile-status"><span aria-hidden="true">●</span> Account active</span>
    <h2 id="profile-heading">{{ profile_name }}</h2>
-   <p>Vishakha One account · Details shown from your signed-in account</p>
+   <p class="employee-profile-subtitle">Your secure Vishakha One workspace account</p>
    <dl class="employee-profile-details">
     <div><dt>Username</dt><dd>{{ profile_username }}</dd></div>
     <div><dt>Email address</dt><dd>{% if profile_email %}<a href="mailto:{{ profile_email }}">{{ profile_email }}</a>{% else %}<span class="profile-unavailable">Not available in your account</span>{% endif %}</dd></div>
@@ -17,7 +17,7 @@
    </dl>
   {% else %}
    <h2 id="profile-heading">Employee profile</h2>
-   <p>Sign in to view your account details. This portal does not expose personal information to visitors.</p>
+   <p>Sign in with your employee account to view your profile details securely.</p>
   {% endif %}
  </div>
 </section>
@@ -28,6 +28,6 @@
   <a href="{% url 'portal:section' 'policies' %}"><span aria-hidden="true">▤</span><span>Company Policies</span><span aria-hidden="true">↗</span></a>
   <a href="{% url 'portal:section' 'help' %}"><span aria-hidden="true">?</span><span>Help & Support</span><span aria-hidden="true">↗</span></a>
  </div></section>
- <section class="employee-profile-widget"><span class="employee-profile-kicker">ACCOUNT INFORMATION</span><h3>About your profile</h3><p>Information displayed here comes from your current Vishakha One login. Department, designation, manager and phone number are not displayed unless a verified HR integration supplies them. For account corrections, contact your portal administrator.</p></section>
+ <section class="employee-profile-widget employee-profile-about"><span class="employee-profile-kicker">ACCOUNT INFORMATION</span><h3>About your profile</h3><p>Information displayed here comes from your current Vishakha One login. Department, designation, manager and phone number are not displayed unless a verified HR integration supplies them. For account corrections, contact your portal administrator.</p></section>
 </aside></div>
 {% endblock %}

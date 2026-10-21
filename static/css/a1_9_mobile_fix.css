@@ -1,0 +1,21 @@
+/* A1.9 mobile bell: remove conflicting historic fixed/absolute layouts. */
+#notification-menu.notification-center{padding:0!important;display:flex!important;flex-direction:column!important;overflow:hidden!important;isolation:auto!important}
+#notification-menu.notification-center[hidden]{display:none!important}
+#notification-menu .nc-header{position:relative;flex:none;padding:16px 18px 12px!important}
+#notification-menu #nc-close{position:static!important;display:flex!important;align-items:center;justify-content:center;flex:none;width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;padding:0!important;border:1px solid #dce4ee!important;border-radius:10px!important;background:#fff!important;color:#4e6077!important;font-size:22px!important;line-height:1!important;box-shadow:none!important;transform:none!important}
+#notification-menu .nc-tabs{flex:none;padding:0 18px 12px!important}
+#notification-menu .nc-items{flex:1 1 auto;min-height:0!important;overflow-y:auto!important}
+#notification-menu .nc-empty{padding:24px 18px!important;min-height:110px!important}
+#notification-menu .nc-footer{display:flex!important;flex:none;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 14px!important}
+#notification-menu .vone-company-bell-link{display:inline-flex!important;align-items:center;justify-content:center;flex:1 1 160px;min-height:44px!important;margin:0!important;padding:10px 12px!important;border-radius:10px!important;position:static!important;white-space:normal!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important}
+#notification-menu #nc-read-all{position:static!important;flex:0 1 auto;min-height:42px!important;margin:0!important}
+@media(max-width:900px){
+ #notification-menu.notification-center:not([hidden]){position:fixed!important;top:calc(92px + env(safe-area-inset-top))!important;left:12px!important;right:12px!important;width:calc(100vw - 24px)!important;max-width:none!important;max-height:min(520px,calc(100dvh - 210px))!important;min-height:0!important;overflow:hidden!important;transform:none!important;z-index:30000!important;background:#fff!important;border-radius:18px!important;box-shadow:0 16px 45px #152d4a38!important}
+ #notification-menu .nc-empty{min-height:120px!important}
+ #notification-menu .nc-footer{padding:10px 12px!important}
+ /* Four homepage apps initially, even if older JavaScript was cached. */
+ #app-grid[data-home-app-grid]:not([data-app-expanded="true"])>.app-card:nth-child(n+5){display:none!important}
+}
+@media(max-width:767px){#app-grid[data-home-app-grid]>.app-card.vone-app-collapsed{display:none!important}}
+html[data-theme="dark"] #notification-menu.notification-center{background:#17283f!important;color:#eef4ff!important}
+html[data-theme="dark"] #notification-menu #nc-close{background:#233a56!important;border-color:#47617f!important;color:#eef4ff!important}

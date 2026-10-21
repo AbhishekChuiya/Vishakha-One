@@ -1,0 +1,39 @@
+/* A1.4: mobile profile button and readable notice cards */
+#profile-toggle .vone-employee-icon{display:inline-flex!important;visibility:visible!important;opacity:1!important;flex:0 0 38px!important;align-items:center!important;justify-content:center!important;width:38px!important;height:38px!important;border-radius:50%!important;background:#e8f1ff!important;border:1px solid #9db9df!important;color:#174d90!important;position:relative!important}
+#profile-toggle .vone-employee-icon svg{display:block!important;visibility:visible!important;opacity:1!important;width:23px!important;height:23px!important;stroke:#174d90!important;fill:none!important}
+#profile-toggle{display:inline-flex!important;align-items:center!important;justify-content:center!important;min-width:44px!important;min-height:44px!important;visibility:visible!important}
+html[data-theme="dark"] #profile-toggle .vone-employee-icon{background:#24374b!important;border-color:#7089a9!important}
+html[data-theme="dark"] #profile-toggle .vone-employee-icon svg{stroke:#e8f1ff!important}
+.vone-alert-ticker{overflow:visible;max-width:100%;box-sizing:border-box}
+.vone-alert-window{overflow:hidden}
+.vone-alert-track{animation:none!important;transform:none!important;display:flex;flex-direction:column;align-items:stretch;width:100%;min-width:0;gap:0;padding:4px 10px}
+.vone-alert-item{width:100%;min-width:0;max-width:100%;box-sizing:border-box;flex-wrap:wrap;gap:6px 9px;padding:5px 0;white-space:normal;overflow-wrap:anywhere}
+.vone-alert-text{white-space:normal!important;overflow-wrap:anywhere;flex:1 1 160px;min-width:0}
+.vone-alert-detail{display:inline;white-space:normal}
+.vone-notice-dismiss{margin-left:auto;flex:none;min-width:32px;min-height:32px;border:1px solid #e1c99a;border-radius:8px;background:#fff9e9;color:#76450d}
+.vone-alert-all{align-self:stretch}
+.vone-home-menu-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
+.vone-home-menu-day{min-width:0;background:var(--surface,#fff);border:1px solid #dbe3ee;border-radius:15px;padding:15px}
+.vone-home-menu-day header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding-bottom:10px;border-bottom:1px solid #e2e8f1}
+.vone-home-menu-day header small{color:#64748b}.vone-home-menu-day dl{margin:10px 0 0}.vone-home-menu-day dt{font-size:11px;color:#64748b;font-weight:750;margin-top:9px}.vone-home-menu-day dd{font-size:13px;margin:2px 0 0;overflow-wrap:anywhere}
+.vone-home-menu-snack{display:flex;flex-direction:column;gap:4px;border-top:1px solid #e2e8f1;padding-top:12px;margin-top:12px;font-size:13px}.vone-home-menu-snack span{font-size:11px;color:#64748b;font-weight:750}
+.vone-home-menu-day.is-today{border-color:#2c67bd;box-shadow:0 0 0 1px #2c67bd}.vone-home-menu-day.is-holiday{background:#f1f3f7}.vone-menu-closed{color:#64748b;font-size:13px}
+.vone-canteen-full-link{display:inline-flex;align-items:center;min-height:40px;color:#2459a6;font-weight:700;text-decoration:none}
+@media(max-width:850px){.vone-home-menu-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){
+ #profile-toggle{padding:3px!important;width:46px!important;height:46px!important;flex:0 0 46px!important}
+ #profile-toggle .vone-employee-icon{width:38px!important;height:38px!important;flex-basis:38px!important}
+ #profile-toggle .profile-label,#profile-toggle>span:last-child:not(.vone-employee-icon){display:none!important}
+ .vone-alert-ticker{display:grid;grid-template-columns:1fr auto;grid-template-areas:"label link" "body body";border-radius:14px;overflow:hidden}
+ .vone-alert-label{grid-area:label;align-self:center;min-height:42px;box-sizing:border-box;background:transparent;color:inherit;padding:9px 12px}
+ .vone-alert-all{grid-area:link;align-self:stretch;padding:9px 12px;border-left:1px solid #e6c68c;font-size:12px}
+ .vone-alert-window{grid-area:body;min-width:0;overflow:visible;border-top:1px solid #ecd7aa}
+ .vone-alert-track{padding:4px 12px}
+ .vone-alert-item{align-items:flex-start;gap:7px;padding:9px 0;font-size:13px;line-height:1.5}
+ .vone-alert-text{flex:1 1 calc(100% - 92px);font-size:13px}
+ .vone-alert-detail{display:block;margin-top:3px;font-size:12px}
+ .vone-alert-dot{display:none}
+ .vone-notice-dismiss{margin-left:0}
+ .vone-home-menu-grid{grid-template-columns:1fr}
+ .vone-home-menu-day{padding:14px}
+}

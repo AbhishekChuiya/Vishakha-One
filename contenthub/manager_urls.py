@@ -4,6 +4,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.cache import never_cache
 from . import manager_views as views
 from . import announcement_overview
+from . import canteen_views
 
 app_name = 'content_manager'
 urlpatterns = [
@@ -16,6 +17,7 @@ urlpatterns = [
         name="login",
     ),
     path('logout/', never_cache(LogoutView.as_view(next_page='content_manager:login')), name='logout'),
+    path('canteen-menu/', canteen_views.edit_week, name='canteen_menu'),
     path('announcement-overview/', announcement_overview.announcement_overview, name='announcement_overview'),
     path('notifications/', views.notification_center, name='notification_center'),
     path('notifications/read-all/', views.mark_all_notifications_read, name='notifications_read_all'),

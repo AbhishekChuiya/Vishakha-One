@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .models import CompanyApplication
-from contenthub.models import Announcement, Resource, JobOpening, NewJoiner, Event
+from contenthub.models import Announcement, Resource, JobOpening, NewJoiner, Event, AnnouncementReceipt, CanteenDay
 
 NAV = [
     ('home', 'Home', '⌂'), ('apps', 'My Apps', '▦'),
@@ -23,12 +23,31 @@ def context():
 
 
 def home(request):
+    from datetime import timedelta
     data = context()
+    now = timezone.localdate()
+    monday = now - timedelta(days=now.weekday())
+    week_dates = [monday + timedelta(days=i) for i in range(6)]
+    menus = {item.date: item for item in CanteenDay.objects.filter(date__in=week_dates)}
+    data['homepage_canteen_days'] = [
+        {'date': day, 'menu': menus.get(day), 'is_today': day == now}
+        for day in week_dates
+    ]
+    notices = list(Announcement.objects.visible().filter(category='announcement').order_by('-published_at', '-pk')[:30])
+    if request.user.is_authenticated:
+        read = dict(AnnouncementReceipt.objects.filter(
+            recipient=request.user, announcement__in=notices
+        ).values_list('announcement_id', 'seen_revision'))
+        notices = [notice for notice in notices if read.get(notice.pk) != notice.updated_at]
+    else:
+        # Public homepage: anonymous visitors can dismiss notices for their session.
+        dismissed = set(request.session.get('vone_dismissed_notices', []))
+        notices = [notice for notice in notices if f'{notice.pk}:{notice.updated_at.isoformat()}' not in dismissed]
     data.update(
         section='home', heading='Home',
         announcements=Announcement.objects.visible().exclude(category='gallery')[:4],
         recognitions=Announcement.objects.visible().filter(category='recognition')[:6],
-        portal_notices=Announcement.objects.visible().filter(category='announcement').order_by('-published_at', '-pk')[:30],
+        portal_notices=notices,
         featured_policies=Resource.objects.visible().filter(kind='policy')[:3],
         gallery_photos=(list(Announcement.objects.visible().filter(category='gallery').exclude(image='').order_by('-published_at')[:8]) or
                         (list(Event.objects.visible().exclude(image='').order_by('-published_at')[:8]) +
@@ -161,16 +180,19 @@ def search(request):
     return render(request, 'portal/search.html', data)
 
 
-@login_required
 def notifications(request):
     """Employee-facing published announcements with optional unread filter."""
     data = context()
     notices = list(Announcement.objects.visible().filter(category='announcement')
                    .order_by('-published_at', '-pk')[:100])
-    receipts = AnnouncementReceipt.objects.filter(
-        recipient=request.user, announcement__in=notices
-    ).values_list('announcement_id', 'seen_revision')
-    seen = dict(receipts)
+    if request.user.is_authenticated:
+        seen = dict(AnnouncementReceipt.objects.filter(
+            recipient=request.user, announcement__in=notices
+        ).values_list('announcement_id', 'seen_revision'))
+    else:
+        dismissed = set(request.session.get('vone_dismissed_notices', []))
+        seen = {n.pk: n.updated_at for n in notices
+                if f'{n.pk}:{n.updated_at.isoformat()}' in dismissed}
     for item in notices:
         item.employee_read = seen.get(item.pk) == item.updated_at
     unread_count = sum(not item.employee_read for item in notices)
@@ -191,21 +213,38 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from contenthub.models import AnnouncementReceipt
 
-@login_required
 @require_GET
 def announcement_notification_feed(request):
     """Unread published announcements, scoped to the logged-in employee."""
     notices = list(Announcement.objects.visible().filter(category='announcement').order_by('-published_at')[:30])
-    read = dict(AnnouncementReceipt.objects.filter(recipient=request.user, announcement__in=notices).values_list('announcement_id', 'seen_revision'))
+    if request.user.is_authenticated:
+        read = dict(AnnouncementReceipt.objects.filter(
+            recipient=request.user, announcement__in=notices
+        ).values_list('announcement_id', 'seen_revision'))
+    else:
+        dismissed = set(request.session.get('vone_dismissed_notices', []))
+        read = {n.pk: n.updated_at for n in notices
+                if f'{n.pk}:{n.updated_at.isoformat()}' in dismissed}
     unread = [n for n in notices if read.get(n.pk) != n.updated_at]
     return JsonResponse({'unread_count':len(unread), 'items':[{'id':n.pk, 'title':n.title, 'summary':n.summary or '', 'event_at':timezone.localtime(n.event_at).strftime('%d %b %Y, %I:%M %p') if n.event_at else '', 'location':n.event_location or '', 'published_at':timezone.localtime(n.published_at).strftime('%d %b %Y') if n.published_at else ''} for n in unread[:8]]})
 
-@login_required
 @require_POST
 def mark_announcement_read(request, pk):
     notice = get_object_or_404(Announcement.objects.visible().filter(category='announcement'), pk=pk)
-    AnnouncementReceipt.objects.update_or_create(recipient=request.user, announcement=notice, defaults={'seen_revision':notice.updated_at})
-    return redirect('portal:notifications')
+    if request.user.is_authenticated:
+        AnnouncementReceipt.objects.update_or_create(
+            recipient=request.user, announcement=notice,
+            defaults={'seen_revision': notice.updated_at})
+    else:
+        # Anonymous homepage visitors have no employee identity: session only.
+        key = f'{notice.pk}:{notice.updated_at.isoformat()}'
+        dismissed = list(request.session.get('vone_dismissed_notices', []))
+        if key not in dismissed:
+            dismissed.append(key)
+        request.session['vone_dismissed_notices'] = dismissed[-100:]
+    if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        return JsonResponse({'ok': True, 'id': notice.pk})
+    return redirect('portal:home' if request.POST.get('next') == 'home' else 'portal:notifications')
 
 
 @login_required

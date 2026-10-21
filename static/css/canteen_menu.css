@@ -1,0 +1,27 @@
+/* Shared employee header icon + weekly menu UI */
+#profile-toggle .vone-employee-icon{width:38px;height:38px;min-width:38px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#254e83;background:#e8f1ff;border:1px solid #b9cce5}
+html[data-theme="dark"] #profile-toggle .vone-employee-icon{background:#24374b;color:#e9f2ff;border-color:#516477}
+@media(max-width:767px){#profile-toggle .vone-employee-icon{width:34px;height:34px;min-width:34px}#profile-toggle{min-width:42px;min-height:42px;display:inline-flex;align-items:center;justify-content:center}}
+.vone-canteen-wrap{max-width:1120px;margin:0 auto;padding:20px 16px 120px}
+.vone-canteen-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:18px}
+.vone-canteen-head h1{margin:0;font-size:clamp(1.45rem,3vw,2rem)}
+.vone-canteen-nav{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.vone-canteen-nav a{padding:9px 13px;border:1px solid #ccd5e2;border-radius:10px;text-decoration:none;color:inherit}
+.vone-canteen-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.vone-canteen-day{border:1px solid #dce3ed;border-radius:16px;padding:18px;background:var(--surface,#fff);min-width:0}
+.vone-canteen-day.today{border:2px solid #3264ad}
+.vone-canteen-day.holiday{background:#f2f3f6;opacity:.78}
+.vone-canteen-day h2{font-size:1.1rem;margin:0 0 12px}
+.vone-canteen-day dl{margin:0}.vone-canteen-day dt{font-size:.77rem;font-weight:700;opacity:.75;margin-top:10px}.vone-canteen-day dd{margin:3px 0 0;overflow-wrap:anywhere}
+.vone-canteen-snacks{margin-top:16px;padding-top:12px;border-top:1px solid #dce3ed}
+.vone-canteen-muted{opacity:.7}
+.vone-canteen-form .day-form{border:1px solid #dce3ed;border-radius:14px;padding:16px;min-width:0}
+.vone-canteen-form .day-form label{display:block;font-size:.82rem;font-weight:650;margin:9px 0 4px}
+.vone-canteen-form .day-form input[type=text]{width:100%;box-sizing:border-box;min-height:40px}
+.vone-canteen-form .day-form .holiday-row{display:flex;align-items:center;gap:8px}
+.vone-canteen-form .day-form .holiday-row label{margin:0}
+.vone-canteen-form .day-form .errorlist{color:#a52030}
+.vone-canteen-form .day-form.is-holiday .lunch-fields{opacity:.4;pointer-events:none}
+.vone-canteen-form .save-menu{margin-top:18px;background:#b52d3c;color:#fff;padding:12px 22px;border:0;border-radius:10px;font-weight:700;cursor:pointer}
+@media(max-width:900px){.vone-canteen-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.vone-canteen-grid{grid-template-columns:1fr}.vone-canteen-wrap{padding:16px 12px 110px}}

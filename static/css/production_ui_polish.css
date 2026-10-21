@@ -1,0 +1,34 @@
+/* A1 final cascade: shared sizing, tap targets and collision-free controls. */
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-padding-top:80px}body{overflow-x:hidden}
+button,input,select,textarea{font:inherit}
+button,a,[role="button"]{-webkit-tap-highlight-color:transparent}
+button:not(:disabled),a{touch-action:manipulation}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #d99b35;outline-offset:3px}
+button:disabled{cursor:not-allowed;opacity:.6}
+img,video,iframe{max-width:100%}
+.page,.workspace,.shell,.topbar,.top-actions{min-width:0}
+.page{overflow-wrap:anywhere}
+.topbar{gap:10px}.top-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.top-actions>button{flex-shrink:0}.top-search{min-width:120px;max-width:100%}
+.notification-menu,.profile-menu{max-width:min(420px,calc(100vw - 24px));max-height:min(72vh,680px);overflow-y:auto;overscroll-behavior:contain}
+.notification-menu[hidden],.profile-menu[hidden],.sidebar-scrim[hidden]{display:none!important}
+#notification-toggle{min-width:42px;min-height:42px}
+.ai-fab{right:max(16px,env(safe-area-inset-right));bottom:max(18px,env(safe-area-inset-bottom));z-index:45}
+.back-to-top:not([hidden]){right:18px;bottom:94px}
+.chat-panel{max-width:min(440px,calc(100vw - 24px));max-height:min(720px,calc(100dvh - 28px))}
+.chat-panel[aria-hidden="true"]{pointer-events:none}
+@media(max-width:1024px){.topbar{flex-wrap:wrap}.top-actions{margin-left:auto}.top-search{flex:1 1 220px}}
+@media(max-width:767px){
+ .page{padding-bottom:calc(90px + env(safe-area-inset-bottom))}
+ .topbar{gap:8px}.topbar-title{min-width:0}.topbar-title strong{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ .top-actions{gap:5px}.top-actions>button{min-width:40px;min-height:40px}
+ .notification-menu,.profile-menu{position:fixed!important;left:12px!important;right:12px!important;top:calc(64px + env(safe-area-inset-top))!important;width:auto!important;max-width:none!important;max-height:calc(100dvh - 150px)!important;z-index:110}
+ .mobile-bottom-nav{padding-bottom:env(safe-area-inset-bottom);z-index:65}
+ .ai-fab{display:none!important} /* Mobile nav already has Ask AI */
+ .back-to-top:not([hidden]){bottom:calc(92px + env(safe-area-inset-bottom));right:12px}
+ .chat-panel{position:fixed!important;left:8px!important;right:8px!important;bottom:calc(76px + env(safe-area-inset-bottom))!important;width:auto!important;max-width:none!important;max-height:calc(100dvh - 100px)!important;z-index:120}
+ .desktop-bookmarks{overflow-x:auto;scrollbar-width:thin}
+}
+@media(max-width:390px){.top-actions .quick-nav-launch span,.top-actions .ai-top span{display:none}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
