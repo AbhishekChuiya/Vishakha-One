@@ -1,0 +1,23 @@
+[Unit]
+Description=Vishakha One Django web service
+After=network-online.target postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=vone
+Group=www-data
+WorkingDirectory=/srv/vishakha-one/app
+Environment=VONE_ENV=staging
+Environment=DJANGO_SETTINGS_MODULE=config.settings_deploy
+# IT: protect this file (chmod 600), do not commit secrets
+EnvironmentFile=/etc/vishakha-one/staging.env
+ExecStart=/srv/vishakha-one/venv/bin/gunicorn config.wsgi:application --bind 127.0.0.1:8101 --workers 3 --timeout 60 --access-logfile - --error-logfile -
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+UMask=0027
+
+[Install]
+WantedBy=multi-user.target
