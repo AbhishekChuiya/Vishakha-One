@@ -1,0 +1,26 @@
+{% extends 'content_manager/base.html' %}{% load static %}
+{% block content %}
+<div class="vone-canteen-wrap" style="padding:0 0 50px">
+<div class="vone-canteen-head"><div><h1>Weekly Canteen Menu</h1><p>Enter lunch and evening snacks for each day. Holiday clears the day's menu.</p></div>
+<nav class="vone-canteen-nav"><a href="?week={{ previous|date:'Y-m-d' }}">← Previous</a><a href="{% url 'content_manager:canteen_menu' %}">Current week</a><a href="?week={{ following|date:'Y-m-d' }}">Next →</a></nav></div>
+<form class="vone-canteen-form" method="post">{% csrf_token %}<input type="hidden" name="week" value="{{ monday|date:'Y-m-d' }}">
+<div class="vone-canteen-grid">{% for day, form in days %}
+<section class="day-form {% if form.instance.is_holiday %}is-holiday{% endif %}">
+<h2>{{ day|date:"l, d M Y" }}</h2>
+<div class="holiday-row">{{ form.is_holiday }}<label for="{{ form.is_holiday.id_for_label }}">Holiday / Canteen closed</label></div>
+<div class="lunch-fields">
+{% for field in form %}{% if field.name != 'is_holiday' %}<label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{{ field.errors }}{% endif %}{% endfor %}
+</div></section>{% endfor %}</div>
+<button type="submit" class="save-menu">Save weekly menu</button>
+</form></div>
+<link rel="stylesheet" href="{% static 'css/canteen_menu.css' %}?v=1.0">
+<script>
+document.querySelectorAll('.vone-canteen-form .day-form').forEach(card=>{
+ const box=card.querySelector('input[type=checkbox]');
+ const inputs=card.querySelectorAll('.lunch-fields input');
+ if(!box)return;
+ const update=()=>{card.classList.toggle('is-holiday',box.checked);inputs.forEach(i=>{i.disabled=box.checked;});};
+ box.addEventListener('change',update);update();
+});
+</script>
+{% endblock %}

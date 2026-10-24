@@ -1,0 +1,37 @@
+/* A1.5 clean responsive notices and canteen tabs */
+.vone-notice-modern{background:var(--surface,#fff);border:1px solid #d9e3f0;border-radius:17px;margin:18px 0 20px;overflow:hidden;box-shadow:0 5px 18px rgba(28,54,85,.04)}
+.vone-notice-modern-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 17px;border-bottom:1px solid #e9edf4}
+.vone-notice-modern-label{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:800;color:#284f83}
+.vone-notice-modern-head a{color:#2461b5;text-decoration:none;font-size:12px;font-weight:750;white-space:nowrap}
+.vone-notice-modern-item{display:flex;align-items:flex-start;gap:10px;padding:15px 17px;min-width:0}
+.vone-notice-modern-item+.vone-notice-modern-item{border-top:1px solid #edf0f5}
+.vone-notice-modern-content{flex:1;min-width:0;overflow-wrap:anywhere}
+.vone-notice-modern-title{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:15px;line-height:1.5;color:var(--text,#18314d)}
+.vone-notice-modern-priority{background:#fff0f0;color:#b42332;border-radius:6px;padding:3px 7px;font-size:10px;text-transform:uppercase;letter-spacing:.035em}
+.vone-notice-modern-priority.important{background:#fff5df;color:#895608}
+.vone-notice-modern-meta{display:flex;gap:5px 15px;flex-wrap:wrap;margin-top:7px;font-size:12px;color:var(--muted,#66768a)}
+.vone-notice-modern-content p{font-size:13px;line-height:1.55;color:var(--muted,#53677f);margin:8px 0 0}
+.vone-notice-modern-close{flex:0 0 34px;width:34px;height:34px;border:1px solid #dce4ed;border-radius:9px;background:transparent;color:var(--muted,#64748b);font-size:21px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin:0}
+.vone-notice-modern-close:hover{background:#f1f5fa}
+.vone-menu-day-tabs{display:flex;gap:9px;overflow-x:auto;scroll-snap-type:x proximity;overscroll-behavior-x:contain;padding:3px 2px 13px;scrollbar-width:thin;max-width:100%}
+.vone-menu-day-tab{flex:1 0 100px;min-width:100px;max-width:165px;scroll-snap-align:start;border:1px solid #dce5f1;border-radius:13px;padding:10px 12px;background:var(--surface,#fff);color:var(--text,#1a3454);display:flex;flex-direction:column;gap:4px;text-align:left;cursor:pointer;box-shadow:none}
+.vone-menu-day-tab>span{font-size:12px;font-weight:650;color:var(--muted,#64748b)}
+.vone-menu-day-tab>strong{font-size:22px;line-height:1.2}
+.vone-menu-day-tab>small{font-size:11px;color:var(--muted,#64748b)}
+.vone-menu-day-tab[aria-selected=true]{background:#eaf2ff;border-color:#2e6ec5;box-shadow:inset 0 0 0 1px #2e6ec5;color:#2056a2}
+.vone-menu-panel{background:var(--surface,#fff);border:1px solid #dce5f0;border-radius:17px;padding:19px;min-width:0}
+.vone-menu-panel[hidden]{display:none!important}
+.vone-menu-panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.vone-menu-panel-head h2,.vone-menu-panel-head h3{font-size:clamp(17px,2vw,22px);margin:4px 0 0;color:var(--text,#193350)}
+.vone-menu-eyebrow{font-size:10px;font-weight:800;letter-spacing:.1em;color:#326bb8}
+.vone-menu-day-state{font-size:11px;font-weight:750;color:#3568a8;background:#eef4ff;padding:7px 10px;border-radius:20px}
+.vone-menu-food-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.vone-menu-food-grid>div{background:var(--surface-secondary,#f6f9fd);border:1px solid #e9eef5;border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:7px;min-width:0}
+.vone-menu-food-grid span{font-size:12px;color:var(--muted,#62758b)}
+.vone-menu-food-grid strong{font-size:14px;line-height:1.45;color:var(--text,#1b3554);overflow-wrap:anywhere}
+.vone-menu-snacks{margin-top:12px;border:1px solid #e1e9f4;background:var(--surface-secondary,#f6f9fd);border-radius:12px;padding:13px;display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:13px}
+.vone-menu-snacks strong{margin-left:auto;color:var(--text,#1b3554)}
+.vone-menu-empty{padding:30px 14px;text-align:center;background:var(--surface-secondary,#f6f9fd);border-radius:12px;color:var(--muted,#64748b)}
+.vone-canteen-modern .vone-canteen-nav a{font-size:12px}
+@media(max-width:650px){.vone-notice-modern{margin:12px 0 17px;border-radius:14px}.vone-notice-modern-head{padding:10px 12px}.vone-notice-modern-item{padding:12px}.vone-notice-modern-title{font-size:14px}.vone-menu-day-tabs{margin-right:-10px;padding-right:10px}.vone-menu-day-tab{flex:0 0 76px;min-width:76px;max-width:85px;padding:9px}.vone-menu-panel{padding:14px}.vone-menu-food-grid{grid-template-columns:1fr}.vone-menu-snacks strong{margin-left:0;width:100%}}
+html[data-theme=dark] .vone-menu-day-tab[aria-selected=true]{background:#1c3c65;color:#f1f7ff}html[data-theme=dark] .vone-menu-day-state{background:#1c3c65;color:#d7e8ff}

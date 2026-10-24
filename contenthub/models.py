@@ -164,3 +164,23 @@ class AnnouncementReceipt(models.Model):
 
     class Meta:
         constraints = [models.UniqueConstraint(fields=['recipient', 'announcement'], name='unique_employee_announcement_receipt')]
+
+
+class CanteenDay(models.Model):
+    """Daily lunch and snack schedule; empty values are allowed."""
+    date = models.DateField(unique=True, db_index=True)
+    is_holiday = models.BooleanField(default=False)
+    lunch_veg_dal = models.CharField(max_length=300, blank=True, verbose_name='Veg / Dal preparation')
+    lunch_roti = models.CharField(max_length=200, blank=True, verbose_name='Roti preparation')
+    lunch_rice = models.CharField(max_length=250, blank=True, verbose_name='Salad / Papad / Rice')
+    lunch_curd = models.CharField(max_length=250, blank=True, verbose_name='Curd / Sweet')
+    snacks = models.CharField(max_length=300, blank=True, verbose_name='Evening snacks')
+    updated_at = models.DateTimeField(auto_now=True)
+    updated_by = models.ForeignKey('auth.User', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
+
+    class Meta:
+        ordering = ('date',)
+        permissions = [('manage_canteen_menu', 'Can manage daily canteen menu')]
+
+    def __str__(self):
+        return f'Canteen menu: {self.date}'

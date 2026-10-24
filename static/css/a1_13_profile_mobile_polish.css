@@ -1,0 +1,51 @@
+/* A1.13: scoped UI polish; intentionally no model, URL, or canteen changes. */
+.employee-profile-layout{grid-template-columns:minmax(0,1.5fr) minmax(280px,.85fr)!important;gap:18px!important;align-items:start!important}
+.employee-profile-card,.employee-profile-widget{overflow:hidden!important;border-radius:20px!important}
+.employee-profile-banner{min-height:122px!important;display:flex!important;align-items:flex-start!important;justify-content:space-between!important;padding:24px 28px!important;background:linear-gradient(110deg,#163e70,#23689b 60%,#268a9b)!important;color:#fff!important}
+.employee-profile-body{padding:0 28px 30px!important}
+.employee-profile-avatar{display:grid!important;place-items:center!important;margin:-43px 0 14px!important;width:80px!important;height:80px!important;min-width:80px!important;border-radius:22px!important;border:5px solid var(--fix-bg,#fff)!important;background:#e9f2fb!important;color:#1b5380!important;font-weight:800!important;box-shadow:0 7px 20px #09284919!important}
+.employee-profile-status{display:inline-flex!important;vertical-align:middle!important;margin-bottom:5px!important}
+.employee-profile-body h2{margin:10px 0 6px!important;font-size:clamp(23px,3vw,30px)!important;line-height:1.2!important;overflow-wrap:anywhere!important}
+.employee-profile-subtitle{line-height:1.55!important;margin-bottom:22px!important}
+.employee-profile-details{border-top:1px solid var(--fix-border,#dfe7f0)!important}
+.employee-profile-details>div{grid-template-columns:minmax(115px,32%) minmax(0,1fr)!important;align-items:start!important;padding:15px 0!important}
+.employee-profile-details dd{min-width:0!important;overflow-wrap:anywhere!important}
+.employee-profile-widget{padding:23px!important}
+.employee-profile-links a{min-height:50px!important;border-radius:12px!important;transition:background .15s,border-color .15s!important}
+.employee-profile-links a span:nth-child(2){flex:1!important;min-width:0!important}
+html[data-theme=dark] .employee-profile-avatar{background:#254665!important;color:#eef7ff!important;border-color:#18283d!important}
+html[data-theme=dark] .employee-profile-banner{background:linear-gradient(110deg,#1c4269,#215e82 65%,#1e7180)!important}
+html[data-theme=dark] .employee-profile-details{border-color:#364a62!important}
+/* Notification popover: single close control, no overflow or ghost buttons. */
+#notification-menu.notification-center{isolation:isolate!important;box-sizing:border-box!important;display:flex!important;flex-direction:column!important;overflow:hidden!important;background:var(--a110-panel,#fff)!important;color:var(--a110-ink,#16304e)!important;border:1px solid var(--a110-border,#dae4ee)!important}
+#notification-menu.notification-center[hidden]{display:none!important}
+#notification-menu .nc-header{position:relative!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;padding:16px 18px!important}
+#notification-menu .nc-close{position:static!important;inset:auto!important;flex:none!important;display:grid!important;place-items:center!important;width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;padding:0!important;transform:none!important;border-radius:10px!important;border:1px solid var(--a110-border,#dae4ee)!important;background:var(--a110-panel-alt,#f4f7fa)!important;color:var(--a110-ink,#16304e)!important;font-size:23px!important;line-height:1!important}
+#notification-menu .nc-items{min-height:0!important;flex:1 1 auto!important;overflow-y:auto!important}
+#notification-menu .nc-empty{min-height:130px!important;box-sizing:border-box!important;padding:24px 18px!important}
+#notification-menu .nc-footer{display:flex!important;flex-wrap:wrap!important;gap:10px!important;align-items:center!important;justify-content:space-between!important;padding:12px 16px!important}
+#notification-menu .vone-company-bell-link{flex:1 1 180px!important;min-width:0!important;white-space:normal!important;overflow-wrap:anywhere!important;text-align:left!important;line-height:1.45!important;padding:10px 12px!important}
+#notification-menu #nc-read-all{flex:0 1 auto!important;white-space:normal!important}
+html[data-theme=dark] #notification-menu.notification-center{background:#17283e!important;color:#eff5ff!important;border-color:#39516b!important}
+html[data-theme=dark] #notification-menu .nc-close{background:#243b55!important;color:#f1f7ff!important;border-color:#415a75!important}
+@media(max-width:900px){
+ .employee-profile-layout{grid-template-columns:1fr!important}
+ .employee-profile-side{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+ #notification-menu.notification-center:not([hidden]){position:fixed!important;top:calc(78px + env(safe-area-inset-top))!important;left:12px!important;right:12px!important;width:calc(100vw - 24px)!important;max-width:none!important;max-height:min(68dvh,540px)!important;margin:0!important;transform:none!important;z-index:30000!important}
+ #notification-menu .nc-items{max-height:none!important;min-height:100px!important}
+}
+@media(max-width:600px){
+ .employee-profile-layout{gap:14px!important;margin-top:18px!important}
+ .employee-profile-side{grid-template-columns:1fr!important}
+ .employee-profile-banner{min-height:108px!important;padding:19px!important}
+ .employee-profile-banner span{font-size:9px!important;letter-spacing:.04em!important}
+ .employee-profile-body{padding:0 19px 23px!important}
+ .employee-profile-avatar{margin-top:-40px!important;width:72px!important;height:72px!important;min-width:72px!important}
+ .employee-profile-details>div{grid-template-columns:1fr!important;gap:5px!important}
+ .employee-profile-widget{padding:19px!important}
+ #notification-menu.notification-center:not([hidden]){top:calc(72px + env(safe-area-inset-top))!important;max-height:min(64dvh,490px)!important}
+ #notification-menu .nc-footer{align-items:stretch!important}
+ #notification-menu .vone-company-bell-link{flex:1 1 100%!important}
+ #notification-menu #nc-read-all{align-self:flex-end!important}
+}
+@media(prefers-reduced-motion:reduce){.employee-profile-links a{transition:none!important}}

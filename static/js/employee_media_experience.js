@@ -5,7 +5,8 @@ document.addEventListener('DOMContentLoaded',function(){
   const grid=document.querySelector('#app-grid[data-home-app-grid]');
   const more=document.getElementById('vone-app-load-more');
   if(grid&&more){
-    let limit=6;
+    let limit=window.matchMedia('(max-width: 767px)').matches?4:6;
+    let step=window.matchMedia('(max-width: 767px)').matches?4:6;
     const cards=Array.from(grid.querySelectorAll('.app-card'));
     const search=document.getElementById('app-filter');
     const favorites=document.querySelector('.favorites-filter');
@@ -15,13 +16,18 @@ document.addEventListener('DOMContentLoaded',function(){
       const active=cards.filter(el=>!el.hidden&&!el.classList.contains('category-filtered-out'));
       // Keep user searches and favorite filters fully visible.
       const progressive=!query&&!fav;
+      grid.dataset.appExpanded=progressive && limit>step ? 'true' : 'false';
       cards.forEach((el,index)=>el.classList.toggle('vone-app-collapsed',progressive&&index>=limit));
       more.hidden=!progressive||limit>=cards.length;
     }
-    more.addEventListener('click',()=>{limit+=6;update();});
+    more.addEventListener('click',()=>{limit+=step;update();});
     search?.addEventListener('input',update);
     favorites?.addEventListener('click',()=>requestAnimationFrame(update));
-    new MutationObserver(update).observe(grid,{attributes:true,subtree:true,attributeFilter:['hidden','class']});
+    /* No MutationObserver on classes we ourselves toggle: avoids feedback loops. */
+    window.addEventListener('resize',()=>{
+      const next=window.matchMedia('(max-width: 767px)').matches?4:6;
+      if(step!==next){step=next;limit=next;update();}
+    });
     update();
   }
   // Separate News & Events into labeled collections on All Updates.

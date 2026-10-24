@@ -1,0 +1,11 @@
+.vone-menu-snacks,.vone-canteen-snacks{display:flex;align-items:center;gap:12px;flex-wrap:wrap;border-radius:14px;padding:14px 16px;border:1px solid #d9e4f0;background:#f4f8fd;color:#213b5b}
+.vone-menu-snacks.is-special,.vone-canteen-snacks.is-special{background:#fff5e9;border-color:#f1d5ad;color:#714316}
+.vone-menu-snacks.is-regular,.vone-canteen-snacks.is-regular{background:#edf7f4;border-color:#cbe8dd;color:#245e4a}
+.vone-snack-icon{font-size:23px;flex:none}.vone-snack-copy{display:flex;flex-direction:column;gap:4px;min-width:0;overflow-wrap:anywhere}.vone-snack-copy small{font-size:10px;font-weight:800;letter-spacing:.11em}
+.vone-canteen-snacks p{margin:0;flex-basis:100%}.vone-notice-read-form{flex:none;margin:0;display:flex;align-items:flex-start}
+#notification-menu{z-index:10020!important;isolation:isolate}
+#notification-menu .vone-company-bell-link{display:flex!important;visibility:visible!important;opacity:1!important;align-items:center;min-height:46px;padding:12px 15px;margin:8px 10px;border:1px solid #c9d9ed;border-radius:11px;background:#eaf2ff;color:#184b86!important;font-weight:750;text-decoration:none;white-space:normal;overflow-wrap:anywhere;pointer-events:auto!important;position:relative!important;z-index:1}
+@media(max-width:900px){#notification-menu:not([hidden]){position:fixed!important;top:clamp(72px,16vh,150px)!important;left:12px!important;right:12px!important;width:auto!important;max-width:none!important;max-height:calc(100dvh - 170px)!important;overflow-y:auto!important;transform:none!important;box-sizing:border-box!important;display:block!important;background:var(--surface,#fff)!important;color:var(--text,#18314d)!important;box-shadow:0 18px 55px #0f234355!important}}
+html[data-theme="dark"] #notification-menu .vone-company-bell-link{background:#1b3c60;color:#e6f2ff!important;border-color:#557497}
+html[data-theme="dark"] .vone-menu-snacks.is-special,html[data-theme="dark"] .vone-canteen-snacks.is-special{background:#473522;color:#ffddb0;border-color:#72583d}
+html[data-theme="dark"] .vone-menu-snacks.is-regular,html[data-theme="dark"] .vone-canteen-snacks.is-regular{background:#1b3e36;color:#c6f6df;border-color:#37685a}

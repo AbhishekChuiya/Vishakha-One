@@ -1,0 +1,4 @@
+# Install together with the project's existing requirements.txt
+# Pin versions in your deployment lockfile after staging validation.
+gunicorn>=22,<24
+psycopg[binary]>=3.2,<4

@@ -1,0 +1,7 @@
+.sidebar-theme-toggle{margin-bottom:20px!important}
+@media(max-width:900px){.sidebar-theme-toggle{margin-bottom:calc(28px + env(safe-area-inset-bottom))!important}}
+#back-to-top{display:flex;align-items:center;justify-content:center;line-height:1;padding:0!important;box-sizing:border-box}
+#back-to-top[hidden]{display:none!important}
+#back-to-top svg{width:22px;height:22px;display:block;margin:0!important;flex:none}
+.vone-home-dismiss-form,.vone-notice-read-form{position:relative;z-index:10;flex:none;margin:0}
+.vone-home-dismiss-form button,.vone-notice-read-form button{position:relative;z-index:11;min-width:38px;min-height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;touch-action:manipulation}

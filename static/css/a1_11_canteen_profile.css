@@ -1,0 +1,29 @@
+
+:root{--fix-bg:#fff;--fix-soft:#f3f7fc;--fix-text:#183553;--fix-muted:#637991;--fix-border:#dce6f1;--fix-blue:#276ac1}
+html[data-theme="dark"]{--fix-bg:#1a2c43;--fix-soft:#243a55;--fix-text:#f0f6ff;--fix-muted:#bed0e6;--fix-border:#405674;--fix-blue:#8dbbff}
+.vone-home-canteen .vone-menu-panel,.vone-canteen-modern .vone-menu-panel{background:var(--fix-bg)!important;border:1px solid var(--fix-border)!important;color:var(--fix-text)!important;border-radius:17px!important}
+.vone-home-canteen .vone-menu-food-grid>div,.vone-canteen-modern .vone-menu-food-grid>div{background:var(--fix-soft)!important;border:1px solid var(--fix-border)!important;color:var(--fix-text)!important;border-radius:12px!important}
+.vone-home-canteen .vone-menu-food-grid strong,.vone-canteen-modern .vone-menu-food-grid strong,.vone-home-canteen .vone-menu-panel-head h3,.vone-canteen-modern .vone-menu-panel-head h2{color:var(--fix-text)!important}
+.vone-home-canteen .vone-menu-food-grid span,.vone-canteen-modern .vone-menu-food-grid span{color:var(--fix-muted)!important}
+.vone-home-canteen .vone-menu-day-tab,.vone-canteen-modern .vone-menu-day-tab{background:var(--fix-bg)!important;color:var(--fix-text)!important;border:1px solid var(--fix-border)!important}
+.vone-home-canteen .vone-menu-day-tab[aria-selected="true"],.vone-canteen-modern .vone-menu-day-tab[aria-selected="true"]{background:var(--fix-soft)!important;border:2px solid var(--fix-blue)!important;color:var(--fix-text)!important}
+.vone-menu-snacks.is-special,.vone-canteen-modern .vone-menu-snacks.is-special{display:flex!important;align-items:center!important;gap:12px!important;margin-top:12px!important;padding:14px 16px!important;background:#fff4e6!important;color:#6b451b!important;border:1px solid #e7d4b4!important;border-radius:12px!important;line-height:1.5!important}
+.vone-menu-snacks.is-regular,.vone-canteen-modern .vone-menu-snacks.is-regular{display:flex!important;align-items:center!important;gap:12px!important;margin-top:12px!important;padding:14px 16px!important;background:#e8f7f0!important;color:#155d45!important;border:1px solid #bde3d1!important;border-radius:12px!important;line-height:1.5!important}
+.vone-menu-snacks .vone-snack-icon{display:grid!important;place-items:center!important;flex:none!important;width:38px!important;height:38px!important;background:#ffffff80!important;border-radius:10px!important;font-size:23px!important}
+.vone-menu-snacks .vone-snack-copy{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:5px!important;min-width:0!important}
+.vone-menu-snacks .vone-snack-copy small{display:block!important;font-size:11px!important;font-weight:800!important;letter-spacing:.08em!important;color:inherit!important}
+.vone-menu-snacks .vone-snack-copy strong,.vone-menu-snacks.is-regular>strong{display:block!important;font-size:15px!important;font-weight:750!important;color:inherit!important;line-height:1.5!important;overflow-wrap:anywhere!important}
+html[data-theme="dark"] .vone-menu-snacks.is-special{background:#443421!important;color:#ffe5bc!important;border-color:#78603d!important}
+html[data-theme="dark"] .vone-menu-snacks.is-regular{background:#1d4236!important;color:#d5fae8!important;border-color:#45705f!important}
+html[data-theme="dark"] .vone-menu-snacks .vone-snack-icon{background:#ffffff13!important}
+.employee-profile-layout{grid-template-columns:minmax(0,1.45fr) minmax(270px,.9fr)!important;gap:20px!important}
+.employee-profile-card,.employee-profile-widget{background:var(--fix-bg)!important;color:var(--fix-text)!important;border:1px solid var(--fix-border)!important;border-radius:19px!important;box-shadow:0 6px 24px #071d3210!important}
+.employee-profile-banner{min-height:92px!important;padding:22px 28px!important;background:linear-gradient(110deg,#174777,#246d94)!important;align-items:flex-start!important}
+.employee-profile-body{position:relative!important;padding:24px 28px 30px!important}
+.employee-profile-avatar{position:relative!important;z-index:1!important;margin:-66px 0 19px!important;width:78px!important;height:78px!important;border:5px solid var(--fix-bg)!important;border-radius:20px!important;background:var(--fix-soft)!important;color:var(--fix-text)!important;font-size:31px!important}
+.employee-profile-body h2,.employee-profile-widget h3{color:var(--fix-text)!important}
+.employee-profile-body>p,.employee-profile-widget p,.employee-profile-details dt{color:var(--fix-muted)!important}
+.employee-profile-details>div{border-color:var(--fix-border)!important}
+.employee-profile-links a{background:var(--fix-soft)!important;color:var(--fix-text)!important;border-color:var(--fix-border)!important}
+@media(max-width:850px){.employee-profile-layout{grid-template-columns:1fr!important}.employee-profile-banner{min-height:85px!important;padding:20px!important}.employee-profile-body{padding:22px!important}.employee-profile-avatar{margin-top:-62px!important}.employee-profile-side{grid-template-columns:1fr!important}}
+@media(max-width:600px){.employee-profile-banner span{font-size:9px!important}.employee-profile-details>div{grid-template-columns:1fr!important;gap:4px!important}.vone-menu-snacks .vone-snack-copy strong{font-size:14px!important}}

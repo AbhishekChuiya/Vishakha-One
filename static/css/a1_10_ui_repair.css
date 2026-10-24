@@ -1,0 +1,41 @@
+/* A1.10 Vishakha One unified light/dark cards and notification panel. */
+:root { --a110-panel:#ffffff; --a110-panel-alt:#f4f7fb; --a110-ink:#173252; --a110-muted:#61738a; --a110-border:#dbe5f1; --a110-accent:#2763b7; }
+html[data-theme="dark"] { --a110-panel:#192c45; --a110-panel-alt:#233a57; --a110-ink:#f0f6ff; --a110-muted:#b5c7df; --a110-border:#3a5270; --a110-accent:#80b4ff; }
+#notification-menu.notification-center { box-sizing:border-box!important; width:min(390px,calc(100vw - 24px))!important; min-height:0!important; max-height:min(68vh,560px)!important; padding:0!important; overflow:hidden!important; background:var(--a110-panel)!important; color:var(--a110-ink)!important; border:1px solid var(--a110-border)!important; border-radius:16px!important; box-shadow:0 18px 48px #071b3433!important; display:flex!important; flex-direction:column!important; isolation:isolate!important; }
+#notification-menu.notification-center[hidden] {display:none!important}
+#notification-menu .nc-header {display:flex!important; flex:none!important; justify-content:space-between!important; align-items:center!important; padding:14px 16px!important; gap:12px!important; background:var(--a110-panel)!important}
+#notification-menu #nc-close { position:static!important; inset:auto!important; transform:none!important; display:grid!important; place-items:center!important; width:36px!important; height:36px!important; min-width:36px!important; min-height:36px!important; padding:0!important; margin:0!important; border:1px solid var(--a110-border)!important; border-radius:10px!important; background:var(--a110-panel-alt)!important; color:var(--a110-ink)!important; font-size:20px!important; line-height:1!important; box-shadow:none!important; flex:none!important; }
+#notification-menu .nc-tabs {flex:none!important; padding:0 16px 12px!important; background:var(--a110-panel)!important}
+#notification-menu .nc-items {flex:0 1 auto!important; min-height:0!important; max-height:300px!important; overflow-y:auto!important; background:var(--a110-panel)!important}
+#notification-menu .nc-empty { min-height:0!important; padding:24px 18px!important; color:var(--a110-muted)!important; }
+#notification-menu .nc-empty strong {color:var(--a110-ink)!important}
+#notification-menu .nc-footer { display:grid!important; grid-template-columns:1fr!important; gap:8px!important; flex:none!important; padding:12px 16px!important; background:var(--a110-panel)!important; border-top:1px solid var(--a110-border)!important; text-align:left!important; }
+#notification-menu .vone-company-bell-link { box-sizing:border-box!important; display:flex!important; justify-content:space-between!important; align-items:center!important; position:static!important; inset:auto!important; width:100%!important; min-width:0!important; min-height:44px!important; padding:11px 13px!important; margin:0!important; border:1px solid var(--a110-border)!important; border-radius:10px!important; background:var(--a110-panel-alt)!important; color:var(--a110-ink)!important; text-align:left!important; font-size:13px!important; line-height:1.45!important; font-weight:700!important; text-decoration:none!important; white-space:normal!important; overflow-wrap:anywhere!important; transform:none!important; }
+#notification-menu .vone-company-bell-link:hover {border-color:var(--a110-accent)!important}
+#notification-menu #nc-read-all {position:static!important; align-self:end!important; margin:0!important; min-height:32px!important; padding:4px 0!important; color:var(--a110-accent)!important; background:transparent!important; border:0!important; font-size:12px!important}
+#notification-menu .nc-item {background:var(--a110-panel-alt)!important;color:var(--a110-ink)!important}
+#notification-menu .nc-item p,#notification-menu .nc-empty p,#notification-menu .nc-header small {color:var(--a110-muted)!important}
+#notification-menu .nc-item .nc-mark {position:static!important;inset:auto!important}
+.vone-notice-modern {background:var(--a110-panel)!important;border:1px solid var(--a110-border)!important;color:var(--a110-ink)!important;box-shadow:0 5px 20px #081c3010!important}
+.vone-notice-modern-head {background:var(--a110-panel)!important;border-bottom:1px solid var(--a110-border)!important}
+.vone-notice-modern-label,.vone-notice-modern-title strong {color:var(--a110-ink)!important}
+.vone-notice-modern-content p,.vone-notice-modern-meta {color:var(--a110-muted)!important}
+.vone-notice-modern-item {position:relative!important;background:var(--a110-panel)!important;border-color:var(--a110-border)!important}
+.vone-notice-modern-close {display:grid!important;place-items:center!important;position:static!important;transform:none!important;width:38px!important;height:38px!important;min-width:38px!important;min-height:38px!important;padding:0!important;border-radius:10px!important;background:var(--a110-panel-alt)!important;border:1px solid var(--a110-border)!important;color:var(--a110-ink)!important;font-size:21px!important;line-height:1!important;cursor:pointer!important}
+.vone-notice-read-form {position:relative!important;z-index:2!important;margin:0!important;flex:none!important}
+.vone-home-canteen,.vone-home-canteen .vone-menu-panel,.vone-home-canteen .vone-menu-day-panel {color:var(--a110-ink)!important}
+.vone-home-canteen .vone-menu-day-panel,.vone-home-canteen .vone-menu-food-grid>div {background:var(--a110-panel-alt)!important;color:var(--a110-ink)!important;border-color:var(--a110-border)!important}
+.vone-home-canteen .vone-menu-food-grid strong {color:var(--a110-ink)!important}
+.vone-home-canteen .vone-menu-food-grid span {color:var(--a110-muted)!important}
+.vone-menu-snacks.is-special,.vone-canteen-snacks.is-special {background:linear-gradient(100deg,#fff4e4,#fffaf2)!important;border:1px solid #efdab8!important;color:#633f18!important}
+.vone-menu-snacks.is-special strong,.vone-canteen-snacks.is-special p {color:#633f18!important}
+.vone-menu-snacks.is-regular,.vone-canteen-snacks.is-regular {background:#eff8f5!important;color:#215e4a!important;border:1px solid #cde9dc!important}
+html[data-theme="dark"] .vone-menu-snacks.is-special,html[data-theme="dark"] .vone-canteen-snacks.is-special {background:#403321!important;color:#ffe4b8!important;border-color:#79603b!important}
+html[data-theme="dark"] .vone-menu-snacks.is-special strong,html[data-theme="dark"] .vone-canteen-snacks.is-special p {color:#ffe4b8!important}
+html[data-theme="dark"] .vone-menu-snacks.is-regular,html[data-theme="dark"] .vone-canteen-snacks.is-regular {background:#1c3d38!important;color:#d0f6e6!important;border-color:#426c5d!important}
+@media(max-width:900px) {
+ #notification-menu.notification-center:not([hidden]) {position:fixed!important;top:calc(76px + env(safe-area-inset-top))!important;left:12px!important;right:12px!important;width:calc(100vw - 24px)!important;max-width:none!important;max-height:calc(100dvh - 170px)!important;overflow:hidden!important;transform:none!important;z-index:30000!important}
+ #notification-menu .nc-items {max-height:35dvh!important}
+ .vone-notice-modern-item {display:flex!important;align-items:flex-start!important;gap:10px!important}
+ .vone-notice-modern-content {min-width:0!important;flex:1!important;overflow-wrap:anywhere!important}
+}

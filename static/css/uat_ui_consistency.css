@@ -1,0 +1,33 @@
+/* A1.2 local UAT: additive, scoped usability corrections. Loaded last. */
+:root{--vone-control-height:42px;--vone-focus:#d99b35}
+button,[type="button"],[type="submit"],[role="button"]{max-width:100%}
+button,input,select,textarea{font-family:inherit}
+button:focus-visible,a:focus-visible,[role="button"]:focus-visible{outline:3px solid var(--vone-focus);outline-offset:2px}
+.top-actions{display:flex;align-items:center;flex-wrap:wrap;gap:8px;min-width:0}
+.top-actions>*,.topbar-title{min-width:0}
+.topbar,.page,.workspace,.shell{max-width:100%;min-width:0}
+.top-search{min-width:0}
+.notification-menu,.profile-menu{overflow:auto;overscroll-behavior:contain}
+.notification-menu[hidden],.profile-menu[hidden],.quick-nav-overlay[hidden],.chat-panel[hidden]{display:none!important}
+img,video,iframe{max-width:100%;height:auto}
+table{max-width:100%}
+.chat-panel{overscroll-behavior:contain}
+@media(max-width:767px){
+ body{overflow-x:hidden}
+ .topbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+ .top-actions{flex:0 1 auto;margin-left:auto;justify-content:flex-end}
+ .top-actions button,.top-actions a{min-height:40px}
+ .ai-fab{display:none!important}
+ .mobile-bottom-nav{z-index:65}
+ .back-to-top:not([hidden]){right:12px;bottom:calc(94px + env(safe-area-inset-bottom))}
+ .notification-menu,.profile-menu{max-width:calc(100vw - 24px);max-height:calc(100dvh - 140px)}
+ .chat-panel{max-width:calc(100vw - 16px);max-height:calc(100dvh - 110px)}
+ .page{padding-bottom:calc(94px + env(safe-area-inset-bottom))}
+}
+@media(max-width:420px){
+ .top-actions{gap:4px}
+ .topbar-title{flex:1 1 130px}
+ .topbar-title strong{white-space:normal;overflow-wrap:anywhere}
+ .notification-menu,.profile-menu{left:12px!important;right:12px!important;width:auto!important}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}

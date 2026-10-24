@@ -1,0 +1,30 @@
+{% extends 'base.html' %}{% load static %}{% block content %}
+<link rel="stylesheet" href="{% static 'css/employee_notices_policy_cards.css' %}?v=16.59">
+<script src="{% static 'js/employee_notices.js' %}?v=16.59" defer></script>
+<section class="vone-notifications-page" id="vone-notifications-page">
+<div class="section-header"><div><span class="eyebrow">STAY INFORMED</span><h1>Company notifications</h1><p>Events, invitations and announcements shared with employees.</p></div></div>
+<div class="vone-notification-toolbar">
+ <div class="vone-notification-tabs" role="group" aria-label="Filter company notifications">
+  <a href="{% url 'portal:notifications' %}" class="{% if selected_notification_filter == 'all' %}is-active{% endif %}">All ({{ notification_total_count }})</a>
+  <a href="{% url 'portal:notifications' %}?filter=unread" class="{% if selected_notification_filter == 'unread' %}is-active{% endif %}">Unread ({{ notification_unread_count }})</a>
+ </div>
+ {% if notification_unread_count %}
+ <form method="post" action="{% url 'portal:notifications_read_all' %}">{% csrf_token %}
+ <button type="submit" class="vone-notification-mark-all">Mark all as read</button></form>
+ {% endif %}
+</div>
+<div class="vone-notification-list">{% for notice in portal_notices %}
+<article class="vone-notification-card vone-priority-{{ notice.priority }}" data-notice-id="{{ notice.pk }}-{{ notice.updated_at|date:'U' }}"><h2>📢 {% if notice.priority == "urgent" %}<span class="vone-notice-priority">URGENT</span> {% elif notice.priority == "important" %}<span class="vone-notice-priority">IMPORTANT</span> {% endif %}{{ notice.title }} {% if not notice.employee_read %}<span class="vone-unread-chip">New</span>{% endif %}</h2>
+<div class="vone-notification-meta">{% if notice.event_at %}<span>📅 {{ notice.event_at|date:'d M Y, h:i A' }}</span>{% endif %}{% if notice.event_location %}<span>📍 {{ notice.event_location }}</span>{% endif %}</div>
+{% if notice.summary %}<p>{{ notice.summary }}</p>{% endif %}{% if notice.body %}<p>{{ notice.body|linebreaksbr }}</p>{% endif %}
+<div class="vone-notification-meta"><span class="vone-notification-muted">Published {{ notice.published_at|date:'d M Y, h:i A' }}</span>{% if not notice.employee_read %}<form method="post" action="{% url 'portal:notification_read' notice.pk %}">{% csrf_token %}<button type="submit" class="vone-mark-read">Mark as read</button></form>{% else %}<span class="vone-read-label">Read ✓</span>{% endif %}</div></article>
+{% empty %}<p>{% if selected_notification_filter == "unread" %}You are all caught up — no unread company notifications.{% else %}No company announcements have been published yet.{% endif %}</p>{% endfor %}</div></section>
+<style>
+.vone-notification-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:16px 0}
+.vone-notification-tabs{display:flex;gap:6px;flex-wrap:wrap}
+.vone-notification-tabs a,.vone-notification-mark-all{display:inline-block;border:1px solid var(--line,#cbd5e1);border-radius:10px;padding:9px 14px;font-size:13px;font-weight:650;text-decoration:none;color:inherit;background:transparent;cursor:pointer}
+.vone-notification-tabs a.is-active{background:#9d2734;color:white;border-color:#9d2734}
+.vone-notification-mark-all:hover{border-color:#9d2734}
+@media(max-width:600px){.vone-notification-toolbar{align-items:stretch}.vone-notification-mark-all{width:100%}}
+</style>
+{% endblock %}

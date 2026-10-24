@@ -58,3 +58,10 @@ dist/
 Jupyter Notebook checkpoints
 
 .ipynb_checkpoints/
+
+.env
+.env.*
+!.env.example
+db.sqlite3
+staticfiles/
+media/
