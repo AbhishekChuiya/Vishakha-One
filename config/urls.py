@@ -5,15 +5,29 @@ from django.conf.urls.static import static
 from portal import pwa_views
 
 urlpatterns = [
+    # PWA and readiness endpoints
     path("pwa-check/", pwa_views.readiness, name="pwa_readiness"),
-    path("manifest.webmanifest", pwa_views.manifest, name="pwa_manifest"),
-    path("service-worker.js", pwa_views.service_worker, name="pwa_service_worker"),
+    path(
+        "manifest.webmanifest",
+        pwa_views.manifest,
+        name="pwa_manifest",
+    ),
+    path(
+        "service-worker.js",
+        pwa_views.service_worker,
+        name="pwa_service_worker",
+    ),
+
+    # Django administration
     path("admin/", admin.site.urls),
 
-    # Custom Content Manager - must come before portal routes
+    # Employee authentication
+    path("accounts/", include("portal.auth_urls")),
+
+    # Existing Content Manager: kept separate
     path(
         "content-manager/",
-        include("contenthub.manager_urls")
+        include("contenthub.manager_urls"),
     ),
 
     # Existing Vishakha One portal
@@ -23,5 +37,5 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(
         settings.MEDIA_URL,
-        document_root=settings.MEDIA_ROOT
+        document_root=settings.MEDIA_ROOT,
     )
