@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .models import CompanyApplication
 from contenthub.models import Announcement, Resource, JobOpening, NewJoiner, Event, AnnouncementReceipt, CanteenDay
+from employees.models import EmployeeProfile
 
 NAV = [
     ('home', 'Home', '⌂'), ('apps', 'My Apps', '▦'),
@@ -136,6 +137,8 @@ def profile(request):
         data['profile_name'] = name or user.get_username()
         data['profile_email'] = getattr(user, 'email', '') or ''
         data['profile_username'] = user.get_username()
+        employee_profile = EmployeeProfile.objects.filter(user=user).first()
+        data['profile_employee_id'] = employee_profile.employee_id if employee_profile else ''
         data['profile_joined'] = getattr(user, 'date_joined', None)
     return render(request, 'portal/profile.html', data)
 

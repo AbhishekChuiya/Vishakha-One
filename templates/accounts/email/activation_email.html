@@ -1,0 +1,14 @@
+{% extends "accounts/email/base_email.html" %}
+{% block title %}Complete your Vishakha One registration{% endblock %}
+{% block preheader %}Choose your password to finish creating your account.{% endblock %}
+{% block content %}
+<h1 style="margin:0 0 14px;font-size:22px;line-height:1.3;color:#10263f;">Complete your registration</h1>
+<p style="margin:0 0 14px;">Hello,</p>
+<p style="margin:0 0 14px;">We received a request to create a Vishakha One account for <strong>Employee ID {{ employee_id }}</strong> using this email address.</p>
+<p style="margin:0 0 24px;">Choose your password to finish. After that you can sign in with your Employee ID or company email.</p>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;"><tr><td bgcolor="#145b79" style="border-radius:9px;background-color:#145b79;">
+<a href="{{ link }}" style="display:inline-block;padding:14px 30px;font-family:'Segoe UI',Roboto,Arial,sans-serif;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:9px;">Create my password</a></td></tr></table>
+<p style="margin:0 0 6px;font-size:13px;color:#52667a;">This link is valid for <strong>{{ hours }} hour{{ hours|pluralize }}</strong> and can be used once.</p>
+<p style="margin:0 0 22px;font-size:13px;color:#52667a;">Button not working? Copy this address into your browser:<br><a href="{{ link }}" style="color:#287c91;word-break:break-all;">{{ link }}</a></p>
+<div style="border-top:1px solid #e5ebf1;padding-top:16px;font-size:13px;color:#7b8794;">Did not request this? You can safely ignore this email. No account is created unless the link is used.</div>
+{% endblock %}

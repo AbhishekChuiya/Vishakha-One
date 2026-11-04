@@ -5,6 +5,7 @@ from django.views.decorators.cache import never_cache
 from . import manager_views as views
 from . import announcement_overview
 from . import canteen_views
+from portal.auth_forms import CompanyDomainAuthenticationForm
 
 app_name = 'content_manager'
 urlpatterns = [
@@ -12,6 +13,7 @@ urlpatterns = [
         "login/",
         ensure_csrf_cookie(LoginView.as_view(
             template_name="content_manager/login.html",
+            authentication_form=CompanyDomainAuthenticationForm,
             next_page="/content-manager/",
         )),
         name="login",

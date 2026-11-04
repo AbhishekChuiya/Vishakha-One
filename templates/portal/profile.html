@@ -11,6 +11,7 @@
    <h2 id="profile-heading">{{ profile_name }}</h2>
    <p class="employee-profile-subtitle">Your secure Vishakha One workspace account</p>
    <dl class="employee-profile-details">
+    {% if profile_employee_id %}<div><dt>Employee ID</dt><dd>{{ profile_employee_id }}</dd></div>{% endif %}
     <div><dt>Username</dt><dd>{{ profile_username }}</dd></div>
     <div><dt>Email address</dt><dd>{% if profile_email %}<a href="mailto:{{ profile_email }}">{{ profile_email }}</a>{% else %}<span class="profile-unavailable">Not available in your account</span>{% endif %}</dd></div>
     {% if profile_joined %}<div><dt>Account created</dt><dd>{{ profile_joined|date:"d M Y" }}</dd></div>{% endif %}

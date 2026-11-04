@@ -1,0 +1,18 @@
+Complete your Vishakha One registration
+=======================================
+
+Hello,
+
+We received a request to create a Vishakha One account for Employee ID {{ employee_id }} using this email address.
+
+Choose your password to finish (this link is valid for {{ hours }} hour{{ hours|pluralize }} and can be used once):
+
+{{ link }}
+
+After that you can sign in with your Employee ID or company email.
+
+Did not request this? You can safely ignore this email. No account is created unless the link is used.
+
+--
+Vishakha One - Vishakha Group, internal employee access
+This is an automated message. Please do not reply.

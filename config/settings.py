@@ -79,6 +79,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'employees.middleware.EmployeePortalAccessMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -175,3 +176,38 @@ USE_TZ = True
 CONTENT_APPROVAL_REMINDER_HOURS = "24,48,72"
 CONTENT_APPROVAL_ESCALATE_AFTER_HOURS = 72
 CONTENT_APPROVAL_ESCALATE_TO = "hod_username"
+
+# ---------------------------------------------------------------------------
+# Employee account e-mail (activation links + password reset)
+# Set these in .env.<environment>; never commit real SMTP credentials.
+# ---------------------------------------------------------------------------
+EMAIL_HOST = os.getenv("DJANGO_EMAIL_HOST", "")
+EMAIL_PORT = int(os.getenv("DJANGO_EMAIL_PORT", "587"))
+EMAIL_HOST_USER = os.getenv("DJANGO_EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.getenv("DJANGO_EMAIL_HOST_PASSWORD", "")
+EMAIL_USE_TLS = os.getenv("DJANGO_EMAIL_USE_TLS", "true").lower() == "true"
+EMAIL_USE_SSL = os.getenv("DJANGO_EMAIL_USE_SSL", "false").lower() == "true"
+EMAIL_TIMEOUT = 15
+DEFAULT_FROM_EMAIL = os.getenv("DJANGO_DEFAULT_FROM_EMAIL", "Vishakha One <noreply@vishakha.com>")
+
+if os.getenv("DJANGO_EMAIL_BACKEND"):
+    EMAIL_BACKEND = os.environ["DJANGO_EMAIL_BACKEND"]
+elif EMAIL_HOST:
+    EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+elif VONE_ENV == "development":
+    # Local development: links are printed in the runserver terminal.
+    EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+else:
+    # Staging/production without SMTP configured: send nothing (never print links to logs).
+    EMAIL_BACKEND = "django.core.mail.backends.dummy.EmailBackend"
+
+PASSWORD_RESET_TIMEOUT = int(os.getenv("DJANGO_PASSWORD_RESET_TIMEOUT", "3600"))  # 1 hour
+VONE_ACTIVATION_LINK_SECONDS = int(os.getenv("VONE_ACTIVATION_LINK_SECONDS", "86400"))  # 24 hours
+
+# Self-registration: any @vishakha.com mailbox owner can create an account via an e-mailed link.
+# Set VONE_SELF_REGISTRATION_ENABLED=false in .env to close registration without a code change.
+VONE_SELF_REGISTRATION_ENABLED = os.getenv("VONE_SELF_REGISTRATION_ENABLED", "true").lower() == "true"
+
+# "Continue with company SSO" button on the login page. Visible by default; set
+# VONE_SSO_ENABLED=false in .env to hide it. Until SAML is configured it opens an info page.
+VONE_SSO_ENABLED = os.getenv("VONE_SSO_ENABLED", "true").lower() == "true"

@@ -1,0 +1,15 @@
+{% extends "accounts/simple_base.html" %}
+{% block title %}Choose password{% endblock %}
+{% block kicker %}NEW EMPLOYEE{% endblock %}
+{% block heading %}Choose your password{% endblock %}
+{% block content %}
+<p>Employee ID <strong>{{ employee_id }}</strong> · {{ company_email }}</p>
+<form method="post" class="auth-form" novalidate>{% csrf_token %}
+  <label for="id_password1">New password</label>{{ form.password1 }}
+  {% if form.password1.errors %}<span class="auth-field-error">{{ form.password1.errors|striptags }}</span>{% endif %}
+  <label for="id_password2">Confirm password</label>{{ form.password2 }}
+  {% if form.password2.errors %}<span class="auth-field-error">{{ form.password2.errors|striptags }}</span>{% endif %}
+  <div class="auth-card-footer">{{ form.password_help|safe }}</div>
+  <button class="auth-submit" type="submit">Create account <span aria-hidden="true">→</span></button>
+</form>
+{% endblock %}

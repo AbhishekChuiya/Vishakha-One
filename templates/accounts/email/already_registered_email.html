@@ -1,0 +1,13 @@
+{% extends "accounts/email/base_email.html" %}
+{% block title %}You already have a Vishakha One account{% endblock %}
+{% block preheader %}An account already exists for this email address. Sign in, or reset your password.{% endblock %}
+{% block content %}
+<h1 style="margin:0 0 14px;font-size:22px;line-height:1.3;color:#10263f;">You are already registered</h1>
+<p style="margin:0 0 14px;">Hello,</p>
+<p style="margin:0 0 14px;">We received a request to register a Vishakha One account using this email address, but an account already exists for it (<strong>Employee ID {{ employee_id }}</strong>).</p>
+<p style="margin:0 0 24px;">You can sign in with your Employee ID or this email address.</p>
+<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 22px;"><tr><td bgcolor="#145b79" style="border-radius:9px;background-color:#145b79;">
+<a href="{{ login_url }}" style="display:inline-block;padding:14px 30px;font-family:'Segoe UI',Roboto,Arial,sans-serif;font-size:15px;font-weight:700;color:#ffffff;text-decoration:none;border-radius:9px;">Sign in</a></td></tr></table>
+<p style="margin:0 0 22px;font-size:14px;color:#2b3f55;">Forgotten your password? <a href="{{ reset_url }}" style="color:#287c91;font-weight:600;">Reset it here</a>.</p>
+<div style="border-top:1px solid #e5ebf1;padding-top:16px;font-size:13px;color:#7b8794;">Did not request this? You can safely ignore this email. Nothing has changed on your account.</div>
+{% endblock %}

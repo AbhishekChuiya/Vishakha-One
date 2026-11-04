@@ -1,47 +1,51 @@
-Python cache files
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
 
-pycache/ *.py[cod] *$py.class
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+vishakha_one_venv/
 
-Virtual environments
+# Django runtime data
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
 
-venv/ .venv/ env/ ENV/
-vishakha_one_venv
-
-Django files
-
-*.log local_settings.py db.sqlite3 db.sqlite3-journal media/ staticfiles/
-
-Environment variables and secrets
-
-.env .env.* !.env.example
-
-Test and coverage files
-
-.coverage htmlcov/ .pytest_cache/ .tox/
-
-Type checking and linting
-
-.mypy_cache/ .ruff_cache/
-
-IDE and editor files
-
-.vscode/ .idea/
-
-OS-generated files
-
-.DS_Store Thumbs.db
-
-Build and distribution files
-
-build/ dist/ *.egg-info/
-
-Jupyter Notebook checkpoints
-
-.ipynb_checkpoints/
-
+# Environment variables and secrets
 .env
 .env.*
 !.env.example
-db.sqlite3
-staticfiles/
-media/
+
+# Tests and tooling
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Build output
+build/
+dist/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Database backups and editor backup files
+db_backup_*.sqlite3
+*.sqlite3
+*.bak_*

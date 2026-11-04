@@ -1,0 +1,9 @@
+{% extends "accounts/simple_base.html" %}
+{% block title %}Link not valid{% endblock %}
+{% block kicker %}NEW EMPLOYEE{% endblock %}
+{% block heading %}This link is no longer valid{% endblock %}
+{% block content %}
+<p>The registration link has expired or was already used. You can request a new one, or sign in if your account already exists.</p>
+<a class="auth-submit auth-submit-link" href="{% url 'accounts:register' %}">Request a new link <span aria-hidden="true">→</span></a>
+<a class="auth-sso-link" href="{% url 'accounts:login' %}">Back to sign in <span>→</span></a>
+{% endblock %}

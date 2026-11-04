@@ -1,0 +1,4 @@
+{% load static %}
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Company SSO | Vishakha One</title><link rel="stylesheet" href="{% static 'css/employee_auth.css' %}"></head>
+<body class="vone-auth-page"><main class="auth-simple-card"><img src="{% static 'assets/branding/vishakha-logo-highres.png' %}" alt="Vishakha logo"><span class="auth-card-kicker">COMPANY SINGLE SIGN-ON</span><h1>SSO is being set up</h1><p>Company single sign-on is not active yet. Please sign in with your Employee ID or company email and password for now.</p><a class="auth-submit auth-submit-link" href="{% url 'accounts:login' %}">Back to employee sign in <span>→</span></a><small>Vishakha Group · Internal use only</small></main></body></html>
