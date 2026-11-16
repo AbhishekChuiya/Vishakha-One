@@ -211,3 +211,39 @@ VONE_SELF_REGISTRATION_ENABLED = os.getenv("VONE_SELF_REGISTRATION_ENABLED", "tr
 # "Continue with company SSO" button on the login page. Visible by default; set
 # VONE_SSO_ENABLED=false in .env to hide it. Until SAML is configured it opens an info page.
 VONE_SSO_ENABLED = os.getenv("VONE_SSO_ENABLED", "true").lower() == "true"
+
+# ---------------------------------------------------------------------------
+# Microsoft Entra ID SAML single sign-on (company SSO). Password login stays available.
+# The tenant id and signing certificate are public values from the IT-supplied metadata.
+# ---------------------------------------------------------------------------
+def _csv(name, default):
+    return [v.strip() for v in os.getenv(name, default).split(",") if v.strip()]
+
+VONE_SAML_TENANT_ID = os.getenv("VONE_SAML_TENANT_ID", "1935c002-df92-4b58-ba82-70adadafd928")
+VONE_SAML_IDP_CERT_FILE = os.getenv(
+    "VONE_SAML_IDP_CERT_FILE", str(BASE_DIR / "config" / "saml" / "entra_signing_cert.pem"))
+# Must equal the "Identifier (Entity ID)" registered in Entra. Blank = built from the request
+# address (http://<host>/accounts/sso/metadata/). Set it explicitly on staging/production.
+VONE_SAML_SP_ENTITY_ID = os.getenv("VONE_SAML_SP_ENTITY_ID", "")
+# Attribute (claim) names tried, in order. Adjust if IT uses different claim names.
+VONE_SAML_EMAIL_ATTRS = _csv(
+    "VONE_SAML_EMAIL_ATTRS",
+    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress,mail,email,"
+    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name")
+VONE_SAML_EMPLOYEE_ID_ATTRS = _csv(
+    "VONE_SAML_EMPLOYEE_ID_ATTRS",
+    "employeeid,employeeId,EmployeeID,http://schemas.microsoft.com/identity/claims/employeeid,"
+    "http://schemas.microsoft.com/ws/2008/06/identity/claims/employeeid")
+VONE_SAML_FIRST_NAME_ATTRS = _csv(
+    "VONE_SAML_FIRST_NAME_ATTRS",
+    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname,givenname,firstName")
+VONE_SAML_LAST_NAME_ATTRS = _csv(
+    "VONE_SAML_LAST_NAME_ATTRS",
+    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname,surname,lastName")
+# true = a company user with no portal account yet gets a plain employee account on first SSO
+# sign-in (needs an Employee ID claim). false = they must register first.
+VONE_SSO_AUTO_PROVISION = os.getenv("VONE_SSO_AUTO_PROVISION", "true").lower() == "true"
+# Development aid only: on a failed sign-in, show which attribute NAMES Microsoft sent.
+# Ignored unless DEBUG is also true.
+VONE_SSO_DEBUG = os.getenv("VONE_SSO_DEBUG", "false").lower() == "true"
+VONE_SSO_STATE_MINUTES = int(os.getenv("VONE_SSO_STATE_MINUTES", "10"))

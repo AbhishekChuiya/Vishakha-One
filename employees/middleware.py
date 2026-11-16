@@ -11,6 +11,8 @@ class EmployeePortalAccessMiddleware:
     PUBLIC_PREFIXES = (
         "/accounts/login/",
         "/accounts/sso/",
+        "/sso/saml/",
+        "/saml/metadata/",
         # Sign-out must work even for a signed-in account that has no employee profile
         # (e.g. an admin), otherwise that person is stuck on the "access not enabled" page.
         "/accounts/logout/",

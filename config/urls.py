@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from portal import pwa_views
+from portal import auth_views, pwa_views
 
 urlpatterns = [
     # PWA and readiness endpoints
@@ -20,6 +20,11 @@ urlpatterns = [
 
     # Django administration
     path("admin/", admin.site.urls),
+
+    # Company SSO endpoints. These exact paths are registered in Microsoft Entra
+    # (Identifier .../saml/metadata/ and Reply URL .../sso/saml/acs/); do not rename them.
+    path("saml/metadata/", auth_views.sso_metadata, name="sso_metadata"),
+    path("sso/saml/acs/", auth_views.sso_acs, name="sso_acs"),
 
     # Employee authentication
     path("accounts/", include("portal.auth_urls")),

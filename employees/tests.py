@@ -102,7 +102,14 @@ class EmployeeLoginTests(TestCase):
         self.assertFalse(response.context["form"].is_valid())
 
     def test_sso_and_content_manager_login_remain_public(self):
-        self.assertEqual(self.client.get(reverse("accounts:sso")).status_code, 200)
+        sso = self.client.get(reverse("accounts:sso"))
+        # Public: either the "SSO is being set up" page, or (when configured) a redirect to Microsoft,
+        # never a redirect to the employee login.
+        self.assertTrue(
+            sso.status_code == 200
+            or (sso.status_code == 302 and sso["Location"].startswith("https://login.microsoftonline.com/")),
+            (sso.status_code, sso.get("Location")),
+        )
         self.assertEqual(self.client.get(reverse("content_manager:login")).status_code, 200)
 
     def test_admin_login_is_not_redirected_to_employee_login(self):

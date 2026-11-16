@@ -58,3 +58,31 @@ class EmployeeProfile(models.Model):
 
     def __str__(self):
         return f"{self.employee_id} — {self.company_email}"
+
+
+class SsoLoginState(models.Model):
+    """One in-flight company-SSO sign-in (short-lived, single-use).
+
+    Kept in the database rather than the browser session because Microsoft posts the
+    sign-in result back from another site, where browsers do not send our session cookie.
+    """
+
+    state = models.CharField(max_length=64, unique=True, db_index=True)
+    request_id = models.CharField(max_length=100)
+    nonce = models.CharField(max_length=64)
+    next_url = models.CharField(max_length=500, blank=True)
+    # Verified by Microsoft but no account yet and no Employee ID claim: kept here while the
+    # person types their Employee ID (never trusted from the browser).
+    email = models.EmailField(blank=True)
+    first_name = models.CharField(max_length=150, blank=True)
+    last_name = models.CharField(max_length=150, blank=True)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE, related_name="+"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    used_at = models.DateTimeField(null=True, blank=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "SSO sign-in state"
+        verbose_name_plural = "SSO sign-in states"

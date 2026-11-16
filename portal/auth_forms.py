@@ -236,3 +236,22 @@ class EmployeePasswordResetForm(PasswordResetForm):
                 import logging
                 logging.getLogger(__name__).error(
                     "Password reset e-mail could not be sent (%s).", activation.describe_mail_error(exc))
+
+
+class SsoEmployeeIdForm(forms.Form):
+    """Shown once after a first company-SSO sign-in when Microsoft sent no Employee ID."""
+
+    employee_id = forms.CharField(
+        label="Employee ID", max_length=32,
+        widget=forms.TextInput(attrs={
+            "class": "auth-input", "placeholder": "Your Employee ID",
+            "autocomplete": "off", "autofocus": True,
+        }),
+    )
+
+    def clean_employee_id(self):
+        value = (self.cleaned_data["employee_id"] or "").strip()
+        if not activation.EMPLOYEE_ID_RE.match(value):
+            raise ValidationError(
+                "Employee ID must be 3-32 characters: letters, numbers, dot, dash or underscore.")
+        return value

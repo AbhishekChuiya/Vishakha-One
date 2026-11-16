@@ -8,6 +8,7 @@ urlpatterns = [
     path("logout/", auth_views.employee_logout, name="logout"),
     path("switch-user/", auth_views.switch_user, name="switch_user"),
     path("sso/", auth_views.employee_sso, name="sso"),
+    path("sso/complete/", auth_views.sso_complete, name="sso_complete"),
     path("register/", auth_views.register, name="register"),
     path("register/sent/", auth_views.register_done, name="register_done"),
     path("activate/<str:token>/", auth_views.activate, name="activate"),
