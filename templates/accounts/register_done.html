@@ -1,9 +1,9 @@
-{% extends "accounts/simple_base.html" %}
+{% extends "accounts/auth_base.html" %}
 {% block title %}Check your email{% endblock %}
-{% block kicker %}NEW EMPLOYEE{% endblock %}
-{% block heading %}Check your email{% endblock %}
 {% block content %}
-<p>We have emailed that company address. If it is not registered yet, the email contains a link to choose your password (it works once, for a limited time). If an account already exists, the email explains how to sign in or reset your password.</p>
-<p>Nothing arrived after a few minutes? Check your spam folder, or contact your HR or IT administrator.</p>
-<a class="auth-submit auth-submit-link" href="{% url 'accounts:login' %}">Back to sign in <span>→</span></a>
+<div class="vauth-icon"><svg class="vi" aria-hidden="true"><use href="#vi-mail-open"/></svg></div>
+<h2>Check your email</h2>
+<p class="vlead">We have emailed that company address. If it is not registered yet, the email contains a link to choose your password (it works once, for a limited time). If an account already exists, the email explains how to sign in or reset your password.</p>
+<p class="vlead">Nothing arrived after a few minutes? Check your spam folder, or contact your HR or IT administrator.</p>
+<a class="vbtn lg block" href="{% url 'accounts:login' %}">Back to sign in <svg class="vi" aria-hidden="true"><use href="#vi-arrow-right"/></svg></a>
 {% endblock %}

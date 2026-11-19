@@ -1,0 +1,26 @@
+{% extends 'content_manager/base.html' %}{% block content %}
+<div class="cm-intro">
+  <div>
+    <a class="cm-back" href="{% url 'content_manager:dashboard' %}">← Overview</a>
+    <h1>🖼 Application logos</h1>
+    <p>Upload a sharp logo for any application tile. Use a PNG, WebP or JPG at least 256 × 256 pixels (square, transparent background works best), up to 3 MB. An uploaded logo replaces the built-in icon on the employee portal.</p>
+  </div>
+</div>
+<form method="get" class="cm-filters"><input type="search" name="q" value="{{ query }}" placeholder="Find an application"><button class="cm-btn cm-btn-secondary" type="submit">Search</button></form>
+<div class="cm-table-wrap">
+  <table>
+    <thead><tr><th>Application</th><th>Current logo</th><th>Upload new logo</th></tr></thead>
+    <tbody>{% for app in apps %}<tr>
+      <td data-label="Application"><strong>{{ app.name }}</strong><small>{{ app.category|default:'Company application' }}{% if not app.is_active %} · hidden{% endif %}</small></td>
+      <td data-label="Current logo">{% if app.logo_url %}<img class="cm-logo-thumb" src="{{ app.logo_url }}" alt="Logo of {{ app.name }}">{% else %}<span class="cm-logo-initials" title="No uploaded logo">{{ app.name|slice:':2'|upper }}</span>{% endif %}</td>
+      <td data-label="Upload">
+        <form method="post" enctype="multipart/form-data" class="cm-logo-form">{% csrf_token %}<input type="hidden" name="app_id" value="{{ app.pk }}">
+          <input type="file" name="logo" accept="image/png,image/jpeg,image/webp,image/gif" required aria-label="Logo file for {{ app.name }}">
+          <button class="cm-btn cm-btn-primary" type="submit">Upload</button>
+        </form>
+        {% if app.logo %}<form method="post" class="cm-logo-form" style="margin-top:6px">{% csrf_token %}<input type="hidden" name="app_id" value="{{ app.pk }}"><button class="cm-btn cm-btn-secondary" name="remove" value="1" type="submit">Remove uploaded logo</button></form>{% endif %}
+      </td>
+    </tr>{% empty %}<tr><td colspan="3" class="cm-empty">No applications found.</td></tr>{% endfor %}</tbody>
+  </table>
+</div>
+{% endblock %}

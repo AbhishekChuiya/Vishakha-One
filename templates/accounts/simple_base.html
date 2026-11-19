@@ -1,5 +1,5 @@
-{% load static %}<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#10263f"><title>{% block title %}Vishakha One{% endblock %} | Vishakha One</title><link rel="stylesheet" href="{% static 'css/employee_auth.css' %}"></head>
+{% load static vone_ui %}<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#10263f"><title>{% block title %}Vishakha One{% endblock %} | Vishakha One</title><link rel="stylesheet" href="{% vstatic 'css/employee_auth.css' %}"></head>
 <body class="vone-auth-page"><main class="auth-simple-card"><img src="{% static 'assets/branding/vishakha-logo-highres.png' %}" alt="Vishakha logo"><span class="auth-card-kicker">{% block kicker %}EMPLOYEE ACCOUNT{% endblock %}</span><h1>{% block heading %}{% endblock %}</h1>
 {% if messages %}{% for message in messages %}<div class="auth-message auth-message-{{ message.tags|default:'info' }}" role="status">{{ message }}</div>{% endfor %}{% endif %}
 {% block content %}{% endblock %}

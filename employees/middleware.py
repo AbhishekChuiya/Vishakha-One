@@ -30,6 +30,7 @@ class EmployeePortalAccessMiddleware:
         "/manifest.webmanifest",
         "/service-worker.js",
         "/pwa-check/",
+        "/healthz/",
         "/favicon.ico",
         "/robots.txt",
     }

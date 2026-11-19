@@ -2,14 +2,22 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group, Permission
 from django.core.management.base import BaseCommand, CommandError
 from django.contrib.contenttypes.models import ContentType
-from contenthub.models import Announcement, Event, Resource, JobOpening, NewJoiner
+from portal.models import CompanyApplication, HelpfulLink
+from contenthub.models import Announcement, CanteenDay, DailyThought, Event, Resource, JobOpening, NewJoiner
 
 ROLE_MODELS = {
     'Reception': (Announcement, Event),
-    'HR': (Announcement, JobOpening, NewJoiner),
-    'Administration': (Announcement, Resource, Event),
+    'HR': (Announcement, JobOpening, NewJoiner, DailyThought),
+    'Administration': (Announcement, Resource, Event, DailyThought),
 }
 ACTIONS = ('view', 'add', 'change')
+# Extra single permissions per role (the canteen menu is edited by Reception and Administration).
+EXTRA_PERMISSIONS = {
+    'Reception': [(CanteenDay, 'manage_canteen_menu')],
+    'Administration': [(CanteenDay, 'manage_canteen_menu'), (CompanyApplication, 'change_companyapplication'),
+                       (CompanyApplication, 'add_companyapplication'), (HelpfulLink, 'change_helpfullink'),
+                       (HelpfulLink, 'add_helpfullink'), (HelpfulLink, 'delete_helpfullink')],
+}
 
 class Command(BaseCommand):
     help = 'Create/update Content Manager groups and optionally assign an existing user.'
@@ -40,6 +48,8 @@ class Command(BaseCommand):
                         permissions.append(Permission.objects.get(content_type=content_type, codename=codename))
                     except Permission.DoesNotExist:
                         raise CommandError(f'Missing permission {codename}. Run python manage.py migrate first.')
+            for extra_model, codename in EXTRA_PERMISSIONS.get(group_name, []):
+                permissions.append(Permission.objects.get(content_type=ContentType.objects.get_for_model(extra_model), codename=codename))
             # Replace only permissions on the group, not other groups or user permissions.
             group.permissions.set(permissions)
             self.stdout.write(self.style.SUCCESS(f'{group_name}: {len(permissions)} permissions configured'))

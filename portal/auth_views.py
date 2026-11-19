@@ -17,7 +17,7 @@ from django.utils.http import url_has_allowed_host_and_scheme
 
 from employees import activation, sso
 from employees.models import EmployeeProfile, SsoLoginState, is_company_email
-from . import auth_throttle, saml_support
+from . import saml_support
 from .auth_forms import (
     ActivationSetPasswordForm, EmployeeLoginForm, EmployeePasswordResetForm,
     RegistrationRequestForm, SsoEmployeeIdForm,
@@ -248,15 +248,14 @@ def register(request):
         identity = activation.registrable_identity(
             form.cleaned_data["employee_id"], form.cleaned_data["company_email"])
         if identity:
-            if auth_throttle.allow("activation", identity[1]):
-                link = request.build_absolute_uri(
-                    reverse("accounts:activate", args=[activation.make_token(*identity)]))
-                activation.send_activation_email(identity[0], identity[1], link)
+            link = request.build_absolute_uri(
+                reverse("accounts:activate", args=[activation.make_token(*identity)]))
+            activation.send_activation_email(identity[0], identity[1], link)
         else:
             # Not registrable. If this mailbox already owns an account, tell its owner (by
             # e-mail only) how to sign in or reset the password. The page reply stays neutral.
             existing = activation.profile_for_email(form.cleaned_data["company_email"])
-            if existing and auth_throttle.allow("activation", existing.company_email):
+            if existing:
                 activation.send_already_registered_email(
                     existing,
                     request.build_absolute_uri(reverse("accounts:login")),

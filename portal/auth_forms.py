@@ -8,9 +8,10 @@ from django.core.exceptions import ValidationError
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
-from employees import activation
+from employees import activation, mailer
 from employees.models import EmployeeProfile, is_company_email
-from . import auth_throttle
+from django.template import loader
+from django.urls import reverse
 
 
 class EmployeeLoginForm(forms.Form):
@@ -19,7 +20,7 @@ class EmployeeLoginForm(forms.Form):
         max_length=254,
         widget=forms.TextInput(attrs={
             "class": "auth-input",
-            "placeholder": "Enter your Employee ID or company email",
+            "placeholder": "Employee ID or company email",
             "autocomplete": "username",
             "autofocus": True,
         }),
@@ -177,8 +178,43 @@ class ActivationSetPasswordForm(forms.Form):
         return password_validation.password_validators_help_text_html()
 
 
+def classify_reset_request(identifier):
+    """Decide what a "forgot password" request should lead to.
+
+    Returns (kind, value):
+      ("reset", user)         active employee account: send a reset link to its company e-mail
+      ("attention", email)    account exists but is inactive or inconsistent: tell the mailbox owner
+      ("no_account", email)   a company e-mail with no account yet: tell the owner how to register
+      ("none", None)          nothing can be sent (unknown Employee ID, or not a company address)
+    """
+    identifier = (identifier or "").strip()
+    if not identifier:
+        return "none", None
+    if "@" in identifier:
+        email = identifier.lower()
+        if not is_company_email(email):
+            return "none", None
+        profile = EmployeeProfile.objects.select_related("user").filter(company_email__iexact=email).first()
+        if profile is None:
+            return "no_account", email
+    else:
+        profile = EmployeeProfile.objects.select_related("user").filter(employee_id__iexact=identifier).first()
+        if profile is None:
+            return "none", None
+    user = profile.user
+    if (
+        not profile.is_active
+        or not user.is_active
+        or not is_company_email(profile.company_email)
+        or (user.email or "").strip().lower() != profile.company_email
+    ):
+        return "attention", profile.company_email
+    return "reset", user
+
+
 class EmployeePasswordResetForm(PasswordResetForm):
-    """Reset by Employee ID or company email. The reply never reveals whether an account exists."""
+    """Reset by Employee ID or company email. The page never reveals whether an account exists,
+    but the mailbox owner always gets an e-mail that explains what to do next."""
 
     email = None  # replaced by `identifier`
     identifier = forms.CharField(
@@ -189,53 +225,45 @@ class EmployeePasswordResetForm(PasswordResetForm):
         }),
     )
 
-    def _matching_users(self):
-        identifier = (self.cleaned_data.get("identifier") or "").strip()
-        if not identifier:
-            return []
-        if "@" in identifier:
-            if not is_company_email(identifier):
-                return []
-            profile = EmployeeProfile.objects.select_related("user").filter(
-                company_email__iexact=identifier, is_active=True).first()
-        else:
-            profile = EmployeeProfile.objects.select_related("user").filter(
-                employee_id__iexact=identifier, is_active=True).first()
-        if (
-            profile is None
-            or not profile.user.is_active
-            or not is_company_email(profile.company_email)
-            or (profile.user.email or "").strip().lower() != profile.company_email
-        ):
-            return []
-        return [profile.user]
-
     def save(self, domain_override=None, subject_template_name=None,
              email_template_name=None, use_https=False,
              token_generator=default_token_generator, from_email=None,
              request=None, html_email_template_name=None, extra_email_context=None):
-        for user in self._matching_users():
-            # Limit e-mails per employee (silently) so nobody can flood one mailbox.
-            if not auth_throttle.allow("password-reset", user.email):
-                continue
-            current_site = get_current_site(request)
-            context = {
-                "email": user.email,
-                "domain": domain_override or current_site.domain,
-                "site_name": current_site.name,
-                "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-                "user": user,
-                "token": token_generator.make_token(user),
-                "protocol": "https" if use_https else "http",
-                **(extra_email_context or {}),
-            }
-            try:
-                self.send_mail(subject_template_name, email_template_name, context,
-                               from_email, user.email, html_email_template_name=html_email_template_name)
-            except Exception as exc:  # do not reveal mail failures to the requester
-                import logging
-                logging.getLogger(__name__).error(
-                    "Password reset e-mail could not be sent (%s).", activation.describe_mail_error(exc))
+        kind, value = classify_reset_request(self.cleaned_data.get("identifier"))
+        if kind == "none":
+            return
+        login_url = request.build_absolute_uri(reverse("accounts:login")) if request else ""
+        register_url = request.build_absolute_uri(reverse("accounts:register")) if request else ""
+        if kind in ("no_account", "attention"):
+            purpose = "password_reset_no_account" if kind == "no_account" else "password_reset_attention"
+            context = {"login_url": login_url, "register_url": register_url}
+            template = "no_account" if kind == "no_account" else "account_attention"
+            subject = ("You do not have a Vishakha One account yet" if kind == "no_account"
+                       else "Your Vishakha One password could not be reset")
+            mailer.send_tracked(
+                purpose=purpose, recipient=value, subject=subject,
+                text_body=loader.render_to_string(f"accounts/email/{template}_email.txt", context),
+                html_body=loader.render_to_string(f"accounts/email/{template}_email.html", context),
+            )
+            return
+        user = value
+        current_site = get_current_site(request)
+        context = {
+            "email": user.email,
+            "domain": domain_override or current_site.domain,
+            "site_name": current_site.name,
+            "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+            "user": user,
+            "token": token_generator.make_token(user),
+            "protocol": "https" if use_https else "http",
+            **(extra_email_context or {}),
+        }
+        subject = "".join(loader.render_to_string(subject_template_name, context).splitlines())
+        mailer.send_tracked(
+            purpose="password_reset", recipient=user.email, subject=subject,
+            text_body=loader.render_to_string(email_template_name, context),
+            html_body=loader.render_to_string(html_email_template_name, context) if html_email_template_name else None,
+        )
 
 
 class SsoEmployeeIdForm(forms.Form):

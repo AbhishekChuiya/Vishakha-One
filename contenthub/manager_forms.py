@@ -1,7 +1,7 @@
 from django import forms
 from django.utils import timezone
 from django.core.exceptions import ValidationError
-from .models import Announcement, Resource, JobOpening, NewJoiner, Event
+from .models import Announcement, Resource, JobOpening, NewJoiner, Event, DailyThought
 
 MAX_UPLOAD = 10 * 1024 * 1024
 VIDEO_EXTENSIONS = {'.mp4', '.webm'}
@@ -28,8 +28,12 @@ class FriendlyForm(forms.ModelForm):
                 field.input_formats = ['%Y-%m-%dT%H:%M', '%Y-%m-%d %H:%M:%S']
                 if self.instance and self.instance.pk and self.instance.expires_at:
                     field.initial = timezone.localtime(self.instance.expires_at).strftime('%Y-%m-%dT%H:%M')
-                field.label = 'Announcement expiry date and time'
-                field.help_text = 'Optional. After this date/time, the announcement is hidden from all employees.'
+                if self._meta.model is Resource:
+                    field.label = 'Available until (expiry date and time)'
+                    field.help_text = 'Optional. After this date and time the document is hidden from employees automatically.'
+                else:
+                    field.label = 'Announcement expiry date and time'
+                    field.help_text = 'Optional. After this date/time, the announcement is hidden from all employees.'
             if name == 'event_at':
                 field.widget = forms.DateTimeInput(attrs={'type': 'datetime-local', 'class': 'cm-input', 'step': '60'}, format='%Y-%m-%dT%H:%M')
                 field.input_formats = ['%Y-%m-%dT%H:%M', '%Y-%m-%d %H:%M:%S']
@@ -42,7 +46,7 @@ class FriendlyForm(forms.ModelForm):
                 field.input_formats = ['%Y-%m-%dT%H:%M', '%Y-%m-%d %H:%M:%S']
                 if self.instance and self.instance.pk and self.instance.starts_at:
                     field.initial = timezone.localtime(self.instance.starts_at).strftime('%Y-%m-%dT%H:%M')
-            if name in ('deadline', 'joining_date'):
+            if name in ('deadline', 'joining_date', 'show_on'):
                 field.widget = forms.DateInput(attrs={'type': 'date', 'class': 'cm-input'}, format='%Y-%m-%d')
                 field.input_formats = ['%Y-%m-%d']
                 val = getattr(self.instance, name, None)
@@ -54,7 +58,7 @@ class FriendlyForm(forms.ModelForm):
             self.fields['display_order'].label = 'Display priority (optional)'
             self.fields['display_order'].help_text = '0 is the default. Lower numbers appear first.'
         if 'published_at' in self.fields:
-            self.fields['published_at'].label = 'Scheduled publishing date and time'
+            self.fields['published_at'].label = 'Effective from / scheduled publishing date and time'
             self.fields['published_at'].required = False
             self.fields['published_at'].help_text = 'Only needed if you click Schedule. Publish now uses the current time.'
         for key in ('image', 'photo', 'file', 'cover_image'):
@@ -67,13 +71,13 @@ class FriendlyForm(forms.ModelForm):
         for field_name in ('image', 'photo', 'file', 'cover_image'):
             uploaded = data.get(field_name)
             if uploaded and hasattr(uploaded, 'size'):
-                if uploaded.size > (MAX_VIDEO_UPLOAD if field_name == 'file' and data.get('kind') == 'video' else MAX_UPLOAD):
+                if uploaded.size > (MAX_VIDEO_UPLOAD if field_name == 'file' and data.get('kind') in Resource.VIDEO_KINDS else MAX_UPLOAD):
                     self.add_error(field_name, 'Video files must be 100 MB or smaller; other files must be 10 MB or smaller.')
                 if field_name == 'file':
                     import os
                     ext = os.path.splitext(uploaded.name)[1].lower()
-                    if ext not in (VIDEO_EXTENSIONS if data.get('kind') == 'video' else ALLOWED_EXTENSIONS):
-                        self.add_error(field_name, 'For Company Videos, upload MP4 or WebM. Other resources accept PDF, Office, PNG, JPG, JPEG or WebP.')
+                    if ext not in (VIDEO_EXTENSIONS if data.get('kind') in Resource.VIDEO_KINDS else ALLOWED_EXTENSIONS):
+                        self.add_error(field_name, 'For videos, upload MP4 or WebM. Other resources accept PDF, Office, PNG, JPG, JPEG or WebP.')
                 elif field_name in ('image', 'photo', 'cover_image'):
                     from django.core.files.images import get_image_dimensions
                     try:
@@ -102,13 +106,13 @@ class AnnouncementForm(FriendlyForm):
 class ResourceForm(FriendlyForm):
     class Meta:
         model = Resource
-        fields = ('title', 'kind', 'department', 'summary', 'cover_image', 'file', 'external_url', 'is_published', 'published_at', 'display_order')
+        fields = ('title', 'kind', 'department', 'summary', 'cover_image', 'file', 'external_url', 'expires_at', 'is_published', 'published_at', 'display_order')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if 'file' in self.fields:
             self.fields['file'].widget.attrs['accept'] = '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.png,.jpg,.jpeg,.webp,.mp4,.webm'
-            self.fields['file'].help_text = 'Upload PDF, Office document or image (max 10 MB); Company Videos: MP4/WebM (max 100 MB).'
+            self.fields['file'].help_text = 'Upload PDF, Office document or image (max 10 MB); videos: MP4/WebM (max 100 MB).'
         if 'cover_image' in self.fields:
             self.fields['cover_image'].widget.attrs['accept'] = '.png,.jpg,.jpeg,.webp'
             self.fields['cover_image'].help_text = 'Optional cover/preview image: PNG, JPG, JPEG or WebP (max 10 MB).'
@@ -117,6 +121,11 @@ class ResourceForm(FriendlyForm):
         data = super().clean()
         if not data.get('file') and not data.get('external_url') and not getattr(self.instance, 'file', None):
             raise ValidationError('Please upload a file or provide a link.')
+        expiry, effective = data.get('expires_at'), data.get('published_at')
+        if expiry and effective and expiry <= effective:
+            self.add_error('expires_at', 'The expiry must be later than the effective (publishing) date and time.')
+        elif expiry and not effective and expiry <= timezone.now():
+            self.add_error('expires_at', 'The expiry date and time must be in the future.')
         return data
 
 
@@ -148,3 +157,15 @@ class EventForm(FriendlyForm):
     class Meta:
         model = Event
         fields = ('title', 'starts_at', 'location', 'summary', 'image', 'is_published', 'published_at', 'display_order')
+
+
+class DailyThoughtForm(FriendlyForm):
+    class Meta:
+        model = DailyThought
+        fields = ('title', 'author', 'show_on', 'summary', 'is_published', 'published_at', 'display_order')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['title'].label = 'Thought of the day'
+        self.fields['title'].help_text = 'The quote or message shown to employees (up to 220 characters).'
+        self.fields['summary'].label = 'Meaning / note (optional)'

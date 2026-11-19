@@ -1,0 +1,14 @@
+We could not reset your password
+================================
+
+Hello,
+
+We received a request to reset the password for the Vishakha One account linked to this address, but the account is currently inactive or needs a correction by an administrator. A reset link was therefore not sent.
+
+Please contact your HR or IT administrator and mention this email.
+
+Did not request this? You can safely ignore this email.
+
+--
+Vishakha One - Vishakha Group, internal employee access
+This is an automated message. Please do not reply.

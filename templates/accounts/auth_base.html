@@ -1,0 +1,34 @@
+{% load static vone_ui %}<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#e0262f">
+<title>{% block title %}Sign in{% endblock %} | Vishakha One</title>
+<script>document.documentElement.setAttribute("data-theme","light");</script>
+<link rel="stylesheet" href="{% vstatic 'css/vone_auth.css' %}">
+</head>
+<body class="vauth-page">
+{% include "accounts/_icons.html" %}
+<div class="vauth">
+  <section class="vauth-brand" aria-label="Vishakha One">
+    <a class="vauth-logo" href="/" aria-label="Vishakha One home"><span class="vtile"><img src="{% static 'assets/branding/vishakha-logo-highres.png' %}" alt=""></span><span class="vwords"><b>Vishakha<i>ONE</i></b><small>Employee digital workplace</small></span></a>
+    <div class="vauth-copy">
+      <h1>{% block brand_heading %}Your workday, all in one place.{% endblock %}</h1>
+      <p>{% block brand_text %}Sign in to access company applications, announcements, policies and employee services.{% endblock %}</p>
+      <ul class="vauth-points">
+        <li><svg class="vi" aria-hidden="true"><use href="#vi-grid"/></svg>Company applications and services</li>
+        <li><svg class="vi" aria-hidden="true"><use href="#vi-news"/></svg>News, events and important updates</li>
+        <li><svg class="vi" aria-hidden="true"><use href="#vi-compass"/></svg>Your personal employee workspace</li>
+      </ul>
+    </div>
+    <div class="vauth-bubble">{% block bubble %}Namaste! Sign in with your Employee ID or company email.{% endblock %}</div>
+    <img class="vauth-mascot" src="{% static 'assets/brand/vishakha-mascot-640.webp' %}" alt="" width="320" height="367">
+    <div class="vauth-foot">&copy; Vishakha Group &middot; Vishakha One</div>
+  </section>
+  <section class="vauth-main">
+    <div class="vauth-box">
+      <a class="vauth-mlogo" href="/"><span class="vtile"><img src="{% static 'assets/branding/vishakha-logo-highres.png' %}" alt=""></span><span class="vwords"><b>Vishakha<i>ONE</i></b><small>Employee digital workplace</small></span></a>
+      {% if messages %}{% for message in messages %}<div class="valert {{ message.tags|default:'info' }}" role="status"><svg class="vi" aria-hidden="true"><use href="#vi-{% if message.tags == 'success' %}check-circle{% elif message.tags == 'error' %}alert{% else %}info{% endif %}"/></svg><div>{{ message }}</div></div>{% endfor %}{% endif %}
+      {% block content %}{% endblock %}
+    </div>
+  </section>
+</div>
+<script src="{% vstatic 'js/vone_auth.js' %}" defer></script>
+</body></html>

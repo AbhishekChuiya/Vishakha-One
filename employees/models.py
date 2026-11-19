@@ -23,6 +23,7 @@ class EmployeeProfile(models.Model):
     employee_id = models.CharField(max_length=32, unique=True, db_index=True)
     company_email = models.EmailField(max_length=254, unique=True)
     is_active = models.BooleanField(default=True)
+    photo = models.ImageField(upload_to="employee_photos/", blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -86,3 +87,33 @@ class SsoLoginState(models.Model):
     class Meta:
         verbose_name = "SSO sign-in state"
         verbose_name_plural = "SSO sign-in states"
+
+
+class EmailDelivery(models.Model):
+    """One row per e-mail the portal tried to send (never stores links or tokens)."""
+
+    PURPOSES = [
+        ("registration", "Registration link"),
+        ("already_registered", "Already-registered notice"),
+        ("password_reset", "Password reset link"),
+        ("password_reset_no_account", "Reset: no account yet"),
+        ("password_reset_attention", "Reset: account needs attention"),
+        ("test", "Test message"),
+    ]
+    STATUSES = [("sent", "Sent"), ("failed", "Failed"), ("throttled", "Skipped (hourly limit)")]
+
+    purpose = models.CharField(max_length=40, choices=PURPOSES)
+    recipient = models.EmailField(max_length=254)
+    status = models.CharField(max_length=12, choices=STATUSES)
+    attempts = models.PositiveSmallIntegerField(default=0)
+    error = models.CharField(max_length=200, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ("-created_at",)
+        indexes = [models.Index(fields=["recipient", "purpose", "created_at"])]
+        verbose_name = "e-mail delivery"
+        verbose_name_plural = "e-mail deliveries"
+
+    def __str__(self):
+        return f"{self.get_purpose_display()} to {self.recipient}: {self.status}"

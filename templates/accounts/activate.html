@@ -1,15 +1,13 @@
-{% extends "accounts/simple_base.html" %}
+{% extends "accounts/auth_base.html" %}
 {% block title %}Choose password{% endblock %}
-{% block kicker %}NEW EMPLOYEE{% endblock %}
-{% block heading %}Choose your password{% endblock %}
 {% block content %}
-<p>Employee ID <strong>{{ employee_id }}</strong> · {{ company_email }}</p>
-<form method="post" class="auth-form" novalidate>{% csrf_token %}
-  <label for="id_password1">New password</label>{{ form.password1 }}
-  {% if form.password1.errors %}<span class="auth-field-error">{{ form.password1.errors|striptags }}</span>{% endif %}
-  <label for="id_password2">Confirm password</label>{{ form.password2 }}
-  {% if form.password2.errors %}<span class="auth-field-error">{{ form.password2.errors|striptags }}</span>{% endif %}
-  <div class="auth-card-footer">{{ form.password_help|safe }}</div>
-  <button class="auth-submit" type="submit">Create account <span aria-hidden="true">→</span></button>
+<h2>Choose your password</h2>
+<p class="vlead">One last step to finish your Vishakha One account.</p>
+<span class="vchip"><svg class="vi" style="width:16px;height:16px" aria-hidden="true"><use href="#vi-id"/></svg>Employee ID {{ employee_id }} &middot; {{ company_email }}</span>
+<form method="post" data-busy novalidate>{% csrf_token %}
+  {% include "accounts/_field.html" with f=form.password1 icon="lock" password=1 strength=1 %}
+  {% include "accounts/_field.html" with f=form.password2 icon="lock" password=1 %}
+  <div class="vhelp">{{ form.password_help|safe }}</div>
+  <button class="vbtn lg block" type="submit" style="margin-top:18px">Create account <svg class="vi" aria-hidden="true"><use href="#vi-arrow-right"/></svg></button>
 </form>
 {% endblock %}

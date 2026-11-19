@@ -5,9 +5,10 @@ from django.db.models import Q
 
 class PublishedQuerySet(models.QuerySet):
     def visible(self):
-        qs = self.filter(is_published=True, approval_status='approved', published_at__lte=timezone.now())
-        if self.model.__name__ == 'Announcement':
-            qs = qs.filter(Q(expires_at__isnull=True) | Q(expires_at__gt=timezone.now()))
+        now = timezone.now()
+        qs = self.filter(is_published=True, approval_status='approved', published_at__lte=now, is_archived=False)
+        if any(f.name == 'expires_at' for f in self.model._meta.fields):      # announcements and documents can expire
+            qs = qs.filter(Q(expires_at__isnull=True) | Q(expires_at__gt=now))
         return qs
 
 
@@ -28,6 +29,8 @@ class ContentBase(models.Model):
     is_published = models.BooleanField(default=False)
     published_at = models.DateTimeField(default=timezone.now)
     display_order = models.PositiveIntegerField(default=0)
+    is_archived = models.BooleanField(default=False, db_index=True)
+    archived_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = PublishedQuerySet.as_manager()
@@ -44,7 +47,8 @@ class Announcement(ContentBase):
     class Meta(ContentBase.Meta):
         permissions = [('approve_announcement', 'Can approve Announcement content')]
 
-    CATEGORY_CHOICES = [('news', 'Company News'), ('announcement', 'Announcement'), ('recognition', 'Recognition'), ('gallery', 'Life at Vishakha Gallery')]
+    CATEGORY_CHOICES = [('news', 'Company News'), ('announcement', 'Announcement'), ('leadership', 'Leadership Message'), ('circular', 'Circular'), ('recognition', 'Recognition'), ('gallery', 'Life at Vishakha Gallery')]
+    PUSH_CATEGORIES = ('news', 'announcement', 'leadership', 'circular')   # these notify employees when published
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default='news')
     image = models.ImageField(upload_to='content/announcements/', blank=True)
     body = models.TextField(blank=True)
@@ -53,18 +57,26 @@ class Announcement(ContentBase):
     PRIORITY_CHOICES = [('normal', 'Normal'), ('important', 'Important'), ('urgent', 'Urgent')]
     priority = models.CharField(max_length=12, choices=PRIORITY_CHOICES, default='normal', db_index=True)
     expires_at = models.DateTimeField(null=True, blank=True, help_text='Optional. Announcement disappears automatically after this time.')
+    push_sent_at = models.DateTimeField(null=True, blank=True, editable=False)
 
 
 class Resource(ContentBase):
     class Meta(ContentBase.Meta):
         permissions = [('approve_resource', 'Can approve Resource content'), ('manage_policy_only', 'Can manage policy resources only')]
 
-    KIND_CHOICES = [('policy', 'Policy'), ('document', 'Document'), ('brochure', 'Brochure'), ('insider', 'Vishakha Insider'), ('bank_benefit', 'Bank Benefits'), ('canteen_menu', 'Canteen Menu'), ('video', 'Company Videos'), ('csr_cover', 'CSR Homepage Banner')]
+    KIND_CHOICES = [('policy', 'Policy'), ('document', 'Document'), ('brochure', 'Brochure'), ('insider', 'Vishakha Insider'), ('bank_benefit', 'Bank Benefits'), ('canteen_menu', 'Canteen Menu'), ('video', 'Policy Videos'), ('training', 'Training Content'), ('corporate_film', 'Corporate Films'), ('event_video', 'Event Videos'), ('presentation', 'Presentations'), ('brand_material', 'Approved Brand Material'), ('csr_cover', 'CSR Homepage Banner')]
+    VIDEO_KINDS = ('video', 'training', 'corporate_film', 'event_video')
+    COLLATERAL_KINDS = ('brochure', 'presentation', 'brand_material')
     kind = models.CharField(max_length=20, choices=KIND_CHOICES, default='policy')
     department = models.CharField(max_length=100, blank=True)
     file = models.FileField(upload_to='content/resources/', blank=True)
     external_url = models.URLField(blank=True)
     cover_image = models.ImageField(upload_to='content/resource_covers/', blank=True)
+    expires_at = models.DateTimeField(null=True, blank=True, help_text='Optional. The document is hidden from employees automatically after this date and time.')
+
+    @property
+    def is_expired(self):
+        return bool(self.expires_at and self.expires_at <= timezone.now())
 
     @property
     def access_url(self):
@@ -102,6 +114,27 @@ class Event(ContentBase):
     starts_at = models.DateTimeField()
     location = models.CharField(max_length=150, blank=True)
     image = models.ImageField(upload_to='content/events/', blank=True)
+
+
+class DailyThought(ContentBase):
+    """Daily engagement content: one thought per day, shown on the employee home page."""
+    class Meta(ContentBase.Meta):
+        ordering = ('-show_on', '-published_at')
+        permissions = [('approve_dailythought', 'Can approve DailyThought content')]
+
+    author = models.CharField(max_length=120, blank=True, help_text='Who said it (optional).')
+    show_on = models.DateField(default=timezone.localdate, help_text='The day this thought is shown on the home page.')
+
+
+class ResourceBookmark(models.Model):
+    """A document an employee saved for quick access."""
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='resource_bookmarks')
+    resource = models.ForeignKey('contenthub.Resource', on_delete=models.CASCADE, related_name='bookmarks')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ('-created_at',)
+        constraints = [models.UniqueConstraint(fields=['user', 'resource'], name='unique_user_resource_bookmark')]
 
 
 class ContentNotification(models.Model):
@@ -174,13 +207,20 @@ class CanteenDay(models.Model):
     lunch_roti = models.CharField(max_length=200, blank=True, verbose_name='Roti preparation')
     lunch_rice = models.CharField(max_length=250, blank=True, verbose_name='Salad / Papad / Rice')
     lunch_curd = models.CharField(max_length=250, blank=True, verbose_name='Curd / Sweet')
-    snacks = models.CharField(max_length=300, blank=True, verbose_name='Evening snacks')
+    SNACK_REGULAR, SNACK_SPECIAL = 'regular', 'special'
+    SNACK_CHOICES = [(SNACK_REGULAR, 'Regular snacks'), (SNACK_SPECIAL, "Chef's special")]
+    snack_type = models.CharField(max_length=10, choices=SNACK_CHOICES, default=SNACK_REGULAR, verbose_name='Snack type')
+    snacks = models.CharField(max_length=300, blank=True, verbose_name='Snack name(s)')
     updated_at = models.DateTimeField(auto_now=True)
     updated_by = models.ForeignKey('auth.User', null=True, blank=True, on_delete=models.SET_NULL, related_name='+')
 
     class Meta:
         ordering = ('date',)
         permissions = [('manage_canteen_menu', 'Can manage daily canteen menu')]
+
+    @property
+    def is_special_snack(self):
+        return self.snack_type == self.SNACK_SPECIAL
 
     def __str__(self):
         return f'Canteen menu: {self.date}'

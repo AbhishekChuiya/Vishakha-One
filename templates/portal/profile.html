@@ -1,34 +1,55 @@
-{% extends 'base.html' %}{% load static %}{% block content %}
-<div class="dashboard-intro"><div><span class="eyebrow">VISHAKHA ONE / EMPLOYEE</span><h1>My Profile</h1><p>Your account and employee workspace in one place.</p></div></div>
-<div class="employee-profile-layout">
-<section class="employee-profile-card" aria-labelledby="profile-heading">
- <div class="employee-profile-banner" aria-hidden="true"><span>VISHAKHA ONE</span><span>EMPLOYEE PROFILE</span></div>
- <div class="employee-profile-body">
-  
-  <div class="employee-profile-avatar" aria-hidden="true">{% if profile_signed_in %}{{ profile_name|first|upper }}{% else %}?{% endif %}</div>
-  {% if profile_signed_in %}
-   <span class="employee-profile-status"><span aria-hidden="true">●</span> Account active</span>
-   <h2 id="profile-heading">{{ profile_name }}</h2>
-   <p class="employee-profile-subtitle">Your secure Vishakha One workspace account</p>
-   <dl class="employee-profile-details">
-    {% if profile_employee_id %}<div><dt>Employee ID</dt><dd>{{ profile_employee_id }}</dd></div>{% endif %}
-    <div><dt>Username</dt><dd>{{ profile_username }}</dd></div>
-    <div><dt>Email address</dt><dd>{% if profile_email %}<a href="mailto:{{ profile_email }}">{{ profile_email }}</a>{% else %}<span class="profile-unavailable">Not available in your account</span>{% endif %}</dd></div>
-    {% if profile_joined %}<div><dt>Account created</dt><dd>{{ profile_joined|date:"d M Y" }}</dd></div>{% endif %}
-   </dl>
-  {% else %}
-   <h2 id="profile-heading">Employee profile</h2>
-   <p>Sign in with your employee account to view your profile details securely.</p>
-  {% endif %}
- </div>
-</section>
-<aside class="employee-profile-side" aria-label="Useful links">
- <section class="employee-profile-widget"><span class="employee-profile-kicker">QUICK ACCESS</span><h3>Your workspace</h3><div class="employee-profile-links">
-  <a href="{% url 'portal:search' %}"><span aria-hidden="true">⌕</span><span>Search Vishakha One</span><span aria-hidden="true">↗</span></a>
-  <a href="{% url 'portal:section' 'apps' %}"><span aria-hidden="true">▦</span><span>My Applications</span><span aria-hidden="true">↗</span></a>
-  <a href="{% url 'portal:section' 'policies' %}"><span aria-hidden="true">▤</span><span>Company Policies</span><span aria-hidden="true">↗</span></a>
-  <a href="{% url 'portal:section' 'help' %}"><span aria-hidden="true">?</span><span>Help & Support</span><span aria-hidden="true">↗</span></a>
- </div></section>
- <section class="employee-profile-widget employee-profile-about"><span class="employee-profile-kicker">ACCOUNT INFORMATION</span><h3>About your profile</h3><p>Information displayed here comes from your current Vishakha One login. Department, designation, manager and phone number are not displayed unless a verified HR integration supplies them. For account corrections, contact your portal administrator.</p></section>
-</aside></div>
+{% extends 'base.html' %}{% load static vone_ui %}{% block content %}
+{% include 'portal/_banner.html' with title='My profile' icon='user' eyebrow='Your workspace account' lead='Your details as registered in Vishakha One. You can update your name, photo and password here.' %}
+<div class="prof" style="margin-top:22px">
+  <section class="card" style="text-align:center">
+    <div class="av-wrap"><div class="av{% if profile_photo %} has-photo{% endif %}">{% if profile_photo %}<img src="{{ profile_photo }}" alt="Your photo">{% else %}{{ profile_name|initials:2 }}{% endif %}</div>
+      {% if can_set_photo %}<form method="post" enctype="multipart/form-data" class="av-edit-form">{% csrf_token %}<input type="hidden" name="action" value="photo">
+        <label class="av-edit" title="Change photo"><span class="sr">Change photo</span>{% icon 'pencil' 'sm' %}<input type="file" name="photo" accept="image/png,image/jpeg,image/webp" data-autosubmit></label></form>{% endif %}</div>
+    <h2 style="font-size:1.35rem">{{ profile_name }}</h2>
+    {% if profile_employee_id %}<span class="pill" style="margin-top:8px">Employee ID {{ profile_employee_id }}</span>{% endif %}
+    <div style="margin-top:20px;display:grid;gap:10px">
+      <form method="post" action="{% url 'accounts:switch_user' %}">{% csrf_token %}<button class="btn secondary block" style="width:100%" type="submit">{% icon 'switch' 'sm' %} Switch account</button></form>
+      <form method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}<button class="btn secondary block" style="width:100%" type="submit">{% icon 'logout' 'sm' %} Sign out</button></form>
+    </div>
+  </section>
+  <div style="display:grid;gap:18px">
+    <section class="card"><h3 style="margin-bottom:6px">Account details</h3><dl class="dl">
+      {% if profile_employee_id %}<div><dt>Employee ID</dt><dd>{{ profile_employee_id }}</dd></div>{% endif %}
+      <div><dt>Name</dt><dd>{{ profile_name }}</dd></div>
+      <div><dt>Username</dt><dd>{{ profile_username }}</dd></div>
+      <div><dt>Email address</dt><dd>{% if profile_email %}<a href="mailto:{{ profile_email }}">{{ profile_email }}</a>{% else %}Not available{% endif %}</dd></div>
+      {% if profile_joined %}<div><dt>Account created</dt><dd>{{ profile_joined|date:"d M Y" }}</dd></div>{% endif %}</dl></section>
+
+    <section class="card" aria-labelledby="h-edit">
+      <h3 id="h-edit" style="margin-bottom:12px">Update your profile</h3>
+      <div class="acc">
+        <details class="acc-item" {% if open_panel == 'name' %}open{% endif %}><summary>{% icon 'user' 'sm' %} Change name</summary>
+          <form method="post" class="pform">{% csrf_token %}<input type="hidden" name="action" value="name">
+            {% for field in name_form %}<div class="pf"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% for e in field.errors %}<div class="perr">{{ e }}</div>{% endfor %}</div>{% endfor %}
+            <button class="btn sm" type="submit">Save name</button></form></details>
+
+        {% if can_set_photo %}<details class="acc-item" {% if open_panel == 'photo' %}open{% endif %}><summary>{% icon 'image' 'sm' %} Change photo</summary>
+          <form method="post" enctype="multipart/form-data" class="pform">{% csrf_token %}<input type="hidden" name="action" value="photo">
+            <div class="pf"><label for="id_photo">Choose a photo (JPG, PNG or WebP, up to 3 MB)</label><input type="file" name="photo" id="id_photo" accept="image/png,image/jpeg,image/webp" required>{% for e in photo_form.photo.errors %}<div class="perr">{{ e }}</div>{% endfor %}</div>
+            <div class="prow"><button class="btn sm" type="submit">Upload photo</button></div></form>
+          {% if profile_photo %}<form method="post" class="pform" style="margin-top:8px">{% csrf_token %}<input type="hidden" name="action" value="remove_photo"><button class="btn secondary sm" type="submit">Remove current photo</button></form>{% endif %}</details>{% endif %}
+
+        <details class="acc-item" {% if open_panel == 'password' %}open{% endif %}><summary>{% icon 'lock' 'sm' %} Change password</summary>
+          <form method="post" class="pform" autocomplete="off">{% csrf_token %}<input type="hidden" name="action" value="password">
+            {% for e in password_form.non_field_errors %}<div class="perr">{{ e }}</div>{% endfor %}
+            {% for field in password_form %}<div class="pf"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% for e in field.errors %}<div class="perr">{{ e }}</div>{% endfor %}</div>{% endfor %}
+            <button class="btn sm" type="submit">Change password</button></form></details>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="h-push"><h3 id="h-push" style="margin-bottom:6px">Notifications</h3>
+      <p style="color:var(--muted);font-size:.92rem;margin-bottom:12px">Get a pop-up on this device for approvals, changes requested and company notices.</p>
+      <div class="pushrow"><span data-push-state style="color:var(--ink-2);font-size:.9rem">Checking…</span><button type="button" class="btn sm" data-push-toggle hidden>Turn on notifications</button></div></section>
+
+    <section class="card"><h3 style="margin-bottom:12px">Quick links</h3><div class="grid3" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px">
+      <a class="res" href="{% url 'portal:section' 'apps' %}"><span class="sec-ico">{% icon 'grid' %}</span><span class="r"><b>My apps</b></span></a>
+      <a class="res" href="{% url 'portal:canteen_menu' %}"><span class="sec-ico">{% icon 'utensils' %}</span><span class="r"><b>Canteen menu</b></span></a>
+      <a class="res" href="{% url 'portal:section' 'help' %}"><span class="sec-ico">{% icon 'lifebuoy' %}</span><span class="r"><b>Help</b></span></a></div></section>
+  </div>
+</div>
 {% endblock %}

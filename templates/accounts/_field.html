@@ -1,0 +1,10 @@
+{# usage: {% include "accounts/_field.html" with f=form.field icon="mail" password=1 strength=1 help=1 %} #}
+<div class="vfield">
+  <label for="{{ f.id_for_label }}">{{ f.label }}</label>
+  <div class="vinput{% if password %} has-eye{% endif %}">
+    <svg class="vi" aria-hidden="true"><use href="#vi-{{ icon }}"/></svg>{{ f }}
+    {% if password %}<button type="button" class="veye" data-toggle-password="{{ f.id_for_label }}" aria-label="Show password"><svg class="vi show" aria-hidden="true"><use href="#vi-eye"/></svg><svg class="vi off" aria-hidden="true"><use href="#vi-eye-off"/></svg></button>{% endif %}
+  </div>
+  {% if strength %}<div class="vstrength" data-strength-for="{{ f.id_for_label }}" data-s="0"><i></i><i></i><i></i><i></i></div><div class="vstrength-label"></div>{% endif %}
+  {% if f.errors %}<span class="vfield-error auth-field-error">{{ f.errors|striptags }}</span>{% endif %}
+</div>

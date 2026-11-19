@@ -1,14 +1,12 @@
-{% extends "accounts/simple_base.html" %}
+{% extends "accounts/auth_base.html" %}
 {% block title %}One last step{% endblock %}
-{% block kicker %}COMPANY SIGN-IN{% endblock %}
-{% block heading %}One last step{% endblock %}
 {% block content %}
-<p>You are signed in with Microsoft as <strong>{{ email }}</strong>. Enter your Employee ID to finish creating your portal account. You will only be asked this once.</p>
-<form method="post" class="auth-form" novalidate>{% csrf_token %}
+<h2>One last step</h2>
+<p class="vlead">You are signed in with Microsoft as <strong>{{ email }}</strong>. Enter your Employee ID to finish creating your portal account. You will only be asked this once.</p>
+<form method="post" data-busy novalidate>{% csrf_token %}
   <input type="hidden" name="state" value="{{ state }}">
-  <label for="id_employee_id">Employee ID</label>{{ form.employee_id }}
-  {% if form.employee_id.errors %}<span class="auth-field-error">{{ form.employee_id.errors|striptags }}</span>{% endif %}
-  <button class="auth-submit" type="submit">Continue <span aria-hidden="true">→</span></button>
+  {% include "accounts/_field.html" with f=form.employee_id icon="id" %}
+  <button class="vbtn lg block" type="submit">Continue <svg class="vi" aria-hidden="true"><use href="#vi-arrow-right"/></svg></button>
 </form>
-<a class="auth-sso-link" href="{% url 'accounts:login' %}">Cancel <span>→</span></a>
+<a class="vback" href="{% url 'accounts:login' %}">Cancel</a>
 {% endblock %}

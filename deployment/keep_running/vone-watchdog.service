@@ -1,0 +1,6 @@
+[Unit]
+Description=Vishakha One watchdog (restarts the app if it stops answering)
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/vone-watchdog.sh

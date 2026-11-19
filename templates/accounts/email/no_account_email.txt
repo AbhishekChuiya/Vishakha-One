@@ -1,0 +1,18 @@
+You do not have a Vishakha One account yet
+==========================================
+
+Hello,
+
+We received a request to reset the password for a Vishakha One account using this email address, but there is no account for it yet.
+
+Create your account with your Employee ID:
+{{ register_url }}
+
+Already registered with a different address? Sign in here:
+{{ login_url }}
+
+Did not request this? You can safely ignore this email.
+
+--
+Vishakha One - Vishakha Group, internal employee access
+This is an automated message. Please do not reply.

@@ -1,0 +1,9 @@
+{% load vone_ui %}<article class="mcard">
+  <a class="mart k{% if item.kind == 'video' %}5{% elif item.kind == 'bank_benefit' %}3{% elif item.kind == 'insider' %}4{% elif item.kind == 'brochure' %}2{% else %}1{% endif %}" {% if item.access_url %}href="{{ item.access_url }}" target="_blank" rel="noopener noreferrer"{% endif %} style="text-decoration:none">
+    {% if item.cover_image %}<img src="{{ item.cover_image.url }}" alt="" loading="lazy">{% elif item.kind == 'video' %}{% icon 'play' %}{% elif item.kind == 'bank_benefit' %}{% icon 'card' %}{% elif item.kind == 'insider' %}{% icon 'book' %}{% elif item.kind == 'policy' %}{% icon 'file' %}{% else %}{% icon 'folder' %}{% endif %}
+    <span class="tag">{{ item.get_kind_display }}</span>
+  </a>
+  <button type="button" class="bm" data-bookmark="{{ item.pk }}" aria-pressed="{% if item.pk in shell_bookmarks %}true{% else %}false{% endif %}" aria-label="Bookmark {{ item.title }}" title="Bookmark">{% icon 'bookmark' %}</button>
+  <div class="mbody"><h3>{{ item.title }}</h3>{% if item.summary %}<p>{{ item.summary }}</p>{% endif %}
+    <div class="mfoot"><span>{{ item.published_at|date:"d M Y" }}{% if item.department %} &middot; {{ item.department }}{% endif %}</span><span class="mact">{% if item.access_url %}<a href="{{ item.access_url }}" target="_blank" rel="noopener noreferrer">{% if item.file %}View{% else %}Open{% endif %} {% icon 'external' 'sm' %}</a>{% endif %}{% if item.file and item.kind not in "video training corporate_film event_video" %}<a href="{{ item.file.url }}" download>Download {% icon 'download' 'sm' %}</a>{% endif %}</span></div></div>
+</article>

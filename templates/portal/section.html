@@ -1,53 +1,82 @@
-{% extends 'base.html' %}{% load static %}{% block content %}<div class="dashboard-intro"><div><span class="eyebrow">VISHAKHA ONE / {{ heading|upper }}</span><h1>{{ heading }}</h1><p>{{ subtitle }}</p></div></div>{% if section == 'apps' %}<section class="section apps-section"><div class="section-header"><div><h2>Application directory</h2><p>Quick access to your enterprise systems.</p></div><span class="app-count">{{ apps|length }} applications</span></div><section class="recent-apps" id="recent-apps" aria-labelledby="recent-apps-title" hidden><div class="recent-apps-heading"><div><h3 id="recent-apps-title">Recently used</h3><p>Quickly reopen applications you visited recently.</p></div><button class="recent-clear" id="recent-apps-clear" type="button">Clear history</button></div><div class="recent-apps-list" id="recent-apps-list"></div></section><div class="app-toolbar"><label class="filter-search"><span>⌕</span><input id="app-filter" value="{{ query|default:'' }}" placeholder="Search apps or categories..." aria-label="Filter applications"></label></div><div class="app-category-bar" id="app-category-bar" aria-label="Filter applications by category" hidden><span class="app-category-label">Categories</span><div class="app-category-options" id="app-category-options" role="group" aria-label="Application categories"></div></div><div class="app-directory-tools" aria-label="Application directory controls"><div class="app-directory-status" id="app-results-count" role="status" aria-live="polite">{{ apps|length }} applications</div><div class="app-directory-controls"><label class="app-sort-label" for="app-sort">Sort by</label><select id="app-sort" class="app-sort-select" aria-label="Sort applications"><option value="default">Default order</option><option value="az">Name: A to Z</option><option value="za">Name: Z to A</option></select><div class="app-view-switch" role="group" aria-label="Application layout"><button type="button" id="app-view-grid" class="app-view-button" aria-label="Grid view" aria-pressed="true" title="Grid view"><svg class="portal-icon" aria-hidden="true"><use href="#vicon-apps"></use></svg></button><button type="button" id="app-view-list" class="app-view-button" aria-label="List view" aria-pressed="false" title="List view"><svg class="portal-icon" aria-hidden="true"><use href="#vicon-news"></use></svg></button></div><button type="button" id="app-reset-filters" class="app-reset-filters">Reset filters</button></div></div><div class="app-toolbar-actions"><button type="button" class="favorites-filter" aria-pressed="false"><svg class="portal-icon" aria-hidden="true"><use href="#vicon-star"></use></svg> Favorites</button></div><div class="grid app-grid" id="app-grid">{% for app in apps %}<a class="app-card" data-name="{{ app.name|lower }}" data-category="{{ app.category|lower }}" href="{% if app.url %}{{ app.url }}{% else %}#{% endif %}" {% if app.url %}target="_blank" rel="noopener noreferrer"{% else %}data-unconfigured="true"{% endif %}><span class="app-icon-wrap">{% if "vishakha" in app.name|lower or "vishakha" in app.icon_path|lower %}<img class="company-app-logo" src="{% static 'assets/branding/vishakha-logo.png' %}" alt="Vishakha" loading="lazy">{% elif app.icon_path %}<img src="{% static app.icon_path %}" alt="" loading="lazy">{% else %}<span class="app-initial">{{ app.name|slice:':1' }}</span>{% endif %}</span><span class="app-meta"><strong>{{ app.name }}</strong><small>{{ app.category|default:'Company application' }}</small></span><button type="button" class="favorite-toggle" data-favorite="{{ app.name }}" aria-label="Favorite {{ app.name }}" aria-pressed="false"><svg class="portal-icon" aria-hidden="true"><use href="#vicon-star"></use></svg></button><span class="app-arrow"><svg class="portal-icon" aria-hidden="true"><use href="#vicon-external"></use></svg></span></a>{% empty %}<p>No matching applications.</p>{% endfor %}</div><p id="apps-empty" class="empty-message" hidden>No applications match your search.</p></section>{% elif section == 'news' or section == 'documents' or section == 'policies' %}
-<section class="section vone-library">
- <div class="section-header"><div><span class="eyebrow">VISHAKHA LIBRARY</span><h2>{{ heading }}</h2><p>Browse published content by collection.</p></div></div>
- <form method="get" class="vone-library-search">
-  <input type="search" name="q" value="{{ query }}" placeholder="Search titles and descriptions…" aria-label="Search {{ heading }}">
-  {% if selected_category != 'all' %}<input type="hidden" name="category" value="{{ selected_category }}">{% endif %}
-  <button type="submit">Search</button>
- </form>
- <nav class="vone-library-filters" aria-label="Filter content by collection">
- {% if section == 'news' %}
-  <a href="?category=all{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'all' %}aria-current="page"{% endif %}>All updates</a>
-  <a href="?category=news{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'news' %}aria-current="page"{% endif %}>News</a>
-  <a href="?category=announcement{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'announcement' %}aria-current="page"{% endif %}>Announcements</a>
-  <a href="?category=recognition{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'recognition' %}aria-current="page"{% endif %}>Recognition</a>
-  <a href="?category=gallery{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'gallery' %}aria-current="page"{% endif %}>Photo albums</a>
- {% else %}
-  <a href="?category=all{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'all' %}aria-current="page"{% endif %}>All</a>
-  {% if section == 'documents' %}
-  <a href="?category=document{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'document' %}aria-current="page"{% endif %}>Documents</a>
-  <a href="?category=brochure{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'brochure' %}aria-current="page"{% endif %}>Brochures</a>
-  <a href="?category=insider{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'insider' %}aria-current="page"{% endif %}>Insider</a>
-  <a href="?category=bank_benefit{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'bank_benefit' %}aria-current="page"{% endif %}>Bank Benefits</a>
-  <a href="?category=canteen_menu{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'canteen_menu' %}aria-current="page"{% endif %}>Canteen</a>
-  <a href="?category=video{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'video' %}aria-current="page"{% endif %}>Videos</a>
-  {% else %}<a href="?category=policy" aria-current="page">Policies</a>{% endif %}
- {% endif %}
- </nav>
- <div class="vone-library-grid">
- {% for item in items %}
- <article class="vone-library-card" {% if section == "news" %}data-news-type="{{ item.category }}"{% endif %}>
- {% if section == 'news' %}
-  {% if item.image %}<a class="vone-library-art" href="{{ item.image.url }}" target="_blank" rel="noopener noreferrer"><img src="{{ item.image.url }}" alt="{{ item.title }}" loading="lazy"></a>{% else %}<div class="vone-library-art vone-library-placeholder"><span>VISHAKHA NEWS</span></div>{% endif %}
- {% else %}
-  {% if item.cover_image %}<a class="vone-library-art" href="{{ item.access_url|default:item.cover_image.url }}" target="_blank" rel="noopener noreferrer"><img src="{{ item.cover_image.url }}" alt="{{ item.title }}" loading="lazy"></a>
-  {% elif item.file and item.kind != 'video' %}<a class="vone-library-art vone-library-placeholder" href="{{ item.access_url }}" target="_blank" rel="noopener noreferrer"><span>OPEN DOCUMENT ↗</span></a>
-  {% else %}<div class="vone-library-art vone-library-placeholder"><span>{{ item.get_kind_display }}</span></div>{% endif %}
- {% endif %}
- <div class="vone-library-card-copy"><span class="eyebrow">{% if section == 'news' %}{{ item.get_category_display }}{% else %}{{ item.get_kind_display }}{% endif %}</span>
- <h3>{{ item.title }}</h3><p>{{ item.summary|truncatechars:130 }}</p>
- <div class="vone-library-card-footer"><small>{{ item.published_at|date:"d M Y" }}</small>
- {% if section != 'news' and item.access_url %}<a href="{{ item.access_url }}" target="_blank" rel="noopener noreferrer">Open ↗</a>{% elif section == 'news' and item.image %}<a href="{{ item.image.url }}" target="_blank" rel="noopener noreferrer">View photo ↗</a>{% endif %}</div></div>
- </article>
- {% empty %}<p class="vone-empty">No published items match this collection. Try another filter.</p>{% endfor %}
- </div>
- {% if section == 'news' and selected_category == 'all' %}
- <h3 class="vone-library-events-title">Upcoming events</h3><div class="vone-library-grid">
- {% for event in events %}<article class="vone-library-card">
- {% if event.image %}<a class="vone-library-art" href="{{ event.image.url }}" target="_blank" rel="noopener noreferrer"><img src="{{ event.image.url }}" alt="{{ event.title }}" loading="lazy"></a>{% endif %}
- <div class="vone-library-card-copy"><span class="eyebrow">EVENT</span><h3>{{ event.title }}</h3><p>{{ event.summary|truncatechars:130 }}</p><small>{{ event.starts_at|date:"d M Y" }} · {{ event.location }}</small></div></article>
- {% empty %}<p class="vone-empty">No upcoming events.</p>{% endfor %}</div>
- {% endif %}
+{% extends 'base.html' %}{% load static vone_ui %}{% block content %}
+
+{% if section == 'apps' %}
+{% include 'portal/_banner.html' with title='My Apps' icon='grid' eyebrow='Application directory' lead='Quick access to your enterprise systems, one click away.' search_action=request.path placeholder='Search applications or categories…' %}
+<section class="sec" style="margin-top:22px">
+  <div class="toolbar"><label class="field-search">{% icon 'search' 'sm' %}<input type="search" data-app-filter placeholder="Filter this list instantly…" aria-label="Filter applications"></label><button type="button" class="chip" data-fav-filter aria-pressed="false">{% icon 'star' 'sm' %} Favourites</button>{% include 'portal/_viewtoggle.html' with target='#app-grid' key='apps' %}<span class="count" data-app-count>{{ apps|length }} applications</span></div>
+  {% if app_categories %}<div class="chips hscroll" style="margin-bottom:18px" aria-label="Categories"><a class="chip" href="?category=all" {% if selected_category == 'all' %}aria-current="page"{% endif %}>All</a>{% for c in app_categories %}<a class="chip" href="?category={{ c|urlencode }}" {% if selected_category|lower == c|lower %}aria-current="page"{% endif %}>{{ c }}</a>{% endfor %}</div>{% endif %}
+  <div class="apps" id="app-grid">{% for app in apps %}{% include 'portal/_tile.html' %}{% empty %}<div class="empty">{% icon 'grid' %}<p>No applications match your search.</p></div>{% endfor %}</div>
+  <p id="apps-empty" class="empty" hidden style="margin-top:12px">No applications match. Clear the filter or favourites.</p>
 </section>
-{% else %}<section class="section"><div class="section-header"><div><span class="eyebrow">CONTENT HUB</span><h2>{{ heading }}</h2><p>Official company updates and resources</p></div></div>{% if section != 'services' and section != 'help' %}<form method="get" class="step7-search"><input type="search" name="q" value="{{ query }}" placeholder="Search {{ heading|lower }}..." aria-label="Search content"><button type="submit" class="btn">Search</button></form><div class="step7-cards">{% for item in items %}<article class="step7-card">{% if item.image %}<a class="full-image-link" href="{{ item.image.url }}" target="_blank" rel="noopener" aria-label="View full image of {{ item.title }}"><img class="step7-cover" src="{{ item.image.url }}" alt="{{ item.title }}" loading="lazy"></a>{% elif item.photo %}<a class="full-image-link" href="{{ item.photo.url }}" target="_blank" rel="noopener"><img class="step7-cover" src="{{ item.photo.url }}" alt="{{ item.employee_name }}" loading="lazy"></a>{% endif %}<div class="step7-card-body"><span class="eyebrow">{% if section == 'news' %}{{ item.get_category_display }}{% elif section == 'joiners' %}{{ item.department }}{% elif section == 'careers' %}{{ item.department }}{% else %}{{ item.get_kind_display }}{% endif %}</span><h3>{% if section == 'joiners' %}{{ item.employee_name }}{% else %}{{ item.title }}{% endif %}</h3><p>{% if section == 'joiners' %}{{ item.designation }} · {{ item.location }}{% elif section == 'careers' %}{{ item.location }} · {{ item.employment_type }}{% else %}{{ item.summary|truncatechars:220 }}{% endif %}</p>{% if section == 'policies' or section == 'documents' %}{% if item.access_url %}<a href="{{ item.access_url }}" target="_blank" rel="noopener noreferrer">Open resource ↗</a>{% endif %}{% elif section == 'joiners' %}{% if item.introduction_document %}<a class="vone-joiner-document-link" href="{{ item.introduction_document.url }}">View introduction ↗</a>{% endif %}{% elif section == 'careers' %}{% if item.apply_url %}<a href="{{ item.apply_url }}" target="_blank" rel="noopener noreferrer">Apply ↗</a>{% endif %}{% if item.deadline %}<small>Apply by {{ item.deadline|date:"d M Y" }}</small>{% endif %}{% else %}<small>{{ item.published_at|date:"d M Y" }}</small>{% endif %}</div></article>{% empty %}<p class="content-empty">No published content available yet.</p>{% endfor %}</div>{% if section == 'news' %}<h2 class="step7-subheading">Upcoming events</h2><div class="step7-cards">{% for event in events %}<article class="step7-card">{% if event.image %}<a class="full-image-link" href="{{ event.image.url }}" target="_blank" rel="noopener" aria-label="View full image of {{ event.title }}"><img class="step7-cover" src="{{ event.image.url }}" alt="{{ event.title }}" loading="lazy"></a>{% endif %}<div class="step7-card-body"><h3>{{ event.title }}</h3><p>{{ event.summary }}</p><small>{{ event.starts_at|date:"d M Y, g:i A" }} · {{ event.location }}</small></div></article>{% empty %}<p class="content-empty">No upcoming events.</p>{% endfor %}</div>{% endif %}{% else %}<p class="content-empty">This service will be configured in a later development phase.</p>{% endif %}</section>{% endif %}{% endblock %}
+
+{% elif section == 'news' or section == 'policies' or section == 'documents' %}
+{% include 'portal/_banner.html' with title=heading icon='news' eyebrow='Vishakha library' lead='Browse published content by collection.' search_action=request.path placeholder='Search titles and descriptions…' hidden_name=hidden_name hidden_value=hidden_value %}
+<div class="chips hscroll" style="margin:22px 0 4px" aria-label="Filter by collection">
+{% if section == 'news' %}
+  <a class="chip" href="?category=all{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'all' %}aria-current="page"{% endif %}>All updates</a>
+  <a class="chip" href="?category=news{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'news' %}aria-current="page"{% endif %}>News</a>
+  <a class="chip" href="?category=announcement{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'announcement' %}aria-current="page"{% endif %}>Announcements</a>
+  <a class="chip" href="?category=leadership{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'leadership' %}aria-current="page"{% endif %}>Leadership messages</a>
+  <a class="chip" href="?category=circular{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'circular' %}aria-current="page"{% endif %}>Circulars</a>
+  <a class="chip" href="?category=recognition{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'recognition' %}aria-current="page"{% endif %}>Recognition</a>
+  <a class="chip" href="?category=gallery{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'gallery' %}aria-current="page"{% endif %}>Photo albums</a>
+{% elif section == 'documents' %}
+  <a class="chip" href="?category=all{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'all' %}aria-current="page"{% endif %}>All</a>
+  <a class="chip" href="?category=document{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'document' %}aria-current="page"{% endif %}>Documents</a>
+  <a class="chip" href="?category=brochure{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'brochure' %}aria-current="page"{% endif %}>Brochures</a>
+  <a class="chip" href="?category=insider{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'insider' %}aria-current="page"{% endif %}>Insider</a>
+  <a class="chip" href="?category=bank_benefit{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'bank_benefit' %}aria-current="page"{% endif %}>Bank Benefits</a>
+  <a class="chip" href="?category=canteen_menu{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'canteen_menu' %}aria-current="page"{% endif %}>Canteen</a>
+  <a class="chip" href="?category=video{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'video' %}aria-current="page"{% endif %}>Videos</a>
+{% endif %}
+</div>
+<section class="sec" style="margin-top:18px"><div class="toolbar" style="justify-content:flex-end;margin-bottom:12px">{% include 'portal/_viewtoggle.html' with target='#lib-grid' key='library' %}</div><div class="grid3" id="lib-grid">
+  {% for item in items %}{% if section == 'news' %}{% include 'portal/_news_card.html' %}{% else %}{% include 'portal/_resource_card.html' %}{% endif %}
+  {% empty %}<div class="empty" style="grid-column:1/-1">{% icon 'folder' %}<p>No published items match this collection. Try another filter.</p></div>{% endfor %}
+</div></section>
+{% if section == 'news' and selected_category == 'all' %}<section class="sec"><div class="sec-head"><div class="sec-title"><span class="sec-ico">{% icon 'calendar' %}</span><h2>Upcoming events</h2></div></div>
+  <div class="rows">{% for event in events %}<div class="row"><span class="date"><b>{{ event.starts_at|date:'d' }}</b><small>{{ event.starts_at|date:'M' }}</small></span><div><b>{{ event.title }}</b>{% if event.summary %}<p>{{ event.summary|truncatechars:160 }}</p>{% endif %}<small>{{ event.starts_at|date:'D, g:i A' }}{% if event.location %} &middot; {{ event.location }}{% endif %}</small></div></div>{% empty %}<div class="empty">{% icon 'calendar' %}<p>No upcoming events.</p></div>{% endfor %}</div></section>{% endif %}
+
+{% elif section == 'videos' %}
+{% include 'portal/_banner.html' with title='Video Library' icon='play' eyebrow='Watch & learn' lead='Policy videos, training content, corporate films and event videos.' search_action=request.path placeholder='Search videos…' %}
+<div class="chips hscroll" style="margin:22px 0 4px" aria-label="Video type">
+  <a class="chip" href="?category=all{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'all' %}aria-current="page"{% endif %}>All videos</a>
+  {% for key, label in video_kinds %}<a class="chip" href="?category={{ key }}{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == key %}aria-current="page"{% endif %}>{{ label }}</a>{% endfor %}
+</div>
+<section class="sec" style="margin-top:18px"><div class="toolbar" style="justify-content:flex-end;margin-bottom:12px">{% include 'portal/_viewtoggle.html' with target='#lib-grid' key='library' %}</div><div class="grid3" id="lib-grid">
+  {% for item in items %}{% include 'portal/_video_card.html' %}
+  {% empty %}<div class="empty" style="grid-column:1/-1">{% icon 'play' %}<p>No videos have been published in this category yet.</p></div>{% endfor %}
+</div></section>
+
+{% elif section == 'collateral' %}
+{% include 'portal/_banner.html' with title='Brochures & Brand Material' icon='folder' eyebrow='Central library' lead='Brochures, presentations and approved brand material. View, download or bookmark.' search_action=request.path placeholder='Search brochures and material…' %}
+<div class="chips hscroll" style="margin:22px 0 4px" aria-label="Type">
+  <a class="chip" href="?category=all{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == 'all' %}aria-current="page"{% endif %}>Everything</a>
+  {% for key, label in collateral_kinds %}<a class="chip" href="?category={{ key }}{% if query %}&q={{ query|urlencode }}{% endif %}" {% if selected_category == key %}aria-current="page"{% endif %}>{{ label }}</a>{% endfor %}
+</div>
+<section class="sec" style="margin-top:18px"><div class="toolbar" style="justify-content:flex-end;margin-bottom:12px">{% include 'portal/_viewtoggle.html' with target='#lib-grid' key='library' %}</div><div class="grid3" id="lib-grid">
+  {% for item in items %}{% include 'portal/_resource_card.html' %}
+  {% empty %}<div class="empty" style="grid-column:1/-1">{% icon 'folder' %}<p>Nothing has been published here yet.</p></div>{% endfor %}
+</div></section>
+
+{% elif section == 'careers' %}
+{% include 'portal/_banner.html' with title='Internal Careers' icon='briefcase' eyebrow='Grow with Vishakha' lead='Open positions across the group. Apply internally.' search_action=request.path placeholder='Search title, department or location…' %}
+<section class="sec" style="margin-top:22px"><div class="rows">
+  {% for job in items %}<div class="row"><span class="ico">{% icon 'briefcase' %}</span><div style="flex:1;min-width:0"><b>{{ job.title }}</b><p>{{ job.summary|truncatechars:180 }}</p><div class="chips" style="margin-top:8px">{% if job.department %}<span class="pill grey">{{ job.department }}</span>{% endif %}{% if job.location %}<span class="pill grey">{% icon 'pin' 'sm' %} {{ job.location }}</span>{% endif %}{% if job.employment_type %}<span class="pill grey">{{ job.employment_type }}</span>{% endif %}{% if job.deadline %}<span class="pill warn">Apply by {{ job.deadline|date:'d M Y' }}</span>{% endif %}</div></div>{% if job.apply_url %}<a class="btn sm" href="{{ job.apply_url }}" target="_blank" rel="noopener noreferrer">Apply {% icon 'external' 'sm' %}</a>{% endif %}</div>
+  {% empty %}<div class="empty">{% icon 'briefcase' %}<p>No openings are published right now. Check back soon.</p></div>{% endfor %}
+</div></section>
+
+{% elif section == 'help' %}
+{% include 'portal/_banner.html' with title='Help &amp; support' icon='lifebuoy' eyebrow='We are here to help' lead='Raise a ticket, ask the assistant, or reach the right team.' %}
+<section class="sec" style="margin-top:22px"><div class="grid3">
+  <a class="res" href="https://vresolved.vishakhapolyfab.com/" target="_blank" rel="noopener noreferrer"><span class="sec-ico">{% icon 'lifebuoy' %}</span><span class="r"><b>Service Excellence Portal</b><small>Raise and track IT, admin and facility tickets</small></span>{% icon 'external' 'sm' %}</a>
+  <button type="button" class="res" data-open-ai style="border:1px solid var(--line-2);font:inherit;text-align:left;cursor:pointer"><span class="sec-ico">{% icon 'sparkles' %}</span><span class="r"><b>Ask Vishakha AI</b><small>Coming soon, not integrated yet</small></span>{% icon 'arrow-right' 'sm' %}</button>
+  <a class="res" href="{% url 'portal:canteen_menu' %}"><span class="sec-ico">{% icon 'utensils' %}</span><span class="r"><b>Canteen menu</b><small>This week's lunch and snacks</small></span>{% icon 'arrow-right' 'sm' %}</a>
+</div>
+<div class="card" style="margin-top:20px"><h3 style="margin-bottom:6px">Need something else?</h3><p style="color:var(--muted)">Contact your HR or IT administrator. For account or password problems, use <b>Forgot password</b> on the sign-in page.</p></div></section>
+
+{% else %}
+{% include 'portal/_banner.html' with title=heading icon='sliders' eyebrow='Employee services' lead='Self-service for everyday needs.' %}
+<section class="sec" style="margin-top:22px"><div class="empty">{% icon 'sliders' %}<p><b>Employee services are being prepared.</b><br>Until then, use your applications for leave, travel and procurement.</p><a class="btn sm" style="margin-top:14px" href="{% url 'portal:section' 'apps' %}">Open my apps {% icon 'arrow-right' 'sm' %}</a></div></section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,4 @@
+{% load vone_ui %}<section class="banner" aria-label="{{ title }}">
+  <div><span class="pill">{% icon icon 'sm' %} {{ eyebrow|default:'Vishakha One' }}</span><h1>{{ title }}</h1>{% if lead %}<p>{{ lead }}</p>{% endif %}</div>
+  {% if search_action %}<form class="banner-form" method="get" action="{{ search_action }}" role="search">{% icon 'search' 'sm' %}<input type="search" name="q" value="{{ query|default:'' }}" placeholder="{{ placeholder|default:'Search…' }}" aria-label="{{ placeholder|default:'Search' }}" maxlength="120">{% if hidden_name %}<input type="hidden" name="{{ hidden_name }}" value="{{ hidden_value }}">{% endif %}<button class="btn" type="submit">Search</button></form>{% endif %}
+</section>

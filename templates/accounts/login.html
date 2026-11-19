@@ -1,90 +1,17 @@
-{% load static %}
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#10263f">
-  <title>Employee Sign In | Vishakha One</title>
-  <link rel="stylesheet" href="{% static 'css/employee_auth.css' %}">
-</head>
-<body class="vone-auth-page">
-  <main class="auth-layout">
-    <section class="auth-story" aria-label="Vishakha One introduction">
-      <a class="auth-brand" href="/" aria-label="Vishakha One">
-        <img src="{% static 'assets/branding/vishakha-logo-highres.png' %}" alt="Vishakha logo">
-        <span><strong>Vishakha <b>ONE</b></strong><small>Employee digital workplace</small></span>
-      </a>
-      <div class="auth-story-content">
-        <span class="auth-eyebrow">ONE COMPANY. ONE WORKPLACE.</span>
-        <h1>Your workday,<br>all in one place.</h1>
-        <p>Sign in to access company applications, announcements, policies and employee services.</p>
-        <div class="auth-feature-list">
-          <span><i>✓</i> Company applications and services</span>
-          <span><i>✓</i> News, events and important updates</span>
-          <span><i>✓</i> Your personal employee workspace</span>
-        </div>
-      </div>
-      <div class="auth-story-footer">Vishakha Group <span>·</span> Internal employee access</div>
-      <div class="auth-orbit auth-orbit-one"></div>
-      <div class="auth-orbit auth-orbit-two"></div>
-    </section>
-
-    <section class="auth-panel">
-      <div class="auth-card">
-        <div class="auth-mobile-brand">
-          <img src="{% static 'assets/branding/vishakha-logo-highres.png' %}" alt="Vishakha logo">
-          <span>Vishakha <b>ONE</b></span>
-        </div>
-        <span class="auth-card-kicker">EMPLOYEE SIGN IN</span>
-        <h2>Welcome back</h2>
-        <p class="auth-card-intro">Use your Employee ID or registered company email to continue.</p>
-
-        {% if messages %}
-          {% for message in messages %}
-            <div class="auth-message auth-message-{{ message.tags|default:'info' }}" role="status">{{ message }}</div>
-          {% endfor %}
-        {% endif %}
-        {% if form.non_field_errors %}
-          <div class="auth-error" role="alert">{{ form.non_field_errors|striptags }}</div>
-        {% endif %}
-
-        <form method="post" class="auth-form" novalidate>
-          {% csrf_token %}
-          <input type="hidden" name="next" value="{{ next }}">
-          <label for="id_identifier">Employee ID or company email</label>
-          {{ form.identifier }}
-          {% if form.identifier.errors %}<span class="auth-field-error">{{ form.identifier.errors|striptags }}</span>{% endif %}
-
-          <div class="auth-password-label"><label for="id_password">Password</label><a href="{% url 'accounts:password_reset' %}">Forgot password?</a></div>
-          <div class="auth-password-wrap">
-            {{ form.password }}
-            <button type="button" class="auth-password-toggle" data-password-toggle aria-label="Show password">Show</button>
-          </div>
-          {% if form.password.errors %}<span class="auth-field-error">{{ form.password.errors|striptags }}</span>{% endif %}
-          <button class="auth-submit" type="submit">Sign in <span aria-hidden="true">→</span></button>
-        </form>
-
-        <div class="auth-domain-note"><span aria-hidden="true">⌑</span><div><strong>Vishakha company accounts only</strong><small>Sign-in is restricted to registered @vishakha.com accounts.</small></div></div>
-        {% if sso_enabled %}<a class="auth-sso-link" href="{% url 'accounts:sso' %}">Continue with company SSO <span>→</span></a>{% endif %}
-        <a class="auth-sso-link" href="{% url 'accounts:register' %}">New employee? Register here <span>→</span></a>
-        <a class="auth-sso-link" href="{% url 'content_manager:login' %}">Content Manager sign in <span>→</span></a>
-        <div class="auth-card-footer">Trouble signing in? Contact your HR or IT administrator.</div>
-      </div>
-      <div class="auth-copyright">© Vishakha Group · Vishakha One</div>
-    </section>
-  </main>
-  <script>
-    document.querySelectorAll('[data-password-toggle]').forEach(function (button) {
-      button.addEventListener('click', function () {
-        var input = document.getElementById('id_password');
-        if (!input) return;
-        var reveal = input.type === 'password';
-        input.type = reveal ? 'text' : 'password';
-        button.textContent = reveal ? 'Hide' : 'Show';
-        button.setAttribute('aria-label', reveal ? 'Hide password' : 'Show password');
-      });
-    });
-  </script>
-</body>
-</html>
+{% extends "accounts/auth_base.html" %}
+{% block title %}Employee sign in{% endblock %}
+{% block content %}
+<h2>Welcome back</h2>
+<p class="vlead">Sign in to your Vishakha One workspace.</p>
+{% if form.non_field_errors %}<div class="valert error" role="alert"><svg class="vi" aria-hidden="true"><use href="#vi-alert"/></svg><div>{{ form.non_field_errors|striptags }}</div></div>{% endif %}
+{% if sso_enabled %}<a class="vbtn secondary block" href="{% url 'accounts:sso' %}" style="height:48px"><svg width="18" height="18" viewBox="0 0 21 21" aria-hidden="true"><rect x="1" y="1" width="9" height="9" fill="#f25022"/><rect x="11" y="1" width="9" height="9" fill="#7fba00"/><rect x="1" y="11" width="9" height="9" fill="#00a4ef"/><rect x="11" y="11" width="9" height="9" fill="#ffb900"/></svg>Continue with company SSO</a>
+<div class="vdivider">or sign in with password</div>{% endif %}
+<form method="post" data-busy novalidate>{% csrf_token %}
+  <input type="hidden" name="next" value="{{ next }}">
+  {% include "accounts/_field.html" with f=form.identifier icon="mail" %}
+  {% include "accounts/_field.html" with f=form.password icon="lock" password=1 %}
+  <button class="vbtn lg block auth-submit" type="submit">Sign in <svg class="vi" aria-hidden="true"><use href="#vi-arrow-right"/></svg></button>
+</form>
+<div class="vlinks"><a href="{% url 'accounts:password_reset' %}">Forgot password?</a><a href="{% url 'accounts:register' %}">Create account</a></div>
+<div class="vsmall">Trouble signing in? Contact your HR or IT administrator.<br><a href="{% url 'content_manager:login' %}">Content Manager sign in</a></div>
+{% endblock %}

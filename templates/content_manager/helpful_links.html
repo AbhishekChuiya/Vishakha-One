@@ -1,0 +1,24 @@
+{% extends 'content_manager/base.html' %}{% load vone_ui %}{% block content %}
+<div class="cm-intro"><div><a class="cm-back" href="{% url 'content_manager:dashboard' %}">← Overview</a>
+  <h1>🔗 Helpful links</h1>
+  <p>These shortcuts appear in the bar under the header on every employee page. Lower order numbers come first. Use a page on this site (such as <code>/policies/</code>) or a full <code>https://</code> address.</p></div></div>
+{% if can_add %}<details class="cm-card cm-addbox"><summary class="cm-btn cm-btn-primary">+ Add a link</summary>
+  <form method="post" class="cm-rowform">{% csrf_token %}<input type="hidden" name="action" value="add">
+    <label>Title<input type="text" name="title" required maxlength="60"></label>
+    <label>Address<input type="text" name="url" required maxlength="300" placeholder="/policies/ or https://…"></label>
+    <label>Icon<select name="icon">{% for value, label in icons %}<option value="{{ value }}">{{ label }}</option>{% endfor %}</select></label>
+    <label>Order<input type="number" name="display_order" min="0" value="100"></label>
+    <label class="cm-check"><input type="checkbox" name="is_active" checked> Show</label>
+    <button class="cm-btn cm-btn-primary" type="submit">Add link</button></form></details>{% endif %}
+<div class="cm-stack">{% for link in links %}<article class="cm-card cm-approw">
+  <div class="cm-apphead"><span class="cm-logo-initials" style="width:38px;height:38px">{% icon link.icon 'sm' %}</span><strong>{{ link.title }}</strong>{% if not link.is_active %}<span class="cm-status cm-draft">Hidden</span>{% endif %}</div>
+  <form method="post" class="cm-rowform">{% csrf_token %}<input type="hidden" name="link_id" value="{{ link.pk }}">
+    <label>Title<input type="text" name="title" value="{{ link.title }}" required maxlength="60"></label>
+    <label>Address<input type="text" name="url" value="{{ link.url }}" required maxlength="300"></label>
+    <label>Icon<select name="icon">{% for value, label in icons %}<option value="{{ value }}" {% if value == link.icon %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+    <label>Order<input type="number" name="display_order" value="{{ link.display_order }}" min="0"></label>
+    <label class="cm-check"><input type="checkbox" name="is_active" {% if link.is_active %}checked{% endif %}> Show</label>
+    <button class="cm-btn cm-btn-primary" type="submit">Save</button>
+    {% if can_delete %}<button class="cm-btn cm-btn-secondary" name="action" value="delete" type="submit" onclick="return confirm('Delete this link?')">Delete</button>{% endif %}</form>
+</article>{% empty %}<div class="cm-empty-notifications">No helpful links yet. The bar is hidden until you add one.</div>{% endfor %}</div>
+{% endblock %}

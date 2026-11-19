@@ -1,0 +1,8 @@
+{% load static vone_ui %}<div class="tile" data-name="{{ app.name|lower }}" data-category="{{ app.category|lower }}">
+  <a class="tl" {% if app.url %}href="{{ app.url }}" target="_blank" rel="noopener noreferrer"{% else %}href="#" aria-disabled="true" onclick="return false"{% endif %}>
+    <span class="tile-ico h{{ app.name|hue }}"><span>{{ app.name|initials:2 }}</span>{% if app.logo_url %}<img src="{{ app.logo_url }}" alt="" loading="lazy" onerror="this.remove()">{% elif "vishakha" in app.name|lower %}<img src="{% static 'assets/branding/vishakha-logo-highres.png' %}" alt="" onerror="this.remove()">{% elif app.icon_path %}<img src="{% static app.icon_path %}" alt="" loading="lazy" onerror="this.remove()">{% endif %}</span>
+    <span class="tile-txt"><b>{{ app.name }}</b><small>{% if app.url %}{{ app.category|default:'Company application' }}{% else %}Not configured yet{% endif %}</small></span>
+    {% if app.url %}<span class="go">{% icon 'external' 'sm' %}</span>{% endif %}
+  </a>
+  <button type="button" class="fav" data-fav="{{ app.name }}" aria-pressed="false" aria-label="Favourite {{ app.name }}">{% icon 'star' %}</button>
+</div>

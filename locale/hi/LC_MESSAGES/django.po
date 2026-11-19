@@ -1,0 +1,275 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Vishakha One\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "Home"
+msgstr "होम"
+
+msgid "My Apps"
+msgstr "मेरे ऐप्स"
+
+msgid "News &amp; Events"
+msgstr "समाचार और कार्यक्रम"
+
+msgid "Policies"
+msgstr "नीतियां"
+
+msgid "Documents"
+msgstr "दस्तावेज़"
+
+msgid "Careers"
+msgstr "करियर"
+
+msgid "New Joiners"
+msgstr "नए सदस्य"
+
+msgid "Canteen Menu"
+msgstr "कैंटीन मेन्यू"
+
+msgid "Employee Services"
+msgstr "कर्मचारी सेवाएं"
+
+msgid "Help"
+msgstr "सहायता"
+
+msgid "Workspace"
+msgstr "कार्यक्षेत्र"
+
+msgid "Knowledge"
+msgstr "जानकारी"
+
+msgid "People"
+msgstr "लोग"
+
+msgid "Services"
+msgstr "सेवाएं"
+
+msgid "Admin"
+msgstr "एडमिन"
+
+msgid "Content Manager"
+msgstr "कंटेंट मैनेजर"
+
+msgid "Quick find"
+msgstr "क्विक फ़ाइंड"
+
+msgid "Ask Vishakha AI"
+msgstr "विशाखा AI से पूछें"
+
+msgid "Helpful links"
+msgstr "उपयोगी लिंक"
+
+msgid "My profile"
+msgstr "मेरी प्रोफ़ाइल"
+
+msgid "Weekly canteen menu"
+msgstr "साप्ताहिक कैंटीन मेन्यू"
+
+msgid "My applications"
+msgstr "मेरे एप्लिकेशन"
+
+msgid "Search all content"
+msgstr "सारी सामग्री खोजें"
+
+msgid "Help &amp; support"
+msgstr "सहायता और सपोर्ट"
+
+msgid "Dark mode"
+msgstr "डार्क मोड"
+
+msgid "Switch account"
+msgstr "खाता बदलें"
+
+msgid "Sign out"
+msgstr "साइन आउट"
+
+msgid "Language"
+msgstr "भाषा"
+
+msgid "Company notice"
+msgstr "कंपनी सूचना"
+
+msgid "View all"
+msgstr "सभी देखें"
+
+msgid "See all"
+msgstr "सभी देखें"
+
+msgid "Your digital workplace"
+msgstr "आपका डिजिटल कार्यस्थल"
+
+msgid "Open my apps"
+msgstr "मेरे ऐप्स खोलें"
+
+msgid "Today's menu"
+msgstr "आज का मेन्यू"
+
+msgid ""
+"Everything you need for your workday, all in one place: your apps, company "
+"news, policies and today's canteen menu."
+msgstr ""
+"आपके कार्यदिवस के लिए ज़रूरी सब कुछ, एक ही जगह: आपके ऐप्स, कंपनी समाचार, "
+"नीतियां और आज का कैंटीन मेन्यू।"
+
+msgid "Applications"
+msgstr "एप्लिकेशन"
+
+msgid "Unread notices"
+msgstr "अपठित सूचनाएं"
+
+msgid "Upcoming events"
+msgstr "आगामी कार्यक्रम"
+
+msgid "New colleagues"
+msgstr "नए सहकर्मी"
+
+msgid "Your applications"
+msgstr "आपके एप्लिकेशन"
+
+msgid "What's Cooking?"
+msgstr "आज क्या बन रहा है?"
+
+msgid "Employee resources"
+msgstr "कर्मचारी संसाधन"
+
+msgid "Latest updates"
+msgstr "ताज़ा अपडेट"
+
+msgid "Welcome new colleagues"
+msgstr "नए सहकर्मियों का स्वागत"
+
+msgid "Life at Vishakha"
+msgstr "विशाखा में जीवन"
+
+msgid "Vishakha Insider"
+msgstr "विशाखा इनसाइडर"
+
+msgid "Bank Benefits"
+msgstr "बैंक लाभ"
+
+msgid "Rewards &amp; recognition"
+msgstr "पुरस्कार और सम्मान"
+
+msgid "Company Videos"
+msgstr "कंपनी वीडियो"
+
+msgid "Brochures"
+msgstr "ब्रोशर"
+
+msgid "Internal career openings"
+msgstr "आंतरिक करियर अवसर"
+
+msgid "Recently published policies"
+msgstr "हाल में प्रकाशित नीतियां"
+
+msgid "Grid"
+msgstr "ग्रिड"
+
+msgid "List"
+msgstr "सूची"
+
+msgid "More apps"
+msgstr "और ऐप्स"
+
+msgid "More"
+msgstr "और"
+
+msgid "News"
+msgstr "समाचार"
+
+msgid "Apps"
+msgstr "ऐप्स"
+
+msgid "AI"
+msgstr "AI"
+
+msgid "Back to top"
+msgstr "ऊपर जाएं"
+
+msgid "Coming soon"
+msgstr "जल्द आ रहा है"
+
+msgid "Vishakha AI is coming soon."
+msgstr "विशाखा AI जल्द आ रहा है।"
+
+msgid ""
+"It is not integrated yet, so it cannot answer questions or raise tickets "
+"right now. We will let you know here as soon as it is ready."
+msgstr ""
+"यह अभी जोड़ा नहीं गया है, इसलिए अभी यह सवालों के जवाब नहीं दे सकता और टिकट "
+"नहीं बना सकता। तैयार होते ही हम आपको यहीं बताएंगे।"
+
+msgid "Search all"
+msgstr "सब में खोजें"
+
+msgid "Internal Careers"
+msgstr "आंतरिक करियर"
+
+msgid "Recognition"
+msgstr "सम्मान"
+
+msgid "Photo albums"
+msgstr "फ़ोटो एल्बम"
+
+msgid "Videos"
+msgstr "वीडियो"
+
+msgid "Full weekly menu"
+msgstr "पूरा साप्ताहिक मेन्यू"
+
+msgid "Lunch and evening snacks for this week."
+msgstr "इस सप्ताह का दोपहर का भोजन और शाम का नाश्ता।"
+
+msgid "Policies &amp; guidelines"
+msgstr "नीतियां और दिशानिर्देश"
+
+msgid "Company policies in one place"
+msgstr "कंपनी की सभी नीतियां एक जगह"
+
+msgid "New joiners"
+msgstr "नए सदस्य"
+
+msgid "Internal careers"
+msgstr "आंतरिक करियर"
+
+msgid "Explore opportunities"
+msgstr "अवसर देखें"
+
+msgid "Meet everyone"
+msgstr "सबसे मिलें"
+
+msgid "Company notifications"
+msgstr "कंपनी की सूचनाएं"
+
+msgid "Video Library"
+msgstr "वीडियो लाइब्रेरी"
+
+msgid "Brochures &amp; Brand"
+msgstr "ब्रोशर और ब्रांड सामग्री"
+
+msgid "My Bookmarks"
+msgstr "मेरे बुकमार्क"
+
+msgid "Thought of the day"
+msgstr "आज का विचार"
+
+msgid "Grid view"
+msgstr "ग्रिड व्यू"
+
+msgid "List view"
+msgstr "सूची व्यू"
+
+msgid "Good morning"
+msgstr "सुप्रभात"
+
+msgid "Good afternoon"
+msgstr "नमस्कार"
+
+msgid "Good evening"
+msgstr "शुभ संध्या"

@@ -76,6 +76,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -94,8 +95,10 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
+                'django.template.context_processors.i18n',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'portal.context_processors.shell',
             ],
         },
     },
@@ -110,7 +113,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        # VONE_SQLITE_PATH lets you point a local run at a copy of another database (used to bring old content across).
+        'NAME': os.getenv('VONE_SQLITE_PATH') or BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -142,6 +146,9 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
+LANGUAGES = [('en', 'English'), ('hi', 'हिन्दी')]
+LOCALE_PATHS = [BASE_DIR / 'locale']
+LANGUAGE_COOKIE_AGE = 60 * 60 * 24 * 365
 
 USE_TZ = True
 
@@ -164,7 +171,7 @@ STATICFILES_DIRS = [
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_URL = "media/"
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = Path(os.getenv("VONE_MEDIA_ROOT")) if os.getenv("VONE_MEDIA_ROOT") else BASE_DIR / "media"
 
 LOGIN_URL = "/content-manager/login/"
 LOGIN_REDIRECT_URL = "/content-manager/"
@@ -247,3 +254,11 @@ VONE_SSO_AUTO_PROVISION = os.getenv("VONE_SSO_AUTO_PROVISION", "true").lower() =
 # Ignored unless DEBUG is also true.
 VONE_SSO_DEBUG = os.getenv("VONE_SSO_DEBUG", "false").lower() == "true"
 VONE_SSO_STATE_MINUTES = int(os.getenv("VONE_SSO_STATE_MINUTES", "10"))
+
+
+# Browser push notifications (Web Push). Generate keys once with: python manage.py generate_vapid_keys
+# and put them in the environment file. Leave blank to switch push off.
+VONE_VAPID_PUBLIC_KEY = os.getenv("VONE_VAPID_PUBLIC_KEY", "").strip()
+VONE_VAPID_PRIVATE_KEY = os.getenv("VONE_VAPID_PRIVATE_KEY", "").strip()
+VONE_VAPID_SUBJECT = os.getenv("VONE_VAPID_SUBJECT", "mailto:itsupport@vishakha.com").strip()
+VONE_PUSH_SYNC = os.getenv("VONE_PUSH_SYNC", "false").lower() == "true"   # send inside the request (tests / debugging)

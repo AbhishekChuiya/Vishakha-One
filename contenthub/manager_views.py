@@ -14,8 +14,8 @@ import csv
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
-from .models import Announcement, Resource, JobOpening, NewJoiner, Event, ContentNotification, ContentAuditEvent
-from .manager_forms import AnnouncementForm, ResourceForm, JobOpeningForm, NewJoinerForm, EventForm
+from .models import Announcement, Resource, JobOpening, NewJoiner, Event, DailyThought, ContentNotification, ContentAuditEvent
+from .manager_forms import AnnouncementForm, ResourceForm, JobOpeningForm, NewJoinerForm, EventForm, DailyThoughtForm
 
 SECTIONS = {
     'announcements': {'model': Announcement, 'form': AnnouncementForm, 'title': 'News & Announcements', 'icon': '📣', 'description': 'Share company news and employee recognition'},
@@ -23,6 +23,7 @@ SECTIONS = {
     'jobs': {'model': JobOpening, 'form': JobOpeningForm, 'title': 'Job Openings', 'icon': '💼', 'description': 'Post internal vacancies'},
     'joiners': {'model': NewJoiner, 'form': NewJoinerForm, 'title': 'New Joiners', 'icon': '👋', 'description': 'Welcome new colleagues'},
     'events': {'model': Event, 'form': EventForm, 'title': 'Events', 'icon': '📅', 'description': 'Share events and activities'},
+    'thoughts': {'model': DailyThought, 'form': DailyThoughtForm, 'title': 'Thought of the Day', 'icon': '💡', 'description': 'Daily engagement: one thought for each day'},
 }
 
 
@@ -74,12 +75,21 @@ def audit(actor, slug, record, action, note=''):
         actor_label=actor.get_username() if actor else '', action=action, note=note[:4000])
 
 
+PUSH_LABELS = {'pending': 'Approval requested', 'approved': 'Content approved', 'changes': 'Changes requested'}
+
+
 def notify(recipient, actor, slug, record, kind, message):
     if recipient and recipient.is_active:
         ContentNotification.objects.create(
             recipient=recipient, actor=actor, section=slug, object_id=record.pk,
             title=record.title, kind=kind, message=message,
         )
+        try:  # also pop up on the person's browser/phone; never let this break the workflow
+            from portal import push
+            push.send_to_users([recipient], f"{PUSH_LABELS.get(kind, 'Content update')}: {record.title}", message,
+                               url=reverse('content_manager:notification_center'), tag=f'cm-{slug}-{record.pk}-{kind}')
+        except Exception:
+            pass
 
 
 def notify_approvers(actor, slug, model, record, kind='pending'):
@@ -131,20 +141,31 @@ def listing(request, slug):
         if slug == 'joiners':
             filters |= Q(employee_name__icontains=query)
         records = records.filter(filters)
-    if status == 'published':
-        records = records.filter(is_published=True, approval_status='approved', published_at__lte=timezone.now())
-    elif status == 'draft':
-        records = records.filter(approval_status='draft')
-    elif status == 'scheduled':
-        records = records.filter(is_published=True, approval_status='approved', published_at__gt=timezone.now())
-    if status == 'pending':
-        records = records.filter(approval_status='pending')
-    elif status == 'rejected':
-        records = records.filter(approval_status='rejected')
+    has_expiry = any(f.name == 'expires_at' for f in model._meta.fields)
+    now = timezone.now()
+    if status == 'archived':
+        records = records.filter(is_archived=True)
+    else:
+        records = records.filter(is_archived=False)       # archived items only appear under "Archived"
+        if status == 'published':
+            records = records.filter(is_published=True, approval_status='approved', published_at__lte=now)
+            if has_expiry:
+                records = records.filter(Q(expires_at__isnull=True) | Q(expires_at__gt=now))
+        elif status == 'draft':
+            records = records.filter(approval_status='draft')
+        elif status == 'scheduled':
+            records = records.filter(is_published=True, approval_status='approved', published_at__gt=now)
+        elif status == 'expired' and has_expiry:
+            records = records.filter(expires_at__lte=now)
+        elif status == 'pending':
+            records = records.filter(approval_status='pending')
+        elif status == 'rejected':
+            records = records.filter(approval_status='rejected')
     data = manager_context(request)
     data.update(config=config, slug=slug, can_approve=can_approve(request.user, model), records=records[:150], query=query, status=status,
                 can_add=allowed(request.user, model, 'add'), can_change=allowed(request.user, model, 'change'),
-                can_delete=allowed(request.user, model, 'delete'), now=timezone.now())
+                can_delete=allowed(request.user, model, 'delete'), now=timezone.now(), has_expiry=has_expiry,
+                archived_count=scoped_queryset(request.user, model).filter(is_archived=True).count())
     return render(request, 'content_manager/list.html', data)
 
 
@@ -258,6 +279,28 @@ def toggle_publish(request, slug, pk):
         record.save(update_fields=['is_published', 'approval_status', 'reviewed_by', 'reviewed_at', 'published_at', 'updated_at'])
         audit(request.user, slug, record, 'published' if record.is_published else 'unpublished')
     messages.success(request, 'Published on the employee portal.' if record.is_published else 'Moved back to drafts.')
+    return redirect('content_manager:list', slug=slug)
+
+
+@never_cache
+@login_required
+@require_POST
+def archive(request, slug, pk):
+    """Archive (hide and tidy away) or restore an item. Restored items come back as drafts."""
+    config = section_or_404(slug)
+    model = config['model']
+    require(request.user, model, 'change')
+    if not can_approve(request.user, model):
+        raise PermissionDenied('Only an approver can archive or restore content.')
+    record = get_scoped_object(request.user, model, pk)
+    record.is_archived = not record.is_archived
+    record.archived_at = timezone.now() if record.is_archived else None
+    record.is_published = False
+    record.approval_status = 'draft'
+    with transaction.atomic():
+        record.save(update_fields=['is_archived', 'archived_at', 'is_published', 'approval_status', 'updated_at'])
+        audit(request.user, slug, record, 'archived' if record.is_archived else 'restored')
+    messages.success(request, 'Archived. Employees no longer see it.' if record.is_archived else 'Restored as a draft. Publish it again when ready.')
     return redirect('content_manager:list', slug=slug)
 
 

@@ -10,7 +10,7 @@ from django.core.management import call_command
 from django.test import TestCase, override_settings
 from django.urls import reverse
 
-from .models import EmployeeProfile
+from .models import EmailDelivery, EmployeeProfile
 
 User = get_user_model()
 GOOD_PASSWORD = "Sunrise-Harbor-4821-xyz"
@@ -199,7 +199,8 @@ class RegistrationTests(TestCase):
         self.assertEqual(len(mail.outbox), 5)
 
     def test_mail_failure_still_gives_generic_response(self):
-        with mock.patch("employees.activation.EmailMultiAlternatives.send", side_effect=OSError("smtp down")):
+        with mock.patch("django.core.mail.EmailMultiAlternatives.send", side_effect=OSError("smtp down")), \
+                mock.patch("employees.mailer.time.sleep"):
             self.assertRedirects(self.request_link(), reverse("accounts:register_done"))
 
     def test_registration_can_be_closed_with_a_setting(self):
@@ -224,17 +225,47 @@ class PasswordResetTests(TestCase):
         self.assertEqual(len(mail.outbox), 2)
         self.assertEqual(mail.outbox[0].to, ["ravi.k@vishakha.com"])
 
-    def test_unknown_inactive_or_non_company_identifiers_get_same_reply_and_no_mail(self):
-        self.user.is_active = False
-        self.user.save()
-        for identifier in ("E2002", "nobody", "ravi.k@gmail.com", "ghost@vishakha.com"):
+    def test_identifiers_that_cannot_receive_mail_get_the_same_page_and_no_mail(self):
+        for identifier in ("nobody", "ravi.k@gmail.com", "ZZ-UNKNOWN-ID"):   # unknown Employee ID / not a company address
             self.assertRedirects(self.ask(identifier), reverse("accounts:password_reset_done"))
         self.assertEqual(len(mail.outbox), 0)
 
-    def test_account_without_employee_profile_gets_no_reset_mail(self):
+    def test_company_email_without_account_gets_a_create_account_email(self):
+        self.assertRedirects(self.ask("ghost@vishakha.com"), reverse("accounts:password_reset_done"))
+        self.assertEqual(len(mail.outbox), 1)
+        message = mail.outbox[0]
+        self.assertEqual(message.to, ["ghost@vishakha.com"])
+        self.assertEqual(message.subject, "You do not have a Vishakha One account yet")
+        self.assertIn(reverse("accounts:register"), message.body)
+        self.assertNotIn("password-reset/", message.body)          # never a reset link
+        self.assertIn(reverse("accounts:register"), message.alternatives[0][0])
+
+    def test_inactive_or_inconsistent_account_gets_a_could_not_reset_email(self):
+        self.user.is_active = False
+        self.user.save()
+        self.ask("E2002")
+        self.assertEqual([m.subject for m in mail.outbox], ["Your Vishakha One password could not be reset"])
+        self.assertEqual(mail.outbox[0].to, ["ravi.k@vishakha.com"])
+        self.assertNotIn("password-reset/", mail.outbox[0].body)
+        self.user.is_active = True
+        self.user.save()
+        User.objects.filter(pk=self.user.pk).update(email="different@vishakha.com")  # profile/user mismatch
+        mail.outbox.clear()
+        self.ask("ravi.k@vishakha.com")
+        self.assertEqual([m.subject for m in mail.outbox], ["Your Vishakha One password could not be reset"])
+
+    def test_account_without_employee_profile_is_told_to_create_one(self):
         User.objects.create_user("cm_only", email="cm@vishakha.com", password="Old-Password-7391-abc")
         self.ask("cm@vishakha.com")
-        self.assertEqual(len(mail.outbox), 0)
+        self.assertEqual([m.subject for m in mail.outbox], ["You do not have a Vishakha One account yet"])
+
+    def test_every_request_is_written_to_the_delivery_log(self):
+        self.ask("E2002")
+        self.ask("ghost@vishakha.com")
+        rows = {(r.purpose, r.recipient, r.status) for r in EmailDelivery.objects.all()}
+        self.assertEqual(rows, {("password_reset", "ravi.k@vishakha.com", "sent"),
+                                ("password_reset_no_account", "ghost@vishakha.com", "sent")})
+        self.assertNotIn("password-reset/", " ".join(str(v) for r in EmailDelivery.objects.values() for v in r.values()))
 
     def test_full_reset_changes_password_and_link_is_one_time(self):
         self.ask("E2002")
@@ -319,3 +350,93 @@ class DiagnoseLoginCommandTests(TestCase):
             self.assertIn("password is CORRECT", self.run_cmd("LG002", "--check-password"))
         with mock.patch("employees.management.commands.diagnose_login.getpass", return_value="wrong-one"):
             self.assertIn("does NOT match", self.run_cmd("LG002", "--check-password"))
+
+
+class MailerReliabilityTests(TestCase):
+    def send(self, **kw):
+        from employees import mailer
+        defaults = dict(purpose="registration", recipient="who@vishakha.com", subject="S", text_body="T")
+        defaults.update(kw)
+        return mailer.send_tracked(**defaults)
+
+    def test_transient_failures_are_retried_until_it_works(self):
+        import smtplib
+        from django.core.mail import EmailMultiAlternatives
+        calls = {"n": 0}
+        real_send = EmailMultiAlternatives.send
+
+        def flaky(message, *a, **k):
+            calls["n"] += 1
+            if calls["n"] < 3:
+                raise smtplib.SMTPServerDisconnected("connection lost")
+            return real_send(message, *a, **k)
+
+        with mock.patch("django.core.mail.EmailMultiAlternatives.send", flaky), mock.patch("employees.mailer.time.sleep") as nap:
+            self.assertTrue(self.send())
+        self.assertEqual(len(mail.outbox), 1)
+        row = EmailDelivery.objects.get()
+        self.assertEqual((row.status, row.attempts), ("sent", 3))
+        self.assertEqual(nap.call_count, 2)
+
+    def test_permanent_errors_are_not_retried_and_are_logged_with_the_reason(self):
+        import smtplib
+        error = smtplib.SMTPAuthenticationError(535, b"5.7.139 Authentication unsuccessful")
+        with mock.patch("django.core.mail.EmailMultiAlternatives.send", side_effect=error) as send, \
+                mock.patch("employees.mailer.time.sleep"):
+            self.assertFalse(self.send())
+        self.assertEqual(send.call_count, 1)
+        row = EmailDelivery.objects.get()
+        self.assertEqual((row.status, row.attempts), ("failed", 1))
+        self.assertIn("535", row.error)
+
+    def test_gives_up_after_three_attempts_and_logs_it(self):
+        with mock.patch("django.core.mail.EmailMultiAlternatives.send", side_effect=TimeoutError("slow")) as send, \
+                mock.patch("employees.mailer.time.sleep"):
+            self.assertFalse(self.send())
+        self.assertEqual(send.call_count, 3)
+        self.assertEqual(EmailDelivery.objects.get().attempts, 3)
+
+    def test_hourly_limit_is_counted_in_the_database_and_logged(self):
+        results = [self.send() for _ in range(7)]
+        self.assertEqual(results, [True] * 5 + [False] * 2)
+        self.assertEqual(EmailDelivery.objects.filter(status="throttled").count(), 2)
+        self.assertTrue(self.send(recipient="someone.else@vishakha.com"))            # other address unaffected
+        self.assertTrue(self.send(purpose="password_reset"))                           # other kind unaffected
+
+    def test_a_broken_log_table_never_blocks_the_mail(self):
+        with mock.patch("employees.mailer.EmailDelivery.objects.create", side_effect=RuntimeError("no table")), \
+                mock.patch("employees.mailer.EmailDelivery.objects.filter", side_effect=RuntimeError("no table")):
+            self.assertTrue(self.send())
+        self.assertEqual(len(mail.outbox), 1)
+
+
+class EmailAdminAndCommandTests(TestCase):
+    def test_delivery_log_is_visible_to_admins_but_read_only(self):
+        admin_user = User.objects.create_superuser("log_admin", "log_admin@vishakha.com", GOOD_PASSWORD)
+        self.client.force_login(admin_user)
+        EmailDelivery.objects.create(purpose="registration", recipient="x@vishakha.com", status="failed", attempts=3, error="TimeoutError")
+        page = self.client.get(reverse("admin:employees_emaildelivery_changelist"))
+        self.assertContains(page, "x@vishakha.com")
+        self.assertContains(page, "TimeoutError")
+        self.assertEqual(self.client.get(reverse("admin:employees_emaildelivery_add")).status_code, 403)
+
+    def test_email_log_command(self):
+        EmailDelivery.objects.create(purpose="password_reset", recipient="y@vishakha.com", status="sent", attempts=1)
+        out = io.StringIO()
+        call_command("email_log", "--recipient", "y@vishakha.com", stdout=out)
+        self.assertIn("Password reset link", out.getvalue())
+        self.assertIn("sent", out.getvalue())
+
+    def test_diagnose_login_explains_and_can_send_the_reset_mail(self):
+        user = User.objects.create_user("dg1", password=GOOD_PASSWORD)
+        EmployeeProfile.objects.create(user=user, employee_id="DG001", company_email="dg1@vishakha.com")
+        out = io.StringIO()
+        call_command("diagnose_login", "DG001", "--send-reset", "--base-url", "https://portal.example.test", stdout=out)
+        text = out.getvalue()
+        self.assertIn("a reset link WOULD be sent to dg1@vishakha.com", text)
+        self.assertIn("send result: sent", text)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn("https://portal.example.test/accounts/password-reset/", mail.outbox[0].body)
+        out = io.StringIO()
+        call_command("diagnose_login", "NOPE-ID", stdout=out)
+        self.assertIn("NOTHING can be sent", out.getvalue())

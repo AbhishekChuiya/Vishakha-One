@@ -1,0 +1,112 @@
+/* Vishakha One - sign-in, registration and password pages. Same design system as the portal (Project Shiksha look). */
+@font-face{font-family:"Inter";font-style:normal;font-weight:100 900;font-display:swap;src:url("../fonts/inter-latin.woff2") format("woff2")}
+@font-face{font-family:"Sora";font-style:normal;font-weight:100 900;font-display:swap;src:url("../fonts/sora-latin.woff2") format("woff2")}
+:root{
+  --v-red:#e0262f;--v-red-600:#b81c24;--v-red-700:#98151d;--v-red-50:#fbeaea;--v-red-100:#f8d6d8;--v-red-200:#f0b4b8;
+  --v-ink:#1f1416;--v-ink-2:#4a383c;--v-muted:#6e5f62;--v-bg:#fbf7f7;--v-card:#FFFFFF;--v-fill:#f4eded;--v-line:rgba(31,20,22,.10);
+  --v-ok:#16A34A;--v-ok-50:#E7F7EE;--v-warn:#B45309;--v-warn-50:#FDF3E1;
+  --v-grad:linear-gradient(135deg,#f25a50 0%,#e0262f 60%,#c8202c 100%);
+  --v-hero:linear-gradient(120deg,#f2574d 0%,#e0262f 55%,#c21f2b 100%);
+  --v-glow:0 10px 28px -10px rgba(224,38,47,.55);--v-ring:0 0 0 3px rgba(224,38,47,.22);
+  --v-sh:0 2px 4px rgba(31,20,22,.05),0 18px 36px -14px rgba(31,20,22,.22);
+  --v-font:"Inter","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+  --v-display:"Sora","Inter","Segoe UI",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body.vauth-page{font-family:var(--v-font);color:var(--v-ink);background:var(--v-bg);-webkit-font-smoothing:antialiased}
+.vauth{min-height:100vh;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr)}
+.vauth a{color:var(--v-red);text-decoration:none}.vauth a:hover{text-decoration:underline}
+.vi{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* ---------- brand panel (left) ---------- */
+.vauth-brand{position:relative;overflow:hidden;color:#fff;padding:52px 60px;display:flex;flex-direction:column;justify-content:space-between;background:var(--v-hero)}
+.vauth-brand::after{content:"";position:absolute;left:-90px;top:30%;width:360px;height:360px;border-radius:50%;background:rgba(255,255,255,.10);filter:blur(60px);animation:vblob 14s ease-in-out infinite;pointer-events:none}
+.vauth-brand>*{position:relative;z-index:1}
+.vauth-logo{display:inline-flex;align-items:center;gap:12px;color:#fff!important;text-decoration:none!important;align-self:flex-start}
+.vtile{display:inline-flex;align-items:center;justify-content:center;width:42px;height:42px;padding:6px;border-radius:13px;background:#fff;box-shadow:0 6px 16px -6px rgba(35,26,28,.45);flex:none}
+.vtile img{width:100%;height:100%;object-fit:contain;display:block}
+.vwords{display:flex;flex-direction:column;line-height:1}
+.vwords b{font-size:1.2rem;font-weight:800;letter-spacing:-.01em}.vwords b i{font-style:normal;font-weight:700;opacity:.85;font-size:.8em;margin-left:3px}
+.vwords small{margin-top:4px;font-size:.6rem;letter-spacing:.2em;text-transform:uppercase;font-weight:600;opacity:.75}
+.vauth-copy{max-width:420px}
+.vauth-copy h1{font-family:var(--v-display);font-size:clamp(2.1rem,3.4vw,3rem);line-height:1.08;letter-spacing:-.03em;font-weight:800;margin:0 0 14px;color:#fff}
+.vauth-copy p{max-width:380px;margin:0 0 26px;font-size:1.05rem;line-height:1.55;color:rgba(255,255,255,.82)}
+.vauth-points{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.vauth-points li{display:flex;align-items:center;gap:12px;font-size:.98rem}
+.vauth-points .vi{width:36px;height:36px;padding:9px;border-radius:50%;background:rgba(255,255,255,.16)}
+.vauth-bubble{position:absolute!important;right:56px;bottom:344px;max-width:240px;padding:13px 16px;border-radius:22px 22px 22px 6px;background:#fff;color:var(--v-ink);font-size:.9rem;line-height:1.4;box-shadow:0 20px 40px -14px rgba(35,26,28,.45);animation:vpop .5s .3s cubic-bezier(.2,.9,.3,1.3) both}
+.vauth-mascot{position:absolute!important;right:28px;bottom:0;height:330px;width:auto;filter:drop-shadow(0 18px 24px rgba(80,5,12,.4));animation:vfloat 5s ease-in-out infinite}
+.vauth-foot{font-size:.8rem;color:rgba(255,255,255,.6)}
+
+/* ---------- form panel (right) ---------- */
+.vauth-main{position:relative;display:flex;align-items:center;justify-content:center;padding:40px 28px;background-image:radial-gradient(52rem 26rem at 100% -10%,rgba(224,38,47,.10),transparent 60%),radial-gradient(34rem 20rem at -10% 100%,rgba(224,38,47,.06),transparent 60%)}
+.vauth-box{width:100%;max-width:410px;animation:vrise .45s cubic-bezier(.2,.8,.2,1) both}
+.vauth-mlogo{display:none;align-items:center;gap:11px;margin-bottom:26px;color:var(--v-ink)!important;text-decoration:none!important}
+.vauth-mlogo .vtile{box-shadow:0 2px 8px rgba(35,26,28,.15);border:1px solid var(--v-line)}
+.vauth-mlogo .vwords b{color:var(--v-ink)}.vauth-mlogo .vwords small{color:var(--v-muted);opacity:1}
+.vauth-icon{width:64px;height:64px;border-radius:20px;background:var(--v-red-50);color:var(--v-red);display:grid;place-items:center;margin-bottom:20px}
+.vauth-icon .vi{width:30px;height:30px}
+.vauth-icon.ok{background:var(--v-ok-50);color:var(--v-ok)}
+.vauth-box h2{font-family:var(--v-display);font-size:2rem;line-height:1.15;letter-spacing:-.02em;font-weight:800;margin:0 0 8px}
+.vauth-box .vlead{margin:0 0 22px;color:var(--v-muted);font-size:1rem;line-height:1.55}
+.vauth-box p{line-height:1.6}
+.vchip{display:inline-flex;align-items:center;flex-wrap:wrap;gap:4px 8px;line-height:1.35;margin:0 0 18px;padding:8px 14px;border-radius:14px;background:var(--v-red-50);border:1px solid var(--v-red-100);color:var(--v-red-600);font-weight:600;font-size:.86rem}
+
+/* fields */
+.vfield{margin-bottom:16px;position:relative}
+.vfield>label{display:block;font-size:.83rem;font-weight:600;margin-bottom:6px;color:var(--v-ink-2)}
+.vinput{position:relative}
+.vinput>.vi{position:absolute;left:15px;top:50%;margin-top:-10px;color:var(--v-muted);pointer-events:none}
+.vauth input.auth-input,.vauth .vinput input{width:100%;height:50px;padding:0 14px 0 46px;border:1px solid transparent;border-radius:16px;background:var(--v-fill);color:var(--v-ink);font:inherit;font-size:.96rem;outline:none;transition:box-shadow .15s,border-color .15s,background .15s}
+.vauth .vinput input:focus{background:#fff;border-color:var(--v-red);box-shadow:var(--v-ring)}
+.vauth .vinput.has-eye input{padding-right:50px}
+.veye{position:absolute;right:7px;top:7px;width:36px;height:36px;border:0;border-radius:11px;background:none;color:var(--v-muted);display:grid;place-items:center;cursor:pointer}
+.veye:hover{background:#fff;color:var(--v-ink)}
+.veye .off{display:none}.veye.on .off{display:block}.veye.on .show{display:none}
+.vfield-error{display:block;margin-top:6px;color:var(--v-red-600);font-size:.83rem}
+.vhelp{margin-top:8px;color:var(--v-muted);font-size:.8rem;line-height:1.5}
+.vhelp ul{margin:6px 0 0;padding-left:18px}.vhelp li{margin:2px 0}
+.vstrength{display:flex;gap:4px;margin-top:8px}
+.vstrength i{flex:1;height:5px;border-radius:99px;background:var(--v-line);transition:background .2s}
+.vstrength[data-s="1"] i:nth-child(-n+1){background:#E5484D}
+.vstrength[data-s="2"] i:nth-child(-n+2){background:#F59E0B}
+.vstrength[data-s="3"] i:nth-child(-n+3){background:#84CC16}
+.vstrength[data-s="4"] i:nth-child(-n+4){background:var(--v-ok)}
+.vstrength-label{font-size:.76rem;color:var(--v-muted);margin-top:4px;min-height:1.2em}
+
+/* buttons */
+.vbtn{display:inline-flex;align-items:center;justify-content:center;gap:9px;height:50px;padding:0 22px;border:0;border-radius:18px;background:var(--v-grad);color:#fff!important;font:inherit;font-weight:700;font-size:.97rem;cursor:pointer;text-decoration:none!important;box-shadow:var(--v-glow);transition:filter .2s,transform .15s,box-shadow .2s}
+.vbtn:hover{filter:brightness(1.06);text-decoration:none}.vbtn:active{transform:scale(.985)}
+.vbtn.lg{height:54px;font-size:1rem}.vbtn.block{width:100%}
+.vbtn.secondary{background:#fff;color:var(--v-ink)!important;border:1px solid var(--v-line);box-shadow:none}
+.vbtn.secondary:hover{background:var(--v-red-50);border-color:var(--v-red-200);color:var(--v-red)!important;filter:none}
+.vbtn.is-loading{pointer-events:none;opacity:.85}
+.vbtn.is-loading::before{content:"";width:16px;height:16px;border-radius:50%;border:2px solid currentColor;border-right-color:transparent;animation:vspin .7s linear infinite}
+.vdivider{display:flex;align-items:center;gap:12px;color:var(--v-muted);font-size:.8rem;margin:18px 0}
+.vdivider::before,.vdivider::after{content:"";flex:1;height:1px;background:var(--v-line)}
+.vlinks{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:20px;font-size:.92rem;font-weight:600}
+.vback{display:inline-flex;align-items:center;gap:6px;margin-top:20px;font-weight:600;font-size:.92rem}
+.vsmall{margin-top:26px;padding-top:16px;border-top:1px solid var(--v-line);font-size:.82rem;color:var(--v-muted);text-align:center}
+.vsmall a{font-weight:600}
+
+/* messages */
+.valert{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:16px;margin-bottom:16px;border:1px solid var(--v-line);background:var(--v-fill);font-size:.92rem;line-height:1.45}
+.valert .vi{margin-top:1px;width:18px;height:18px}
+.valert.error{border-color:var(--v-red-200);background:var(--v-red-50);color:var(--v-red-600)}
+.valert.success{border-color:#B9E5CB;background:var(--v-ok-50);color:#127A3A}
+.valert.warning{border-color:#F1D9A8;background:var(--v-warn-50);color:var(--v-warn)}
+
+@keyframes vrise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes vpop{from{opacity:0;transform:scale(.8) translateY(8px)}to{opacity:1;transform:none}}
+@keyframes vfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes vblob{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-30px)}}
+@keyframes vspin{to{transform:rotate(360deg)}}
+
+@media (max-width:1100px){.vauth-brand{padding:44px 40px}.vauth-mascot{height:270px}.vauth-bubble{bottom:284px;right:36px}}
+@media (max-width:900px){
+  .vauth{grid-template-columns:1fr}.vauth-brand{display:none}
+  .vauth-main{min-height:100vh;align-items:flex-start;padding:28px 20px 40px}
+  .vauth-mlogo{display:flex}.vauth-box h2{font-family:var(--v-display);font-size:1.7rem}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}

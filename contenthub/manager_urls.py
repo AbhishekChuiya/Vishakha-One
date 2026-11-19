@@ -5,6 +5,8 @@ from django.views.decorators.cache import never_cache
 from . import manager_views as views
 from . import announcement_overview
 from . import canteen_views
+from . import app_logos
+from . import site_settings
 from portal.auth_forms import CompanyDomainAuthenticationForm
 
 app_name = 'content_manager'
@@ -20,6 +22,11 @@ urlpatterns = [
     ),
     path('logout/', never_cache(LogoutView.as_view(next_page='content_manager:login')), name='logout'),
     path('canteen-menu/', canteen_views.edit_week, name='canteen_menu'),
+    path('canteen-menu/sample/', canteen_views.sample_file, name='canteen_sample'),
+    path('canteen-menu/upload/', canteen_views.upload_week, name='canteen_upload'),
+    path('app-logos/', app_logos.app_logos, name='app_logos'),
+    path('applications/', site_settings.applications, name='applications'),
+    path('helpful-links/', site_settings.helpful_links, name='helpful_links'),
     path('announcement-overview/', announcement_overview.announcement_overview, name='announcement_overview'),
     path('notifications/', views.notification_center, name='notification_center'),
     path('notifications/read-all/', views.mark_all_notifications_read, name='notifications_read_all'),
@@ -36,4 +43,5 @@ urlpatterns = [
     path('<slug:slug>/<int:pk>/delete/', views.delete, name='delete'),
     path('<slug:slug>/<int:pk>/review/', views.review, name='review'),
     path('<slug:slug>/<int:pk>/publish/', views.toggle_publish, name='publish'),
+    path('<slug:slug>/<int:pk>/archive/', views.archive, name='archive'),
 ]

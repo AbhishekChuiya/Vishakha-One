@@ -1,15 +1,13 @@
-{% extends "accounts/simple_base.html" %}
-{% block title %}Activate account{% endblock %}
-{% block kicker %}NEW EMPLOYEE{% endblock %}
-{% block heading %}Register your account{% endblock %}
+{% extends "accounts/auth_base.html" %}
+{% block title %}Create account{% endblock %}
+{% block bubble %}Namaste! New here? Create your account with your Employee ID.{% endblock %}
 {% block content %}
-<p>Enter your Employee ID and your @vishakha.com email. We will email a link to that address so you can choose your password.</p>
-<form method="post" class="auth-form" novalidate>{% csrf_token %}
-  <label for="id_employee_id">Employee ID</label>{{ form.employee_id }}
-  {% if form.employee_id.errors %}<span class="auth-field-error">{{ form.employee_id.errors|striptags }}</span>{% endif %}
-  <label for="id_company_email">Company email</label>{{ form.company_email }}
-  {% if form.company_email.errors %}<span class="auth-field-error">{{ form.company_email.errors|striptags }}</span>{% endif %}
-  <button class="auth-submit" type="submit">Send registration link <span aria-hidden="true">→</span></button>
+<h2>Create your account</h2>
+<p class="vlead">Use your Employee ID and @vishakha.com email. We will email you a link to choose your password.</p>
+<form method="post" data-busy novalidate>{% csrf_token %}
+  {% include "accounts/_field.html" with f=form.employee_id icon="id" %}
+  {% include "accounts/_field.html" with f=form.company_email icon="mail" %}
+  <button class="vbtn lg block" type="submit">Send registration link <svg class="vi" aria-hidden="true"><use href="#vi-arrow-right"/></svg></button>
 </form>
-<a class="auth-sso-link" href="{% url 'accounts:login' %}">Back to sign in <span>→</span></a>
+<a class="vback" href="{% url 'accounts:login' %}"><svg class="vi" aria-hidden="true"><use href="#vi-arrow-left"/></svg>Back to sign in</a>
 {% endblock %}

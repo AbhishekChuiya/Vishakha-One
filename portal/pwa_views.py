@@ -31,13 +31,35 @@ def manifest(request):
 @require_GET
 def service_worker(request):
     # Intentionally no CacheStorage: avoids offline copies of employee information.
-    code = '''/* Vishakha One online-first service worker v16.43 */
+    icon = static("pwa/icon-192.png")
+    code = '''/* Vishakha One online-first service worker v17.0 (push enabled) */
 self.addEventListener('install', event => { self.skipWaiting(); });
 self.addEventListener('activate', event => { event.waitUntil(self.clients.claim()); });
 self.addEventListener('fetch', event => {
   // All requests go to the network. Never cache authenticated HTML, APIs, media, or documents.
 });
-'''
+self.addEventListener('push', event => {
+  let data = {};
+  try { data = event.data ? event.data.json() : {}; } catch (e) { data = {body: event.data ? event.data.text() : ''}; }
+  const title = data.title || 'Vishakha One';
+  event.waitUntil(self.registration.showNotification(title, {
+    body: data.body || '', icon: '__ICON__', badge: '__ICON__', tag: data.tag || undefined,
+    data: {url: data.url || '/'}
+  }));
+});
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  const target = new URL((event.notification.data && event.notification.data.url) || '/', self.location.origin).href;
+  event.waitUntil(self.clients.matchAll({type: 'window', includeUncontrolled: true}).then(list => {
+    for (const client of list) {
+      if (new URL(client.url).origin === self.location.origin && 'focus' in client) {
+        return client.focus().then(c => (c && 'navigate' in c) ? c.navigate(target) : c);
+      }
+    }
+    return self.clients.openWindow(target);
+  }));
+});
+'''.replace('__ICON__', icon)
     response = HttpResponse(code, content_type="text/javascript; charset=utf-8")
     response["Service-Worker-Allowed"] = "/"
     response["Cache-Control"] = "no-store"

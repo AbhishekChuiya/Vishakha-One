@@ -1,3 +1,65 @@
-{% load static %}<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Content Manager | Vishakha One</title><link rel="stylesheet" href="{% static 'css/content_manager.css' %}"><link rel="stylesheet" href="{% static 'css/step11_content_manager.css' %}"><link rel="stylesheet" href="{% static 'css/step11_1_notifications.css' %}"><link rel="stylesheet" href="{% static 'css/step11_2_notifications.css' %}"></head>
-<body><div class="cm-shell"><aside class="cm-side"><a class="cm-brand" href="{% url 'content_manager:dashboard' %}"><span class="cm-logo">V</span><span><strong>Vishakha ONE</strong><small>Content Manager</small></span></a><div class="cm-caption">WORKSPACE</div><a class="cm-nav" href="{% url 'content_manager:dashboard' %}">⌂ &nbsp; Overview</a>{% for item in sections %}{% if item.can_view %}<a class="cm-nav" href="{% url 'content_manager:list' item.slug %}">{{ item.icon }} &nbsp; {{ item.title }}</a>{% endif %}{% endfor %}<a class="cm-nav" href="{% url 'content_manager:canteen_menu' %}">🍽 &nbsp; Canteen Menu</a><a class="cm-nav" href="{% url 'content_manager:announcement_overview' %}">📊 &nbsp; Announcement Status</a><div class="cm-side-bottom"><a class="cm-nav" href="{{ employee_portal_url }}">↗ &nbsp; View Employee Portal</a><span>Signed in as {{ request.user.get_full_name|default:request.user.username }}</span><form method="post" action="{% url 'content_manager:logout' %}" class="cm-logout-form" data-logout-form>{% csrf_token %}<button class="cm-logout" type="submit">↪ Sign out</button></form></div></aside><div class="cm-work"><header class="cm-header"><div><span class="cm-eyebrow">VISHAKHA GROUP · INTERNAL</span><strong>Content Management</strong></div><details class="cm-notifications"><summary aria-label="Notifications">🔔 Notifications {% if unread_count %}<span class="cm-notification-count">{{ unread_count }}</span>{% endif %}</summary><div class="cm-notification-menu"><div class="cm-notification-head"><strong>Recent notifications</strong><a href="{% url 'content_manager:notification_center' %}">View all</a></div>{% for notification in notifications %}<form method="post" action="{% url 'content_manager:notification_open' notification.pk %}">{% csrf_token %}<button type="submit" class="cm-notification-item {% if not notification.is_read %}cm-unread{% endif %}"><b>{{ notification.title }}</b><small>{{ notification.message|truncatechars:160 }}</small><small>{{ notification.created_at|date:'d M Y, H:i' }}</small></button></form>{% empty %}<p>No notifications yet.</p>{% endfor %}<a class="cm-notification-all" href="{% url 'content_manager:notification_center' %}">Open notification center →</a></div></details><div class="cm-user"><span class="cm-user-dot">{{ request.user.username|first|upper }}</span><span>{{ request.user.get_full_name|default:request.user.username }}</span></div></header><main class="cm-main">{% if messages %}{% for message in messages %}<div class="cm-alert">{{ message }}</div>{% endfor %}{% endif %}{% block content %}{% endblock %}</main></div></div><script src="{% static 'js/content_manager.js' %}" defer></script></body></html>
+{% load static vone_ui %}<!doctype html>
+<html lang="en" data-theme="light"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#e0262f">
+<script>(function(){try{var t=localStorage.getItem("vishakha_one_theme");document.documentElement.setAttribute("data-theme",t==="dark"?"dark":"light");if(localStorage.getItem("vone_side")==="mini"&&window.innerWidth>900)document.documentElement.setAttribute("data-side","mini")}catch(e){}})();</script>
+<title>Content Manager | Vishakha One</title>
+<link rel="stylesheet" href="{% vstatic 'css/vone_ui.css' %}"><link rel="stylesheet" href="{% vstatic 'css/vone_cm.css' %}">
+</head>
+<body class="vx-body cm-body">
+<a class="sr" href="#main">Skip to content</a>
+{% with page=request.resolver_match.url_name slug=request.resolver_match.kwargs.slug %}
+<div class="vx">
+  <aside class="vx-side" id="vx-side" aria-label="Content Manager menu">
+    <div class="vx-brand">
+      <a href="{% url 'content_manager:dashboard' %}" class="vx-logo" aria-label="Content Manager home"><span class="vx-tile"><img src="{% static 'assets/branding/vishakha-logo-highres.png' %}" alt=""></span><span class="vx-words"><b>Vishakha ONE</b><small>Content Manager</small></span></a>
+      <button type="button" class="vx-collapse" data-side-collapse aria-label="Collapse menu">{% icon 'chevron-left' 'sm' %}</button>
+    </div>
+    <nav class="vx-nav" aria-label="Content Manager sections">
+      <div class="vx-group">Workspace</div>
+      <a class="vx-link {% if page == 'dashboard' %}on{% endif %}" href="{% url 'content_manager:dashboard' %}"><span class="ico">{% icon 'home' %}</span><span class="lbl">Overview</span></a>
+      <div class="vx-group">Content</div>
+      {% for item in sections %}{% if item.can_view %}<a class="vx-link {% if slug == item.slug %}on{% endif %}" href="{% url 'content_manager:list' item.slug %}"><span class="ico" aria-hidden="true">{{ item.icon }}</span><span class="lbl">{{ item.title }}</span></a>{% endif %}{% endfor %}
+      <div class="vx-group">Services</div>
+      {% if perms.contenthub.manage_canteen_menu %}<a class="vx-link {% if page == 'canteen_menu' %}on{% endif %}" href="{% url 'content_manager:canteen_menu' %}"><span class="ico">{% icon 'utensils' %}</span><span class="lbl">Canteen Menu</span></a>{% endif %}
+      {% if perms.portal.change_companyapplication %}<a class="vx-link {% if page == 'applications' %}on{% endif %}" href="{% url 'content_manager:applications' %}"><span class="ico">{% icon 'grid' %}</span><span class="lbl">Applications</span></a>{% endif %}
+      {% if perms.portal.change_helpfullink %}<a class="vx-link {% if page == 'helpful_links' %}on{% endif %}" href="{% url 'content_manager:helpful_links' %}"><span class="ico">{% icon 'link' %}</span><span class="lbl">Helpful links</span></a>{% endif %}
+      <div class="vx-group">Monitor</div>
+      <a class="vx-link {% if page == 'announcement_overview' %}on{% endif %}" href="{% url 'content_manager:announcement_overview' %}"><span class="ico">{% icon 'chart' %}</span><span class="lbl">Announcement Status</span></a>
+      <a class="vx-link {% if page == 'notification_center' %}on{% endif %}" href="{% url 'content_manager:notification_center' %}"><span class="ico">{% icon 'bell' %}</span><span class="lbl">Notifications{% if unread_count %} ({{ unread_count }}){% endif %}</span></a>
+      <div class="vx-group">Employee portal</div>
+      <a class="vx-link" href="{{ employee_portal_url }}"><span class="ico">{% icon 'external' %}</span><span class="lbl">View Employee Portal</span></a>
+    </nav>
+    <div class="vx-tip"><img src="{% static 'assets/brand/vishakha-mascot-640.webp' %}" alt="" width="44" height="50"><span>Content goes live on the portal only after approval.</span></div>
+  </aside>
+  <div class="vx-scrim"></div>
+  <div class="vx-main">
+    <header class="vx-top">
+      <button type="button" class="vx-iconbtn vx-burger" data-nav-toggle aria-label="Open menu">{% icon 'menu' %}</button>
+      <div class="cm-top-title"><small>VISHAKHA GROUP · INTERNAL</small><b>Content Management</b></div>
+      <div class="vx-grow"></div>
+      <div class="vx-menuwrap">
+        <button type="button" class="vx-iconbtn" data-pop-toggle="cm-bell" aria-label="Notifications" aria-expanded="false">{% icon 'bell' %}{% if unread_count %}<span class="vx-dot">{{ unread_count }}</span>{% endif %}</button>
+        <div class="vx-pop vx-bellpop" id="cm-bell" data-pop hidden>
+          <div class="bh"><b>Recent notifications</b><a href="{% url 'content_manager:notification_center' %}" style="font-size:.84rem;font-weight:600">View all</a></div>
+          {% for notification in notifications %}<form method="post" action="{% url 'content_manager:notification_open' notification.pk %}">{% csrf_token %}<button type="submit" class="cm-n {% if not notification.is_read %}cm-unread{% endif %}"><b>{{ notification.title }}</b><small>{{ notification.message|truncatechars:120 }}</small><small>{{ notification.created_at|date:'d M Y, H:i' }}</small></button></form>{% empty %}<p>No notifications yet.</p>{% endfor %}
+        </div>
+      </div>
+      <button type="button" class="vx-iconbtn" data-theme-toggle aria-label="Switch light or dark mode">{% icon 'moon' %}</button>
+      <div class="vx-menuwrap">
+        <button type="button" class="vx-profile" data-pop-toggle="cm-user" aria-label="Account menu" aria-expanded="false"><span class="vx-av">{{ request.user.get_full_name|default:request.user.username|initials }}</span><span class="vx-who"><b>{{ request.user.get_full_name|default:request.user.username }}</b><small>Content Manager</small></span></button>
+        <div class="vx-pop" id="cm-user" data-pop hidden>
+          <div class="head"><b>{{ request.user.get_full_name|default:request.user.username }}</b><small>{{ request.user.email }}</small></div>
+          <a href="{{ employee_portal_url }}">{% icon 'external' %}Employee portal</a>
+          <form method="post" action="{% url 'content_manager:logout' %}" class="cm-logout-form" data-logout-form>{% csrf_token %}<button type="submit" class="danger cm-logout">{% icon 'logout' %}Sign out</button></form>
+        </div>
+      </div>
+    </header>
+    <main class="vx-content" id="main">
+      {% if messages %}{% for message in messages %}<div class="cm-alert{% if message.tags == 'error' %} cm-error-box{% endif %}" role="status">{{ message }}</div>{% endfor %}{% endif %}
+      {% block content %}{% endblock %}
+    </main>
+    <footer class="vx-foot">&copy; Vishakha Group &middot; Vishakha One Content Manager</footer>
+  </div>
+</div>
+{% endwith %}
+<script src="{% vstatic 'js/vone_ui.js' %}" defer></script><script src="{% vstatic 'js/content_manager.js' %}" defer></script><script src="{% vstatic 'pwa/push.js' %}" defer></script>
+</body></html>

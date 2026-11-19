@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static vone_ui %}
 {% block content %}
-<link rel="stylesheet" href="{% static 'pwa/readiness.css' %}?v=16.44">
+<link rel="stylesheet" href="{% vstatic 'pwa/readiness.css' %}">
 <section class="section vone-pwa-check" aria-labelledby="pwa-check-title">
  <div class="section-header"><div><span class="eyebrow">VISHAKHA ONE · MOBILE APP</span><h1 id="pwa-check-title">Install Vishakha One</h1><p>Check whether this device and website are ready for app installation.</p></div></div>
  <div class="vone-pwa-check-grid">
@@ -21,5 +21,5 @@
  <p>Authentication and media access should be tested in standalone mode. This app does not cache confidential employee data for offline access.</p>
  </div>
 </section>
-<script src="{% static 'pwa/readiness.js' %}?v=16.44" defer></script>
+<script src="{% vstatic 'pwa/readiness.js' %}" defer></script>
 {% endblock %}

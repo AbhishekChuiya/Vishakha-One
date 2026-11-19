@@ -1,25 +1,39 @@
 {% extends 'content_manager/base.html' %}{% load static %}
 {% block content %}
-<div class="vone-canteen-wrap" style="padding:0 0 50px">
-<div class="vone-canteen-head"><div><h1>Weekly Canteen Menu</h1><p>Enter lunch and evening snacks for each day. Holiday clears the day's menu.</p></div>
-<nav class="vone-canteen-nav"><a href="?week={{ previous|date:'Y-m-d' }}">← Previous</a><a href="{% url 'content_manager:canteen_menu' %}">Current week</a><a href="?week={{ following|date:'Y-m-d' }}">Next →</a></nav></div>
+<div class="cm-canteen">
+<div class="cm-canteen-head"><div><h1>🍽 Canteen Menu</h1><p>Fill in <b>this week</b> and <b>next week</b> together. Employees see only the current week; next week appears by itself when it begins. Holiday clears the day's menu.</p></div>
+<nav class="cm-canteen-nav"><a class="cm-btn cm-btn-secondary" href="?week={{ previous|date:'Y-m-d' }}">← Earlier</a><a class="cm-btn cm-btn-secondary" href="{% url 'content_manager:canteen_menu' %}">This week + next</a><a class="cm-btn cm-btn-secondary" href="?week={{ following|date:'Y-m-d' }}">Later →</a></nav></div>
+<section class="canteen-upload" aria-label="Fill the menu from a file">
+<div><h2>Fill from a file</h2><p>Download the sample (it already has this week's and next week's dates), fill in one row per day, then upload it. The form below is filled in for you to check. <strong>Nothing is saved until you press "Save menu".</strong></p></div>
+<div class="canteen-upload-actions">
+<a class="canteen-btn" href="{% url 'content_manager:canteen_sample' %}?week={{ monday|date:'Y-m-d' }}">&#11015; Download sample file{% if not excel_ready %} (CSV){% endif %}</a>
+<form method="post" action="{% url 'content_manager:canteen_upload' %}" enctype="multipart/form-data">{% csrf_token %}<input type="hidden" name="week" value="{{ monday|date:'Y-m-d' }}">
+<input type="file" name="menu_file" accept=".xlsx,.csv" required aria-label="Menu file (.xlsx or .csv)"><button type="submit" class="canteen-btn primary">&#11014; Upload and fill</button>
+</form></div></section>
+{% if prefill %}<div class="canteen-loaded" role="status"><strong>Loaded {{ prefill_days }} day{{ prefill_days|pluralize }} from {{ prefill.filename }}.</strong> Check the menu below, then press <em>Save menu</em>. <a href="?week={{ monday|date:'Y-m-d' }}&discard=1">Discard loaded data</a>
+{% if prefill.warnings %}<ul>{% for w in prefill.warnings %}<li>{{ w }}</li>{% endfor %}</ul>{% endif %}</div>{% endif %}
+<div class="cm-snackkey"><b>Snacks:</b> <span class="sk reg">Regular</span> the usual items (Maggie, Bhel, Sandwich) &nbsp;·&nbsp; <span class="sk spl">Chef's special</span> something special &mdash; on those days there are no regular snacks.</div>
 <form class="vone-canteen-form" method="post">{% csrf_token %}<input type="hidden" name="week" value="{{ monday|date:'Y-m-d' }}">
-<div class="vone-canteen-grid">{% for day, form in days %}
+{% for week in weeks %}<h2 class="cm-weekhead">{{ week.label }} <small>{{ week.monday|date:'d M' }} – {{ week.days.5.0|date:'d M Y' }}</small></h2>
+<div class="vone-canteen-grid">{% for day, form in week.days %}
 <section class="day-form {% if form.instance.is_holiday %}is-holiday{% endif %}">
-<h2>{{ day|date:"l, d M Y" }}</h2>
+<h3>{{ day|date:"l, d M Y" }}</h3>
 <div class="holiday-row">{{ form.is_holiday }}<label for="{{ form.is_holiday.id_for_label }}">Holiday / Canteen closed</label></div>
 <div class="lunch-fields">
 {% for field in form %}{% if field.name != 'is_holiday' %}<label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{{ field.errors }}{% endif %}{% endfor %}
-</div></section>{% endfor %}</div>
-<button type="submit" class="save-menu">Save weekly menu</button>
-</form></div>
-<link rel="stylesheet" href="{% static 'css/canteen_menu.css' %}?v=1.0">
+</div></section>{% endfor %}</div>{% endfor %}
+<button type="submit" class="save-menu">Save menu</button>
+</form>
+</div>
 <script>
 document.querySelectorAll('.vone-canteen-form .day-form').forEach(card=>{
  const box=card.querySelector('input[type=checkbox]');
- const inputs=card.querySelectorAll('.lunch-fields input');
+ const inputs=card.querySelectorAll('.lunch-fields input, .lunch-fields select');
+ const kind=card.querySelector('select[name$="snack_type"]');
+ const tint=()=>card.classList.toggle('is-special', !!kind && kind.value==='special' && !(box&&box.checked));
+ if(kind) kind.addEventListener('change', tint);
  if(!box)return;
- const update=()=>{card.classList.toggle('is-holiday',box.checked);inputs.forEach(i=>{i.disabled=box.checked;});};
+ const update=()=>{card.classList.toggle('is-holiday',box.checked);inputs.forEach(i=>{i.disabled=box.checked;});tint();};
  box.addEventListener('change',update);update();
 });
 </script>

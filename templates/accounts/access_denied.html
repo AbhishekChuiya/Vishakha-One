@@ -1,4 +1,9 @@
-{% load static %}
-<!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Access not available | Vishakha One</title><link rel="stylesheet" href="{% static 'css/employee_auth.css' %}"></head>
-<body class="vone-auth-page"><main class="auth-simple-card"><img src="{% static 'assets/branding/vishakha-logo-highres.png' %}" alt="Vishakha logo"><span class="auth-card-kicker">EMPLOYEE ACCESS</span><h1>Employee access is not enabled</h1><p>Your account does not have an active employee profile with a registered @vishakha.com email address. Contact your HR or IT administrator to activate your portal access.</p>{% if user.is_authenticated %}<p>You are signed in as <strong>{{ user.get_username }}</strong>. If this is the wrong account, sign out and sign in with your employee account.</p>{% endif %}<form method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}<button class="auth-submit" type="submit">Sign out <span>→</span></button></form><small>Vishakha Group · Internal use only</small></main></body></html>
+{% extends "accounts/auth_base.html" %}
+{% block title %}Access not available{% endblock %}
+{% block content %}
+<div class="vauth-icon"><svg class="vi" aria-hidden="true"><use href="#vi-lock"/></svg></div>
+<h2>Employee access is not enabled</h2>
+<p class="vlead">Your account does not have an active employee profile with a registered @vishakha.com email address. Contact your HR or IT administrator to activate your portal access.</p>
+{% if user.is_authenticated %}<p class="vlead">You are signed in as <strong>{{ user.get_username }}</strong>. If this is the wrong account, sign out and sign in with your employee account.</p>{% endif %}
+<form method="post" action="{% url 'accounts:logout' %}">{% csrf_token %}<button class="vbtn lg block" type="submit">Sign out <svg class="vi" aria-hidden="true"><use href="#vi-arrow-right"/></svg></button></form>
+{% endblock %}

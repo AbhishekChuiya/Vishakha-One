@@ -1,0 +1,7 @@
+{% extends 'base.html' %}{% load static vone_ui %}{% block content %}
+{% include 'portal/_banner.html' with title='My bookmarks' icon='bookmark' eyebrow='Saved for later' lead='Documents, videos and brochures you saved. Tap the bookmark on any item to add or remove it.' %}
+<section class="sec" style="margin-top:22px">
+  {% if items %}<div class="grid3" id="bm-grid">{% for item in items %}{% include 'portal/_resource_card.html' %}{% endfor %}</div>
+  {% else %}<div class="empty">{% icon 'bookmark' %}<p><b>No bookmarks yet.</b><br>Open Policies, Documents, the Video Library or Brochures &amp; Brand and tap the bookmark on anything you want to find again quickly.</p><a class="btn sm" style="margin-top:14px" href="{% url 'portal:section' 'documents' %}">Browse documents {% icon 'arrow-right' 'sm' %}</a></div>{% endif %}
+</section>
+{% endblock %}

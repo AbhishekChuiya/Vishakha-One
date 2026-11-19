@@ -12,11 +12,11 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core import signing
 from django.core.exceptions import ValidationError
-from django.core.mail import EmailMultiAlternatives
 from django.db import IntegrityError, transaction
 from django.db.models import Q
 from django.template.loader import render_to_string
 
+from . import mailer
 from .models import EmployeeProfile, is_company_email
 
 logger = logging.getLogger(__name__)
@@ -87,50 +87,25 @@ def identity_from_token(token):
     return None if identity_taken(*identity) else identity
 
 
-def describe_mail_error(exc):
-    """Short, password-free description of a mail failure for the server log."""
-    code = getattr(exc, "smtp_code", None)
-    detail = getattr(exc, "smtp_error", b"")
-    if isinstance(detail, bytes):
-        detail = detail.decode("utf-8", "replace")
-    if code:
-        return f"{type(exc).__name__} {code} {str(detail)[:160]}"
-    return type(exc).__name__
-
-
 def send_activation_email(employee_id, company_email, link):
     context = {"employee_id": employee_id, "link": link, "hours": max(1, link_max_age() // 3600)}
-    try:
-        message = EmailMultiAlternatives(
-            subject="Complete your Vishakha One registration",
-            body=render_to_string("accounts/email/activation_email.txt", context),
-            to=[company_email],
-        )
-        message.attach_alternative(
-            render_to_string("accounts/email/activation_email.html", context), "text/html")
-        message.send()
-        return True
-    except Exception as exc:  # never reveal mail problems to the requester
-        logger.error("Activation e-mail could not be sent (%s).", describe_mail_error(exc))
-        return False
+    return mailer.send_tracked(
+        purpose="registration", recipient=company_email,
+        subject="Complete your Vishakha One registration",
+        text_body=render_to_string("accounts/email/activation_email.txt", context),
+        html_body=render_to_string("accounts/email/activation_email.html", context),
+    )
 
 
 def send_already_registered_email(profile, login_url, reset_url):
     """Tell the mailbox owner they already have an account (sent only to that company mailbox)."""
     context = {"employee_id": profile.employee_id, "login_url": login_url, "reset_url": reset_url}
-    try:
-        message = EmailMultiAlternatives(
-            subject="You already have a Vishakha One account",
-            body=render_to_string("accounts/email/already_registered_email.txt", context),
-            to=[profile.company_email],
-        )
-        message.attach_alternative(
-            render_to_string("accounts/email/already_registered_email.html", context), "text/html")
-        message.send()
-        return True
-    except Exception as exc:
-        logger.error("Already-registered e-mail could not be sent (%s).", describe_mail_error(exc))
-        return False
+    return mailer.send_tracked(
+        purpose="already_registered", recipient=profile.company_email,
+        subject="You already have a Vishakha One account",
+        text_body=render_to_string("accounts/email/already_registered_email.txt", context),
+        html_body=render_to_string("accounts/email/already_registered_email.html", context),
+    )
 
 
 def unsaved_user_for(employee_id, company_email):

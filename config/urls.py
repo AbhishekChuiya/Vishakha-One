@@ -2,9 +2,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from portal import auth_views, pwa_views
+from portal import auth_views, pwa_views, health
 
 urlpatterns = [
+    # Health check for the watchdog (no data, no login)
+    path("healthz/", health.healthz, name="healthz"),
+
     # PWA and readiness endpoints
     path("pwa-check/", pwa_views.readiness, name="pwa_readiness"),
     path(
@@ -17,6 +20,9 @@ urlpatterns = [
         pwa_views.service_worker,
         name="pwa_service_worker",
     ),
+
+    # Language switch (English / Hindi)
+    path("i18n/", include("django.conf.urls.i18n")),
 
     # Django administration
     path("admin/", admin.site.urls),

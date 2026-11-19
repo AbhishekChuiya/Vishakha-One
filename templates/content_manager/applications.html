@@ -1,0 +1,28 @@
+{% extends 'content_manager/base.html' %}{% block content %}
+<div class="cm-intro"><div><a class="cm-back" href="{% url 'content_manager:dashboard' %}">← Overview</a>
+  <h1>🧩 Applications</h1>
+  <p>Change the name, link, display order, visibility and logo of each application tile. Lower order numbers appear first. Use a sharp square logo (at least 256 × 256 px, up to 3 MB).</p></div></div>
+{% if can_add %}<details class="cm-card cm-addbox"><summary class="cm-btn cm-btn-primary">+ Add an application</summary>
+  <form method="post" enctype="multipart/form-data" class="cm-rowform">{% csrf_token %}<input type="hidden" name="action" value="add">
+    <label>Name<input type="text" name="name" required maxlength="150"></label>
+    <label>Link (https://…)<input type="url" name="url" maxlength="1000"></label>
+    <label>Category<input type="text" name="category" maxlength="100"></label>
+    <label>Order<input type="number" name="display_order" min="0" value="100"></label>
+    <label>Logo<input type="file" name="logo" accept="image/png,image/jpeg,image/webp,image/gif"></label>
+    <label class="cm-check"><input type="checkbox" name="is_active" checked> Show on portal</label>
+    <button class="cm-btn cm-btn-primary" type="submit">Add application</button></form></details>{% endif %}
+<form method="get" class="cm-filters"><input type="search" name="q" value="{{ query }}" placeholder="Find an application"><button class="cm-btn cm-btn-secondary" type="submit">Search</button></form>
+<div class="cm-stack">{% for app in apps %}<article class="cm-card cm-approw">
+  <div class="cm-apphead">{% if app.logo_url %}<img class="cm-logo-thumb" src="{{ app.logo_url }}" alt="Logo of {{ app.name }}">{% else %}<span class="cm-logo-initials" title="No uploaded logo">{{ app.name|slice:':2'|upper }}</span>{% endif %}<strong>{{ app.name }}</strong>{% if not app.is_active %}<span class="cm-status cm-draft">Hidden</span>{% endif %}</div>
+  <form method="post" enctype="multipart/form-data" class="cm-rowform">{% csrf_token %}<input type="hidden" name="app_id" value="{{ app.pk }}">
+    <label>Name<input type="text" name="name" value="{{ app.name }}" required maxlength="150"></label>
+    <label>Link<input type="url" name="url" value="{{ app.url }}" maxlength="1000"></label>
+    <label>Category<input type="text" name="category" value="{{ app.category }}" maxlength="100"></label>
+    <label>Order<input type="number" name="display_order" value="{{ app.display_order }}" min="0"></label>
+    <label>New logo<input type="file" name="logo" accept="image/png,image/jpeg,image/webp,image/gif"></label>
+    <input type="hidden" name="description" value="{{ app.description }}">
+    <label class="cm-check"><input type="checkbox" name="is_active" {% if app.is_active %}checked{% endif %}> Show on portal</label>
+    <button class="cm-btn cm-btn-primary" type="submit">Save</button></form>
+  {% if app.logo %}<form method="post" class="cm-rowform" style="margin-top:6px">{% csrf_token %}<input type="hidden" name="app_id" value="{{ app.pk }}"><button class="cm-btn cm-btn-secondary" name="action" value="remove_logo" type="submit">Remove uploaded logo</button></form>{% endif %}
+</article>{% empty %}<div class="cm-empty-notifications">No applications found.</div>{% endfor %}</div>
+{% endblock %}

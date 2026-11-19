@@ -1,0 +1,8 @@
+{% load vone_ui %}<article class="mcard{% if item.priority == 'urgent' %} prio-urgent{% elif item.priority == 'important' %} prio-important{% endif %}">
+  <div class="mart k{% if item.category == 'recognition' %}4{% elif item.category == 'gallery' %}5{% elif item.category == 'announcement' %}2{% else %}1{% endif %}">
+    {% if item.image %}<img src="{{ item.image.url }}" alt="" loading="lazy">{% elif item.category == 'recognition' %}{% icon 'award' %}{% elif item.category == 'gallery' %}{% icon 'image' %}{% elif item.category == 'announcement' %}{% icon 'megaphone' %}{% else %}{% icon 'news' %}{% endif %}
+    <span class="tag">{{ item.get_category_display }}</span>
+  </div>
+  <div class="mbody">{% if item.priority == 'urgent' %}<span class="prio-tag urgent">URGENT</span>{% elif item.priority == 'important' %}<span class="prio-tag important">IMPORTANT</span>{% endif %}<h3>{{ item.title }}</h3>{% if item.summary %}<p>{{ item.summary }}</p>{% endif %}
+    <div class="mfoot"><span>{{ item.published_at|date:"d M Y" }}</span>{% if item.image %}<a href="{{ item.image.url }}" target="_blank" rel="noopener noreferrer">View photo {% icon 'external' 'sm' %}</a>{% endif %}</div></div>
+</article>

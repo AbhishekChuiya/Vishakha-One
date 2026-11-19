@@ -1,8 +1,8 @@
-{% extends "accounts/simple_base.html" %}
+{% extends "accounts/auth_base.html" %}
 {% block title %}Registration closed{% endblock %}
-{% block kicker %}NEW EMPLOYEE{% endblock %}
-{% block heading %}Registration is closed{% endblock %}
 {% block content %}
-<p>New account registration is not available right now. Please contact your HR or IT administrator.</p>
-<a class="auth-submit auth-submit-link" href="{% url 'accounts:login' %}">Back to sign in <span aria-hidden="true">→</span></a>
+<div class="vauth-icon"><svg class="vi" aria-hidden="true"><use href="#vi-lock"/></svg></div>
+<h2>Registration is closed</h2>
+<p class="vlead">New account registration is not available right now. Please contact your HR or IT administrator.</p>
+<a class="vbtn lg block" href="{% url 'accounts:login' %}">Back to sign in <svg class="vi" aria-hidden="true"><use href="#vi-arrow-right"/></svg></a>
 {% endblock %}
